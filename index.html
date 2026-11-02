@@ -41,6 +41,7 @@ button,.btn{font:inherit;color:var(--txt);background:color-mix(in srgb,var(--acc
 button:active{transform:scale(.96);background:color-mix(in srgb,var(--acc) 35%,#000a)}
 button:disabled{opacity:.38;filter:grayscale(.7);box-shadow:none}
 button.full{width:100%}
+a.btn{text-decoration:none;box-sizing:border-box;width:100%}a.btn.prim{background:var(--grad);color:#021;border:none;text-shadow:none}
 button.prim{background:var(--grad);color:#021;border:none;text-shadow:none}
 button.ghost{background:transparent;box-shadow:none}
 button.bad{border-color:var(--bad);box-shadow:0 0 8px #ff4d6d55;background:#ff4d6d22}
@@ -879,10 +880,11 @@ function vMore(){
    <div class="grid2 small"><div>Quests erledigt: <b>${S.cnt.quests}</b></div><div>Nebenquests: <b>${S.cnt.side}</b></div><div>Gates: <b>${S.cnt.dungeons}</b></div><div>Schatten erweckt: <b>${S.cnt.arise}</b></div></div>
    <h3>Tage</h3>${S.history.slice(0,14).map(h=>`<div class="row small"><span class="sp">${parseDay(h.d).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})}</span><span>${h.done}/${h.total}</span><span style="width:70px;text-align:right">${fmt(h.xp)} XP</span><span>${h.all?'✅':'❌'}</span></div>`).join('')||'<p class="dim">Noch keine abgeschlossenen Tage.</p>'}</section>
   <section class="win"><h2>Protokoll</h2><div class="log" style="max-height:220px">${S.log.slice(0,40).map(l=>`<div>${new Date(l.t).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})} – ${esc(l.m)}</div>`).join('')||'Leer'}</div></section>
-  <section class="win"><h2>Backup</h2><p class="dim small">Alle Daten liegen nur lokal in diesem Browser. Exportiere regelmäßig!</p>
+  <section class="win"><h2>Backup</h2><p class="dim small">Alle Daten liegen nur lokal ${NATIVE?'in dieser App':'in diesem Browser'}. Exportiere regelmäßig! Der Export enthält auch deine Beweisfotos.</p>
    <div class="grid2"><button data-a="exportSave">⬇️ Export (JSON)</button><button data-a="importSave">⬆️ Import</button></div>
    <button class="full ghost" style="margin-top:8px" data-a="copySave">📋 Spielstand als Text kopieren / einfügen</button>
    <input type="file" id="importFile" accept="application/json,.json" style="display:none"></section>
+  ${androidCard()}
   ${proofSettingsCard()}
   ${appCard()}
   <section class="win"><h2>Einstellungen</h2><button class="full bad" data-a="resetAll">Spielstand komplett zurücksetzen</button>
@@ -1158,14 +1160,10 @@ const A = {
  pasteSave(){ importText(val('fSave')); },
  resetAll(){ ask('Wirklich ALLES löschen? Das kann nicht rückgängig gemacht werden.', ()=>{ localStorage.removeItem(SAVE_KEY); S=newState(); UI.battle=null; save(); render(); toast('Neuer Spielstand erstellt.'); }, 'Alles löschen'); },
 };
-function importText(txt){
-  try { const o=JSON.parse(txt); if(!o||typeof o!=='object'||!o.base||!o.level) throw new Error('Kein gültiger Spielstand');
-    ask(`Spielstand von „${esc(o.name)}“ (Level ${o.level}) laden? Der aktuelle Stand wird überschrieben.`, ()=>{ S=merge(newState(),o); migrateProof(S); rollover(); checkUnlocks(); save(); render(); toast('Spielstand importiert.'); }, 'Laden');
-  } catch(e){ toast('Import fehlgeschlagen: '+esc(e.message),'[FEHLER]'); }
-}
+// importText(): siehe part7n.js (Backup-Format 2 mit Beweisfotos, alte Dateien weiter lesbar)
 
 /* =================== App-Version, Updates & Installation (PWA) =================== */
-const RELEASES = [{"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
+const RELEASES = [{"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
 const APP_VERSION = RELEASES[0].version;
 const VER_KEY = 'das-system-app-version'; // getrennt vom Spielstand (das-system-save-v1)
 const INSTALL_DISMISS_KEY = 'das-system-install-hint-off';
@@ -1272,7 +1270,7 @@ Object.assign(A, {
   dismissInstall(){ localStorage.setItem(INSTALL_DISMISS_KEY, '1'); },
 });
 function installBanner(){
-  if (!canInstallHint() || localStorage.getItem(INSTALL_DISMISS_KEY)) return '';
+  if (NATIVE || UMZUG || !canInstallHint() || localStorage.getItem(INSTALL_DISMISS_KEY)) return '';
   return `<section class="win installwin"><div class="row"><div style="font-size:30px">📲</div><div class="sp"><b>Als App installieren</b><div class="dim small">Homescreen, Vollbild, offline & automatische Updates</div></div><button class="sq ghost" data-a="dismissInstall" aria-label="Ausblenden">✕</button></div>
    <button class="full prim" style="margin-top:10px" data-a="installApp">Als App installieren</button></section>`;
 }
@@ -1281,11 +1279,11 @@ function appCard(){
   const ctl = 'serviceWorker' in navigator && navigator.serviceWorker.controller;
   return `<section class="win"><h2>App &amp; Updates</h2>
    <div class="row"><span class="sp">Version</span><b>${APP_VERSION}</b></div>
-   <div class="row small"><span class="sp dim">Modus</span><span>${isStandalone()?'📲 Installierte App':'🌐 Browser'}</span></div>
+   <div class="row small"><span class="sp dim">Modus</span><span>${NATIVE?'📱 Native Android-App':isStandalone()?'📲 Installierte App':'🌐 Browser'}</span></div>
    <div class="row small"><span class="sp dim">Offline</span><span>${ctl?'✅ bereit':(location.protocol==='file:'?'– (lokale Datei)':'⏳ wird eingerichtet')}</span></div>
    ${w?`<button class="full prim" style="margin-top:10px" data-a="showUpdate">⬆️ Update ${PWA.newVer?'auf v'+esc(PWA.newVer)+' ':''}installieren</button>`:''}
    <div class="grid2" style="margin-top:10px"><button data-a="checkUpdate">🔄 Updates suchen</button><button data-a="showChangelog">📋 Changelog</button></div>
-   ${isStandalone()?'':`<button class="full" style="margin-top:8px" data-a="installApp">📲 Als App installieren</button>`}
+   ${(isStandalone()||NATIVE)?'':`<button class="full" style="margin-top:8px" data-a="installApp">📲 Als App installieren</button>`}
    <p class="dim small" style="margin-top:8px">Die App sucht beim Öffnen, beim Zurückkehren und alle 30 Min. automatisch nach Updates.</p></section>`;
 }
 
@@ -1368,7 +1366,7 @@ function stopAllProof(){
   if (P.stream){ P.stream.getTracks().forEach(t => t.stop()); P.stream = null; }
   if (P.watch!=null && navigator.geolocation){ navigator.geolocation.clearWatch(P.watch); } P.watch = null;
   window.removeEventListener('devicemotion', onMotion);
-  wakeOff(); P.sess = null;
+  wakeOff(); P.sess = null; P.nPoll = 0;
 }
 const proofHead = (q, sub) => `<div class="phead"><div class="dim small" style="letter-spacing:.25em">[SYSTEM] NACHWEIS</div><div class="pq">${esc(q.name)}</div><div class="dim small">${sub||''}</div></div>`;
 function beep(f=880, ms=90, vol=.25){
@@ -1377,13 +1375,13 @@ function beep(f=880, ms=90, vol=.25){
     g.gain.setValueAtTime(vol, a.currentTime); g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + ms/1000);
     o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + ms/1000 + .02); } catch(e){}
 }
-function say(t){ try { if (!('speechSynthesis' in window)) return; const u = new SpeechSynthesisUtterance(String(t)); u.lang = 'de-DE'; u.rate = 1.15; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
-async function wakeOn(){ try { if ('wakeLock' in navigator){ P.wake = await navigator.wakeLock.request('screen'); return true; } } catch(e){} return false; }
-function wakeOff(){ try { P.wake && P.wake.release(); } catch(e){} P.wake = null; }
+function say(t){ try { if (NATIVE){ NB.say(String(t)); return; } if (!('speechSynthesis' in window)) return; const u = new SpeechSynthesisUtterance(String(t)); u.lang = 'de-DE'; u.rate = 1.15; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
+async function wakeOn(){ if (NATIVE){ try { NB.keepScreenOn(true); P.nKeep = true; return true; } catch(e){} } try { if ('wakeLock' in navigator){ P.wake = await navigator.wakeLock.request('screen'); return true; } } catch(e){} return false; }
+function wakeOff(){ try { P.wake && P.wake.release(); } catch(e){} P.wake = null; if (P.nKeep){ try { NB.keepScreenOn(false); } catch(e){} P.nKeep = false; } }
 document.addEventListener('visibilitychange', () => {
   const s = P.sess; if (!s) return;
-  if (document.hidden){ if (s.kind==='timer') timerHidden(); if (s.kind==='gps'){ s.hiddenAt = Date.now(); } }
-  else { if ((s.kind==='timer' && s.running) || s.kind==='gps') wakeOn(); if (s.kind==='gps' && s.hiddenAt){ s.bgGap = (s.bgGap||0) + (Date.now()-s.hiddenAt); s.hiddenAt = 0; gpsDraw(); } }
+  if (document.hidden){ if (s.kind==='timer') timerHidden(); if (s.kind==='gps' && !s.native){ s.hiddenAt = Date.now(); } }
+  else { if ((s.kind==='timer' && s.running) || (s.kind==='gps' && !s.native)) wakeOn(); if (s.kind==='gps' && s.hiddenAt){ s.bgGap = (s.bgGap||0) + (Date.now()-s.hiddenAt); s.hiddenAt = 0; gpsDraw(); } }
 });
 function permErr(e){ const n = e && e.name;
   if (n==='NotAllowedError' || n==='SecurityError' || n==='PermissionDeniedError' || (e && e.code===1)) return 'Zugriff verweigert. Du kannst ihn in den Browser-/App-Einstellungen wieder erlauben (Website-Einstellungen → Kamera bzw. Standort).';
@@ -1617,24 +1615,19 @@ function gpsOpen(q){
   P.sess = {kind:'gps', q, dist:0, rejected:0, vehicle:0, badAcc:0, pts:0, path:[], last:null, steps:0, paused:false, moving:0, t0:0, tick:0, status:'', acc:null, speed:0};
   ovOpen(`${proofHead(q, '🛰️ GPS-Lauf · Strecke, Tempo & Schritte')}
    <div class="pinfo">Das System benötigt deinen <b>Standort (GPS)</b>, um die Strecke zu messen, und – falls vorhanden – den <b>Bewegungssensor</b> für Schritte. Die Daten bleiben <b>nur auf deinem Gerät</b>.</div>
-   <div class="pinfo badc">⚠ Wichtig: Tracking funktioniert <b>nur, solange der Bildschirm an und die App geöffnet ist</b>. Das System hält den Bildschirm wach. App nicht wechseln, Handy nicht sperren.</div>
+   ${NATIVE ? nGpsInfo() : `<div class="pinfo badc">⚠ Wichtig: Tracking funktioniert <b>nur, solange der Bildschirm an und die App geöffnet ist</b>. Das System hält den Bildschirm wach. App nicht wechseln, Handy nicht sperren.${isAndroid()?' <br>📱 Tipp: Mit der neuen <b>Android-App</b> läuft GPS auch bei gesperrtem Handy weiter (Mehr → Android-App).':''}</div>`}
    <div class="pinfo small">Anti-Cheat: Abschnitte über ${MAX_KMH} km/h (Auto, Bus, Rad bergab) und ungenaue GPS-Punkte werden verworfen.</div>
    <button class="full prim" data-a="gpsStart">🛰️ Lauf starten</button><button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
 }
 async function gpsStart(){
   const s = P.sess; if (!s) return; const q = s.q;
+  if (NATIVE) return nGpsStart(s);
   if (!('geolocation' in navigator)){ ovSet(`${proofHead(q,'🛰️ GPS-Lauf')}<div class="pinfo badc">⚠ Dieses Gerät/dieser Browser bietet kein GPS an.</div>${fallbackBtns(q)}`); return; }
   // iOS: Bewegungssensor braucht eine Erlaubnis aus einem Tipp heraus
   try { if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function'){ s.motionPerm = await DeviceMotionEvent.requestPermission(); } } catch(e){ s.motionPerm = 'denied'; }
   if (window.DeviceMotionEvent) window.addEventListener('devicemotion', onMotion); // auch bei 'denied' lauschen – manche Browser liefern trotzdem Daten
   s.status = 'Suche GPS-Signal …';
-  ovSet(`${proofHead(q,'🛰️ GPS-Lauf')}
-   <div class="gpsbig"><div><b id="gD">0,00</b><span>km</span></div></div>
-   <div class="grid3 c gpsst"><div><b id="gT">00:00</b><div class="dim small">Zeit</div></div><div><b id="gP">–:––</b><div class="dim small">Pace /km</div></div><div><b id="gS">–</b><div class="dim small">Schritte</div></div></div>
-   <canvas id="gC" class="gpsmap" width="600" height="300"></canvas>
-   <div class="pstat2" id="gSt">Suche GPS-Signal …</div><div class="dim small c" id="gInfo"></div>
-   <div class="grid2" style="margin-top:8px"><button data-a="gpsPause" id="gPa">⏸ Pause</button><button class="prim" data-a="gpsEnd">✔ Beenden</button></div>
-   <button class="full ghost" style="margin-top:8px" data-a="gpsCancel">✖ Abbrechen (nichts gutschreiben)</button>`);
+  gpsLive(q);
   s.wake = await wakeOn();
   s.t0 = Date.now(); s.tick = Date.now();
   P.watch = navigator.geolocation.watchPosition(pos => {
@@ -1647,6 +1640,15 @@ async function gpsStart(){
     else gpsDraw(); }, {enableHighAccuracy:true, maximumAge:0, timeout:20000});
   P.iv = setInterval(() => { if (P.sess !== s) return; const n = Date.now(); if (!s.paused) s.moving += n - s.tick; s.tick = n; gpsDraw(); }, 1000);
 }
+function gpsLive(q){ ovSet(`${proofHead(q,'🛰️ GPS-Lauf')}
+   <div class="gpsbig"><div><b id="gD">0,00</b><span>km</span></div></div>
+   <div class="grid3 c gpsst"><div><b id="gT">00:00</b><div class="dim small">Zeit</div></div><div><b id="gP">–:––</b><div class="dim small">Pace /km</div></div><div><b id="gS">–</b><div class="dim small">Schritte</div></div></div>
+   <canvas id="gC" class="gpsmap" width="600" height="300"></canvas>
+   <div class="pstat2" id="gSt">Suche GPS-Signal …</div><div class="dim small c" id="gInfo"></div>
+   <div class="grid2" style="margin-top:8px"><button data-a="gpsPause" id="gPa">⏸ Pause</button><button class="prim" data-a="gpsEnd">✔ Beenden</button></div>
+   <div id="gNat"></div>
+   <button class="full ghost" style="margin-top:8px" data-a="gpsCancel">✖ Abbrechen (nichts gutschreiben)</button>`);
+}
 function fmtPace(sec){ if (!isFinite(sec) || sec <= 0 || sec > 3600) return '–:––'; const m = Math.floor(sec/60), r = Math.round(sec%60); return `${m}:${pad(r===60?59:r)}`; }
 function fmtClock(ms){ const t = Math.floor(ms/1000), h = Math.floor(t/3600), m = Math.floor(t%3600/60), sec = t%60; return (h?h+':'+pad(m):pad(m)) + ':' + pad(sec); }
 function gpsDraw(){
@@ -1655,7 +1657,7 @@ function gpsDraw(){
   set('#gT', fmtClock(s.moving)); set('#gP', s.dist > 30 ? fmtPace(s.moving/1000/(s.dist/1000)) : '–:––');
   set('#gS', s.motionOK ? fmt(s.steps) : (s.motionPerm==='denied' ? 'verweigert' : '–'));
   set('#gSt', s.paused ? '⏸ Pausiert' : (s.status || 'Suche GPS-Signal …'));
-  set('#gInfo', `GPS ±${s.acc!=null?Math.round(s.acc):'–'} m · ${s.speed?s.speed.toFixed(1).replace('.',',')+' km/h · ':''}Punkte ${s.pts}${s.vehicle?` · ⚠ verworfen: ${(s.rejected/1000).toFixed(2).replace('.',',')} km`:''}${s.bgGap?' · ⚠ App war im Hintergrund':''}${s.wake===false?' · Bildschirm-Sperre bitte selbst deaktivieren':''}`);
+  set('#gInfo', `GPS ±${s.acc!=null?Math.round(s.acc):'–'} m · ${s.speed?s.speed.toFixed(1).replace('.',',')+' km/h · ':''}Punkte ${s.pts}${s.vehicle?` · ⚠ verworfen: ${(s.rejected/1000).toFixed(2).replace('.',',')} km`:''}${s.bgGap?' · ⚠ App war im Hintergrund':''}${s.wake===false?' · Bildschirm-Sperre bitte selbst deaktivieren':''}${s.native&&s.nStarted?' · 📱 läuft auch im Hintergrund':''}`);
   const c = $('#gC'); if (!c) return; const x = c.getContext('2d'), w = c.width, h = c.height; x.clearRect(0, 0, w, h);
   x.strokeStyle = 'rgba(58,215,255,.15)'; x.lineWidth = 1; for (let i = 1; i < 6; i++){ x.beginPath(); x.moveTo(i*w/6, 0); x.lineTo(i*w/6, h); x.stroke(); x.beginPath(); x.moveTo(0, i*h/6); x.lineTo(w, i*h/6); x.stroke(); }
   const P0 = s.path; if (P0.length < 1) return;
@@ -1684,9 +1686,9 @@ async function gpsFinish(s){
 }
 Object.assign(PA, {
  gpsStart(){ gpsStart(); },
- gpsPause(){ const s = P.sess; if (!s || s.kind!=='gps') return; s.paused = !s.paused; s.last = null; const b = $('#gPa'); if (b) b.textContent = s.paused ? '▶ Weiter' : '⏸ Pause'; gpsDraw(); },
- gpsEnd(){ const s = P.sess; if (s && s.kind==='gps') gpsFinish(s); },
- gpsCancel(){ ask('Lauf abbrechen? Die Strecke wird nicht gutgeschrieben.', () => { ovClose(); }, 'Abbrechen'); },
+ gpsPause(){ const s = P.sess; if (!s || s.kind!=='gps') return; if (s.native){ if (!s.nStarted) return; try { NB.runPause(!s.paused); } catch(e){} } s.paused = !s.paused; s.last = null; const b = $('#gPa'); if (b) b.textContent = s.paused ? '▶ Weiter' : '⏸ Pause'; gpsDraw(); },
+ gpsEnd(){ const s = P.sess; if (!s || s.kind!=='gps') return; if (s.native) nGpsEnd(s); else gpsFinish(s); },
+ gpsCancel(){ ask('Lauf abbrechen? Die Strecke wird nicht gutgeschrieben.', () => { const s = P.sess; if (s && s.native) nGpsDiscard(); ovClose(); }, 'Abbrechen'); },
 });
 
 /* ---------- 4) Timer (nur im Vordergrund) ---------- */
@@ -1803,6 +1805,265 @@ async function poseOfflineState(){
   catch(e){ el.textContent = ''; }
 }
 
+/* =================== Native Android-App (v2) · Brücke window.DasNative =================== */
+// In der nativen App (WebView) gibt es window.DasNative: GPS im Hintergrund (Vordergrunddienst), Schrittzähler-Sensor,
+// Datei speichern, Spielstand-Umzug. Im Browser / als PWA / auf dem iPhone fehlt die Brücke → alles wie bisher.
+const NB = window.DasNative || null, NATIVE = !!NB;
+function nCall(fn, ...a){ try { const r = NB[fn](...a); return (typeof r === 'string' && /^[\[{]/.test(r)) ? JSON.parse(r) : r; } catch(e){ console.warn('DasNative.'+fn, e); return null; } }
+const NINFO = NATIVE ? (nCall('info') || {}) : null;
+const HAD_SAVE = (() => { try { return !!localStorage.getItem(SAVE_KEY); } catch(e){ return true; } })(); // vor load() erfasst
+const UMZUG = /[?&]umzug=1/.test(location.search);
+const APK_URL = 'https://github.com/Ungeteilte/das-system/releases/latest/download/DasSystem.apk';
+const isAndroid = () => /Android/i.test(navigator.userAgent);
+const isTWA = () => document.referrer.startsWith('android-app://') || (isAndroid() && isStandalone());
+// Ereignisse aus der App: window.__dasNative('{"type":…}')
+const NEV = {on:{}, wait:[]};
+function nOn(type, fn){ (NEV.on[type] = NEV.on[type] || []).push(fn); }
+function nWait(type, ms=120000){ return new Promise(res => { const w = {type, res}; NEV.wait.push(w); setTimeout(() => { const i = NEV.wait.indexOf(w); if (i >= 0){ NEV.wait.splice(i, 1); res(null); } }, ms); }); }
+window.__dasNative = json => {
+  let ev; try { ev = typeof json === 'string' ? JSON.parse(json) : json; } catch(e){ return; } if (!ev || !ev.type) return;
+  NEV.wait.filter(w => w.type === ev.type).forEach(w => { NEV.wait.splice(NEV.wait.indexOf(w), 1); w.res(ev); });
+  (NEV.on[ev.type] || []).forEach(fn => { try { fn(ev); } catch(e){ console.error(e); } });
+};
+
+/* ---------- GPS-Lauf über den nativen Dienst ---------- */
+// Der Dienst liefert ROHE Punkte; gefiltert wird weiterhin NUR hier mit gpsFeed (gleiche Anti-Cheat-Regeln überall).
+function nGpsInfo(){
+  const pm = nCall('perms') || {};
+  return `<div class="pinfo okc">📱 <b>Native App:</b> Der Lauf läuft <b>auch bei gesperrtem Handy und im Hintergrund</b> weiter. Du siehst ihn als Benachrichtigung „[SYSTEM] Lauf aktiv“ – dort kannst du ihn auch beenden.</div>
+   ${pm.battery===false?`<div class="pinfo small">🔋 Tipp für ${pm.samsung?'Samsung':'dein Handy'}: Schalte die <b>Akku-Optimierung</b> für Das System aus, sonst kann Android lange Läufe abbrechen. <button class="ghost" style="margin-top:6px" data-a="nBattery">🔋 Akku-Optimierung ausschalten</button></div>`:''}
+   <div class="pinfo small">Benötigt: <b>Standort</b> („Genau“, „Während der Nutzung der App“), <b>Benachrichtigungen</b> und – für echte Schritte – <b>Körperliche Aktivität</b>.</div>`;
+}
+function nApplyPoll(s, r, live){
+  if (!r || !r.exists) return false;
+  if (r.t0) s.t0 = r.t0;
+  const wasPaused = s.paused; s.paused = false; // Punkte im Dienst werden nur ohne Pause gespeichert
+  for (const p of (r.pts || [])){
+    if (p.seg !== s.seg){ s.seg = p.seg; s.last = null; } // nach Pause: neuer Abschnitt, keine Luftlinie über die Pause
+    const res = gpsFeed(s, {lat:p.lat, lon:p.lon, acc:p.acc, t:p.t, spd:p.spd==null ? null : p.spd});
+    if (live && res === 'vehicle') vibrate([100,50,100]);
+  }
+  s.paused = wasPaused;
+  s.nIdx = r.next != null ? r.next : s.nIdx;
+  s.moving = r.moving || 0; s.paused = !!r.paused;
+  if (r.steps >= 0){ s.steps = r.steps; s.motionOK = true; } else s.motionPerm = r.stepSensor ? 'denied' : s.motionPerm;
+  if (!r.pts || !r.pts.length){ if (!s.status || /Berechtigung|Starte/.test(s.status)) s.status = 'Suche GPS-Signal …'; }
+  const b = $('#gPa'); if (b) b.textContent = s.paused ? '▶ Weiter' : '⏸ Pause';
+  return true;
+}
+function nPollLoop(s){
+  if (P.iv) clearInterval(P.iv);
+  P.iv = setInterval(() => { if (P.sess !== s){ return; } const r = nCall('runPoll', s.nIdx || 0);
+    if (!r || !r.exists){ clearInterval(P.iv); P.iv = 0; return; }
+    nApplyPoll(s, r, true); gpsDraw();
+    if (r.ended && !s.finishing) nGpsFinish(s);
+  }, 1000);
+}
+function nBatteryBox(ev){
+  const box = $('#gNat'); if (!box) return;
+  const parts = [];
+  if (ev && ev.notif === false) parts.push('🔕 Benachrichtigungen sind aus – der Lauf läuft trotzdem, aber ohne Anzeige. <button class="ghost" data-a="nSettings">Einstellungen</button>');
+  if (ev && ev.precise === false) parts.push('📍 Nur „ungefährer“ Standort erlaubt – bitte auf <b>„Genau“</b> stellen, sonst werden viele Punkte verworfen. <button class="ghost" data-a="nSettings">Einstellungen</button>');
+  if (ev && ev.battery === false) parts.push('🔋 Akku-Optimierung ist an – Samsung &amp; Co. beenden Hintergrund-Apps gern. <button class="ghost" data-a="nBattery">Ausschalten</button>');
+  box.innerHTML = parts.map(t => `<div class="pinfo small" style="margin-top:8px">${t}</div>`).join('');
+}
+async function nGpsStart(s){
+  s.native = true; s.nIdx = 0; s.seg = 0; s.wake = null; s.status = 'Berechtigungen werden angefragt …';
+  gpsLive(s.q); gpsDraw();
+  const meta = JSON.stringify({qid:s.q.id, qname:s.q.name, unit:s.q.unit, started:Date.now(), app:APP_VERSION});
+  const pr = nWait('run'); const ok = nCall('startRun', meta);
+  if (ok === 'denied'){ s.status = '⚠ Native Funktionen nicht verfügbar'; gpsDraw(); return; }
+  const ev = await pr; if (P.sess !== s) return;
+  if (!ev || !ev.ok){
+    const blocked = ev && ev.blocked;
+    ovSet(`${proofHead(s.q,'🛰️ GPS-Lauf')}<div class="pinfo badc">⚠ Ohne <b>Standort-Berechtigung</b> kann Das System keine Strecke messen.${blocked?'<br>Du hast „Nicht mehr fragen“ gewählt – erlaube den Standort in den App-Einstellungen (Berechtigungen → Standort → „Während der Nutzung der App“, „Genauen Standort verwenden“).':''}</div>
+      <button class="full prim" data-a="${blocked?'nSettings':'gpsStart'}">${blocked?'⚙️ App-Einstellungen öffnen':'🔄 Nochmal fragen'}</button>${fallbackBtns(s.q)}`);
+    return;
+  }
+  s.nStarted = true; s.status = 'Suche GPS-Signal …';
+  nBatteryBox(ev); gpsDraw(); nPollLoop(s);
+}
+async function nGpsEnd(s){
+  if (s.finishing) return; try { NB.runStop(); } catch(e){}
+  await new Promise(r => setTimeout(r, 150));
+  nApplyPoll(s, nCall('runPoll', s.nIdx || 0), false); nGpsFinish(s);
+}
+async function nGpsFinish(s){
+  if (s.finishing) return; s.finishing = true; if (P.iv){ clearInterval(P.iv); P.iv = 0; }
+  const t0 = s.t0;
+  if (t0 && S.nRunDone === t0){ try { NB.runClear(); } catch(e){} ovClose(); return; } // schon gutgeschrieben (Absturz-Schutz)
+  try { await gpsFinish(s); } finally { S.nRunDone = t0; save(); try { NB.runClear(); } catch(e){} }
+}
+function nGpsDiscard(){ try { NB.runStop(); NB.runClear(); } catch(e){} }
+// Beim Start / Zurückkehren: laufenden oder im Hintergrund beendeten Lauf wieder anzeigen
+function nRestoreRun(){
+  if (!NATIVE) return false; const cur = P.sess; if (cur && cur.kind === 'gps' && cur.native) return false;
+  const r = nCall('runPoll', 0); if (!r || !r.exists) return false;
+  let meta = r.meta; try { if (typeof meta === 'string') meta = JSON.parse(meta); } catch(e){ meta = {}; } meta = meta || {};
+  const q = S.quests.find(x => x.id === meta.qid);
+  if (!q || (r.t0 && S.nRunDone === r.t0)){ if (r.active) try { NB.runStop(); } catch(e){} try { NB.runClear(); } catch(e){}
+    if (!q && r.total > 0) toast('Ein Lauf im Hintergrund gehörte zu einer gelöschten Quest und wurde verworfen.', '[SYSTEM]', 4500); return false; }
+  if (P.sess) stopAllProof();
+  P.sess = {kind:'gps', q, dist:0, rejected:0, vehicle:0, badAcc:0, pts:0, path:[], last:null, steps:0, paused:false, moving:0, t0:0, tick:0, status:'', acc:null, speed:0,
+    native:true, nStarted:true, nIdx:0, seg:0, wake:null};
+  const s = P.sess; $('#proof').className = 'on'; $('#proof').innerHTML = '<div class="pwin"></div>'; gpsLive(q);
+  nApplyPoll(s, r, false); gpsDraw();
+  if (r.ended){ s.status = 'Lauf wurde beendet – wird eingetragen …'; gpsDraw(); setTimeout(() => nGpsFinish(s), 400); }
+  else { try { NB.runEnsure(); } catch(e){} nBatteryBox({notif:(nCall('perms')||{}).notif, battery:(nCall('perms')||{}).battery}); nPollLoop(s); toast('🛰️ Dein Lauf läuft weiter.', '[SYSTEM]'); }
+  return true;
+}
+// Zurück-Taste von Android
+window.__nativeBack = () => {
+  if ($('#modal').classList.contains('on')){ closeModal(); return true; }
+  if ($('#proof').classList.contains('on')){
+    const s = P.sess; if (s && s.kind === 'gps' && s.native && s.nStarted && !s.finishing) return false; // Lauf läuft weiter → App in den Hintergrund
+    ovClose(); return true; }
+  if (UI.detail){ UI.detail = null; render(); return true; }
+  if (UI.tab && UI.tab !== 'status'){ UI.tab = 'status'; render(); window.scrollTo(0, 0); return true; }
+  return false;
+};
+
+/* ---------- Backup v2 (mit Beweisfotos) ---------- */
+const blobToData = b => new Promise((res, rej) => { if (!b) return res(null); const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
+async function dataToBlob(d){ if (!d || typeof d !== 'string' || !d.startsWith('data:')) return null; return (await fetch(d)).blob(); }
+async function buildBackup(withPhotos=true){
+  const o = {type:'das-system-backup', format:2, app:APP_VERSION, created:new Date().toISOString(), save:S, photos:[]};
+  if (withPhotos){ try { const all = await PDB.all();
+    for (const m of all){ const full = await PDB.full(m.id); o.photos.push({meta:{...m, thumb: await blobToData(m.thumb)}, full: await blobToData(full)}); } }
+    catch(e){ console.warn('Fotos nicht exportiert', e); o.photosError = String(e.message||e); } }
+  return o;
+}
+async function restorePhotos(list){
+  if (!Array.isArray(list) || !list.length) return 0; let have = new Set(); try { have = new Set((await PDB.all()).map(m => m.id)); } catch(e){}
+  let n = 0; for (const p of list){ try { if (!p || !p.meta || !p.meta.id || have.has(p.meta.id)) continue;
+    const meta = {...p.meta, thumb: await dataToBlob(p.meta.thumb)}; await PDB.add(meta, await dataToBlob(p.full)); n++; } catch(e){ console.warn('Foto-Import', e); } }
+  return n;
+}
+function importText(txt, opts={}){
+  try { let o = typeof txt === 'string' ? JSON.parse(txt) : txt; let photos = null;
+    if (o && o.type === 'das-system-backup'){ photos = o.photos; o = o.save; }
+    if (!o || typeof o !== 'object' || !o.base || !o.level) throw new Error('Kein gültiger Spielstand');
+    const go = async () => { S = merge(newState(), o); migrateProof(S); rollover(); checkUnlocks(); save(); render();
+      const n = await restorePhotos(photos); render();
+      toast(`${opts.title||'Spielstand importiert.'}${n?` · ${n} Beweisfoto${n>1?'s':''} übernommen`:''}`, '[SYSTEM]', 4500); };
+    const cur = (() => { try { return JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); } catch(e){ return null; } })();
+    const fresh = !cur || (cur.level <= 1 && !(cur.cnt && cur.cnt.quests));
+    const info = `Spielstand von „${esc(o.name)}“ (Level ${o.level}${photos&&photos.length?`, ${photos.length} Beweisfoto${photos.length>1?'s':''}`:''}) laden?`;
+    if (opts.noAsk && fresh) go(); else ask(`${info} Der aktuelle Stand wird überschrieben.`, go, 'Laden');
+  } catch(e){ toast('Import fehlgeschlagen: '+esc(e.message),'[FEHLER]'); }
+}
+async function exportBackup(kind){
+  const umzug = kind === 'umzug';
+  toast(umzug ? 'Spielstand + Fotos werden gesichert …' : 'Backup wird erstellt …');
+  const o = await buildBackup(true), txt = JSON.stringify(o), name = `das-system-${umzug?'umzug':'backup'}-${dayStr()}.json`;
+  const pc = o.photos.length, mbv = txt.length/1048576, mb = mbv < .1 ? '< 0,1' : mbv.toFixed(1).replace('.', ','), pcs = `${pc} Beweisfoto${pc===1?'':'s'}`;
+  if (NATIVE){ const w = nWait('saved', 600000); NB.saveFile(name, 'application/json', txt); const ev = await w;
+    if (ev && ev.ok) toast(`💾 Gespeichert: ${name} (${pcs}, ${mb} MB)`, '[SYSTEM]', 4500);
+    else if (ev && ev.cancel) toast('Speichern abgebrochen.'); else toast('Speichern fehlgeschlagen'+(ev&&ev.error?': '+esc(ev.error):''), '[FEHLER]');
+    return; }
+  const blob = new Blob([txt], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  if (umzug) modal(`<h2>💾 Spielstand gesichert</h2><p class="c">Datei <b>${esc(name)}</b> (${pcs}, ${mb} MB) liegt jetzt in deinen <b>Downloads</b>.</p>
+    <p class="small">Nächste Schritte:<br>1. Neue App herunterladen und installieren (ersetzt diese App, dein Symbol bleibt).<br>2. Neue App öffnen → <b>„Spielstand übernehmen“</b> → automatisch oder diese Datei wählen.</p>
+    ${navigator.canShare && navigator.canShare({files:[new File([blob], name, {type:'application/json'})]})?`<button class="full" data-a="nShareBackup">📤 Datei zusätzlich teilen (z. B. an dich selbst)</button>`:''}
+    <a class="btn full prim" style="margin-top:8px;display:block;text-align:center" href="${APK_URL}" target="_blank" rel="noopener">⬇️ Neue Android-App (v2) herunterladen</a>
+    <button class="full ghost" style="margin-top:8px" data-a="closeModal">Schließen</button>`);
+  else toast(`Backup exportiert (${pcs}).`);
+  P.lastBackup = {blob, name};
+}
+
+/* ---------- Umzug alte App (TWA/Browser) → neue native App, automatisch ---------- */
+const b64u = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i+0x8000)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); };
+const unb64u = t => { const s = atob(t.replace(/-/g,'+').replace(/_/g,'/') + '==='.slice((t.length+3)%4)); const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; };
+async function packSave(obj){
+  const raw = new TextEncoder().encode(JSON.stringify(obj));
+  if (window.CompressionStream){ try { const z = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer()); return 'z' + b64u(z); } catch(e){} }
+  return 'j' + b64u(raw);
+}
+async function unpackSave(d){
+  const u = unb64u(d.slice(1));
+  const raw = d[0] === 'z' ? new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer()) : u;
+  return JSON.parse(new TextDecoder().decode(raw));
+}
+const intentUrl = d => `intent://import?d=${d}#Intent;scheme=dassystem;package=io.github.ungeteilte.dassystem;end`;
+const nav = { go(u){ location.href = u; } }; // in Tests austauschbar
+async function umzugModal(){
+  if (!HAD_SAVE){ modal(`<h2>📦 Umzug in die neue App</h2><p class="c badc">In <b>diesem Browser</b> wurde kein Spielstand gefunden.</p>
+     <p class="small">Die alte App speichert im Browser, mit dem sie installiert wurde (meist <b>Chrome</b> oder <b>Samsung Internet</b>). Geh zurück in die neue App und probiere den anderen Browser – oder nutze die Backup-Datei.</p>
+     <button class="full" data-a="closeModal">Schließen</button>`); return; }
+  modal(`<h2>📦 Spielstand an neue App übertragen</h2><p class="c">Gefunden: <b>${esc(S.name)}</b> · Level <b>${S.level}</b> · ${fmt(S.cnt?.quests||0)} Quests</p><p class="dim small c" id="umzSt">wird vorbereitet …</p>`);
+  const d = await packSave(S); P.umzugUrl = intentUrl(d);
+  let pc = 0; try { pc = (await PDB.all()).length; } catch(e){}
+  modal(`<h2>📦 Spielstand an neue App übertragen</h2><p class="c">Gefunden: <b>${esc(S.name)}</b> · Level <b>${S.level}</b> · ${fmt(S.cnt?.quests||0)} Quests</p>
+    <button class="full prim" data-a="umzugGo">➡️ In die neue App übertragen</button>
+    ${pc?`<p class="small" style="margin-top:10px">📸 ${pc} Beweisfoto${pc>1?'s':''} passen nicht in die automatische Übertragung. Wenn du sie behalten willst, sichere zusätzlich die Datei:</p><button class="full" data-a="umzugFile">💾 Spielstand + Fotos als Datei sichern</button>`:''}
+    <p class="dim small" style="margin-top:8px">Dein Spielstand bleibt hier außerdem unverändert erhalten.</p>
+    <button class="full ghost" style="margin-top:6px" data-a="closeModal">Schließen</button>`);
+}
+async function nApplyImport(d){
+  if (!d) return; try { const o = await unpackSave(d); importText(o, {noAsk:true, title:'📦 Spielstand aus der alten App übernommen!'}); }
+  catch(e){ toast('Übertragung fehlgeschlagen: '+esc(e.message||e)+' – nutze die Backup-Datei.', '[FEHLER]', 6000); }
+}
+function migrateModal(){
+  modal(`<h2>[SYSTEM] Neue App erkannt</h2><p class="c">Willkommen in der <b>nativen Android-App</b>! Hast du schon in der alten App gespielt? Hol deinen Spielstand hierher.</p>
+    <button class="full prim" data-a="nFromOld" data-k="">🔄 Spielstand aus alter App übernehmen</button>
+    <div class="grid2" style="margin-top:6px"><button class="small" data-a="nFromOld" data-k="chrome">🌐 Chrome</button><button class="small" data-a="nFromOld" data-k="samsung">🌐 Samsung Internet</button></div>
+    <button class="full" style="margin-top:8px" data-a="importSave">📂 Backup-Datei importieren (inkl. Fotos)</button>
+    <p class="dim small">Automatisch: Es öffnet sich kurz die alte Web-App im Browser → „In die neue App übertragen“ tippen. Klappt es nicht, nimm den anderen Browser oder die Datei aus „Spielstand für neue App sichern“.</p>
+    <button class="full ghost" style="margin-top:6px" data-a="nFresh">✨ Neu starten (ohne alten Spielstand)</button>`);
+}
+
+/* ---------- Karte „Android-App“ unter Mehr ---------- */
+function androidCard(){
+  if (NATIVE){ const p = nCall('perms') || {}, yn = (v, ok='✅', no='❌') => v ? ok : no;
+    return `<section class="win"><h2>📱 Android-App</h2>
+     <div class="row small"><span class="sp dim">App-Version</span><span>${esc(NINFO.app||'?')} (${esc(String(NINFO.code||''))}) · Inhalte v${APP_VERSION}</span></div>
+     <div class="row small"><span class="sp">📍 Standort (genau)</span><span>${p.loc?'✅':(p.coarse?'⚠ nur ungefähr':'❌')}</span></div>
+     <div class="row small"><span class="sp">🔔 Benachrichtigungen</span><span>${yn(p.notif)}</span></div>
+     <div class="row small"><span class="sp">👣 Körperliche Aktivität (Schritte)</span><span>${p.stepSensor===false?'– kein Sensor':yn(p.steps)}</span></div>
+     <div class="row small"><span class="sp">🎥 Kamera</span><span>${yn(p.cam,'✅','– wird bei Bedarf gefragt')}</span></div>
+     <div class="row small"><span class="sp">🔋 Akku-Optimierung aus</span><span>${yn(p.battery,'✅','⚠ an')}</span></div>
+     ${(!p.loc||!p.notif||(p.stepSensor&&!p.steps))?`<button class="full prim" style="margin-top:8px" data-a="nPerms">✅ Berechtigungen erteilen</button>`:''}
+     ${!p.battery?`<button class="full" style="margin-top:8px" data-a="nBattery">🔋 Akku-Optimierung ausschalten</button>`:''}
+     <button class="full ghost" style="margin-top:8px" data-a="nSettings">⚙️ App-Einstellungen öffnen</button>
+     ${p.samsung?`<p class="dim small" style="margin-top:8px">Samsung: Einstellungen → Apps → Das System → <b>Akku → „Nicht eingeschränkt“</b>. Optional: Akku → Hintergrundnutzungslimits → <b>„Nie schlafende Apps“</b> → Das System hinzufügen.</p>`:''}
+     <h3>Spielstand</h3>
+     <div class="grid2"><button data-a="nFromOld" data-k="">🔄 Aus alter App holen</button><button data-a="importSave">📂 Datei importieren</button></div></section>`; }
+  if (!isAndroid()) return '';
+  return `<section class="win"><h2>📱 Neue Android-App (v2)</h2>
+   <p class="small">Die neue App kann <b>GPS-Läufe im Hintergrund</b> aufzeichnen (Handy gesperrt, Musik-App offen …), zählt Schritte mit dem echten Schrittzähler und zeigt den Lauf als Benachrichtigung.</p>
+   <p class="small"><b>1.</b> Spielstand sichern → <b>2.</b> neue App installieren (ersetzt ${isTWA()?'diese App':'die alte App'}) → <b>3.</b> in der neuen App „Spielstand übernehmen“.</p>
+   <button class="full prim" data-a="umzugFile">💾 Spielstand für neue App sichern</button>
+   <a class="btn full" style="margin-top:8px;display:block;text-align:center" href="${APK_URL}" target="_blank" rel="noopener">⬇️ Neue App herunterladen (APK)</a></section>`;
+}
+
+Object.assign(A, {
+  exportSave(){ exportBackup('backup'); },
+  umzugFile(){ exportBackup('umzug'); },
+  nShareBackup(){ const b = P.lastBackup; if (!b) return; navigator.share({files:[new File([b.blob], b.name, {type:'application/json'})], title:'Das System – Spielstand'}).catch(()=>{}); },
+  umzugGo(){ if (P.umzugUrl){ toast('Öffne die neue App …'); nav.go(P.umzugUrl); } },
+  nFromOld(d){ closeModal(); try { NB.importFromOldApp(d.k||''); } catch(e){ toast('Konnte den Browser nicht öffnen.', '[FEHLER]'); } },
+  nFresh(){ closeModal(); S.welcomed = false; save(); showPenaltyIntro(); },
+  nPerms(){ NB.requestPerms('loc,notif,steps'); },
+  nBattery(){ NB.requestBattery(); },
+  nSettings(){ NB.openAppSettings(); },
+});
+if (NATIVE){
+  nOn('resume', () => { if (!nRestoreRun() && UI.tab === 'more' && !$('#modal').classList.contains('on')) render(); });
+  nOn('perms', () => { if (UI.tab === 'more') render(); });
+  nOn('import', () => { const d = nCall('takeImport'); if (d) nApplyImport(d); });
+}
+// Start (nach load()): Umzugsseite, native Erst-Start, Lauf wiederherstellen, Import aus Intent
+function nativeStartup(){
+  if (UMZUG && !NATIVE){ setTimeout(umzugModal, 350); return true; }
+  if (!NATIVE) return false;
+  document.documentElement.classList.add('native');
+  const d = nCall('takeImport'); if (d){ setTimeout(() => nApplyImport(d), 300); return true; }
+  if (nRestoreRun()) return true;
+  if (!HAD_SAVE){ setTimeout(migrateModal, 300); return true; }
+  return false;
+}
+
 /* =================== Start =================== */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
@@ -1833,12 +2094,12 @@ function tick(){
   const cd = $('#cd'); if (cd){ const n=new Date(), m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1); cd.textContent = fmtDur(m-n); }
 }
 function checkDay(){ if (rollover()){ checkUnlocks(); save(); render(); showPenaltyIntro(); } }
-load(); rollover(); checkUnlocks(); save(); render(); setTimeout(showPenaltyIntro, 300);
+load(); rollover(); checkUnlocks(); save(); render(); if (!nativeStartup()) setTimeout(showPenaltyIntro, 300);
 setInterval(tick, 1000);
 setInterval(()=>{ checkDay(); if (UI.tab==='systems' && UI.detail==='guild' && !$('#modal').classList.contains('on')) render(); }, 30000);
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkDay(); });
 initPWA();
-window.App = {get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate, P, RepCounter, gpsFeed, PDB, EXER, migrateProof, SAVE_KEY};
+window.App = {get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate, P, RepCounter, gpsFeed, PDB, EXER, migrateProof, SAVE_KEY, NATIVE, buildBackup, importText, packSave, unpackSave, intentUrl, nav, nRestoreRun, HAD_SAVE};
 </script>
 </body>
 </html>

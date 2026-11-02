@@ -1,17 +1,29 @@
 {
- "version": "1.2.0",
+ "version": "1.3.0",
  "date": "2026-11-02",
  "changelog": [
-  "NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)",
-  "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt",
-  "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline",
-  "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen",
-  "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App",
-  "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests",
-  "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)",
-  "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"
+  "📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter",
+  "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“",
+  "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)",
+  "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos",
+  "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei",
+  "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten",
+  "iPhone & Browser: alles wie bisher"
  ],
  "releases": [
+  {
+   "version": "1.3.0",
+   "date": "2026-11-02",
+   "changes": [
+    "📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter",
+    "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“",
+    "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)",
+    "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos",
+    "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei",
+    "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten",
+    "iPhone & Browser: alles wie bisher"
+   ]
+  },
   {
    "version": "1.2.0",
    "date": "2026-11-02",
