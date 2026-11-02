@@ -1,0 +1,30 @@
+{
+ "version": "1.1.0",
+ "date": "2026-11-02",
+ "changelog": [
+  "Installierbar als App auf dem Homescreen (Android & iPhone)",
+  "Automatische Update-Erkennung mit [SYSTEM]-Meldung",
+  "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert",
+  "Versionsanzeige und Update-Prüfung unter „Mehr“"
+ ],
+ "releases": [
+  {
+   "version": "1.1.0",
+   "date": "2026-11-02",
+   "changes": [
+    "Installierbar als App auf dem Homescreen (Android & iPhone)",
+    "Automatische Update-Erkennung mit [SYSTEM]-Meldung",
+    "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert",
+    "Versionsanzeige und Update-Prüfung unter „Mehr“"
+   ]
+  },
+  {
+   "version": "1.0.0",
+   "date": "2026-11-02",
+   "changes": [
+    "Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten",
+    "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"
+   ]
+  }
+ ]
+}

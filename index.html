@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Das System">
 <title>Das System</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050a18'/%3E%3Cpath d='M50 15 L58 42 L85 50 L58 58 L50 85 L42 58 L15 50 L42 42 Z' fill='%233ad7ff'/%3E%3C/svg%3E">
 <style>
 :root{--acc:#3ad7ff;--acc2:#7f8cff;--bg:#050a18;--bg2:#0a1630;--txt:#dff6ff;--dim:#7d9bb8;--grad:linear-gradient(90deg,var(--acc),var(--acc2));--bad:#ff4d6d;--ok:#4dffa6;--gold:#ffd55a}
@@ -44,6 +45,13 @@ button.prim{background:var(--grad);color:#021;border:none;text-shadow:none}
 button.ghost{background:transparent;box-shadow:none}
 button.bad{border-color:var(--bad);box-shadow:0 0 8px #ff4d6d55;background:#ff4d6d22}
 button.sq{width:48px;min-width:48px;padding:0;font-size:22px}
+#upd{position:fixed;inset:0;z-index:300;background:#000c;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+#upd.on{display:flex}
+#upd .updwin{width:100%;max-width:440px;max-height:88vh;overflow:auto;position:relative;animation:updpop .45s cubic-bezier(.2,1.4,.4,1)}
+#upd .ring{position:absolute;left:50%;top:10px;margin-left:-110px;opacity:.5}
+@keyframes updpop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+.chg{margin:6px 0 12px;padding-left:22px;line-height:1.5}.chg li{margin:3px 0}
+.installwin{border-style:dashed}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .grid3 button,.grid2 button{padding:8px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -628,7 +636,7 @@ function render(){
   $('#tabs').style.gridTemplateColumns = `repeat(${TABS.length},1fr)`;
   $('#tabs').innerHTML = TABS.map(([id,i,n])=>`<button data-a="tab" data-id="${id}" class="${UI.tab===id?'on':''}"><span>${i}</span>${n}${id==='quests'&&open?`<em class="badge">${open}</em>`:''}</button>`).join('');
   const v = {status:vStatus, quests:vQuests, gates:vGates, shop:vShop, systems:vSystems, more:vMore}[UI.tab];
-  $('#main').innerHTML = `<div class="fadein">${v()}</div>`;
+  $('#main').innerHTML = `<div class="fadein">${UI.tab==='status'?installBanner():''}${v()}</div>`;
   if (UI.tab==='gates' && UI.battle) afterBattleRender();
 }
 
@@ -834,8 +842,9 @@ function vMore(){
    <div class="grid2"><button data-a="exportSave">⬇️ Export (JSON)</button><button data-a="importSave">⬆️ Import</button></div>
    <button class="full ghost" style="margin-top:8px" data-a="copySave">📋 Spielstand als Text kopieren / einfügen</button>
    <input type="file" id="importFile" accept="application/json,.json" style="display:none"></section>
+  ${appCard()}
   <section class="win"><h2>Einstellungen</h2><button class="full bad" data-a="resetAll">Spielstand komplett zurücksetzen</button>
-   <p class="dim small c" style="margin-top:12px">Das System v1 · Fan-Projekt, inspiriert von „System“-Geschichten. Keine offiziellen Inhalte.</p></section>`;
+   <p class="dim small c" style="margin-top:12px">Das System v${APP_VERSION} · Fan-Projekt, inspiriert von „System“-Geschichten. Keine offiziellen Inhalte.</p></section>`;
 }
 
 /* =================== Quest-Logik =================== */
@@ -1107,6 +1116,131 @@ function importText(txt){
   } catch(e){ toast('Import fehlgeschlagen: '+esc(e.message),'[FEHLER]'); }
 }
 
+/* =================== App-Version, Updates & Installation (PWA) =================== */
+const RELEASES = [{"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
+const APP_VERSION = RELEASES[0].version;
+const VER_KEY = 'das-system-app-version'; // getrennt vom Spielstand (das-system-save-v1)
+const INSTALL_DISMISS_KEY = 'das-system-install-hint-off';
+const PWA = {reg:null, waiting:null, newVer:null, newChanges:null, deferred:null, reloading:false, lastCheck:0};
+function cmpVer(a,b){ const x=String(a).split('.').map(Number), y=String(b).split('.').map(Number); for (let i=0;i<3;i++){ const d=(x[i]||0)-(y[i]||0); if (d) return d; } return 0; }
+function isStandalone(){ return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
+function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
+function canInstallHint(){ return !isStandalone() && (!!PWA.deferred || isIOS()); }
+function updOverlay(html){ let o=$('#upd'); if (!o){ o=document.createElement('div'); o.id='upd'; document.body.appendChild(o); } o.innerHTML=`<div class="win updwin">${html}</div>`; o.classList.add('on'); }
+function updClose(){ const o=$('#upd'); if (o) o.classList.remove('on'); }
+function changeList(list){ return `<ul class="chg">${(list&&list.length?list:['Verbesserungen und Fehlerbehebungen']).map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`; }
+async function fetchRemoteVersion(){
+  try { const r = await fetch('version.json?t='+Date.now(), {cache:'no-store'}); if (!r.ok) return null; const j = await r.json(); return j && j.version ? j : null; }
+  catch(e){ return null; } // offline → still
+}
+async function showUpdateAvailable(worker){
+  PWA.waiting = worker;
+  const j = await fetchRemoteVersion();
+  PWA.newVer = j && cmpVer(j.version, APP_VERSION) > 0 ? j.version : (PWA.newVer || null);
+  PWA.newChanges = j && j.changelog ? j.changelog : PWA.newChanges;
+  vibrate([80,40,80]);
+  updOverlay(`<div class="dim c" style="letter-spacing:.3em">[SYSTEM]</div><h2>Update verfügbar</h2>
+    <div class="big c" style="margin:6px 0">${PWA.newVer ? 'Version '+esc(PWA.newVer) : 'Neue Version'}</div>
+    <p class="dim small c">Aktuell installiert: ${APP_VERSION}</p>
+    <h3>Neu in diesem Update</h3>${changeList(PWA.newChanges)}
+    <p class="small c okc">💾 Dein Spielstand bleibt vollständig erhalten.</p>
+    <button class="full prim" data-a="doUpdate">Jetzt aktualisieren</button>
+    <button class="full ghost" style="margin-top:8px" data-a="laterUpdate">Später</button>`);
+  if (UI.tab==='more') render();
+}
+function showInstalled(prev){
+  const news = RELEASES.filter(r => cmpVer(r.version, prev) > 0);
+  vibrate([60,40,120]);
+  updOverlay(`<div class="ring"></div><div class="dim c" style="letter-spacing:.3em">[SYSTEM]</div><h2>Update installiert</h2>
+    <div class="big c" style="margin:6px 0">Version ${esc(APP_VERSION)}</div><p class="dim small c">Vorher: ${esc(prev)}</p>
+    ${news.map(r=>`<h3>v${esc(r.version)} <span class="dim small">${esc(r.date||'')}</span></h3>${changeList(r.changes)}`).join('')}
+    <p class="small c okc">💾 Spielstand übernommen.</p><button class="full prim" data-a="closeUpd">Weiter</button>`);
+}
+async function checkUpdate(manual){
+  if (!PWA.reg){ if (manual) toast('Update-Prüfung ist nur in der installierten App / online verfügbar.'); return; }
+  if (!navigator.onLine){ if (manual) toast('Offline – Update-Prüfung später.'); return; }   // offline: still
+  const now = Date.now(); if (!manual && now - PWA.lastCheck < 60000) return; PWA.lastCheck = now;
+  try { await PWA.reg.update(); } catch(e){ if (manual) toast('Update-Server nicht erreichbar.'); return; }
+  if (!manual) return;
+  if (PWA.reg.waiting && navigator.serviceWorker.controller) showUpdateAvailable(PWA.reg.waiting);
+  else if (PWA.reg.installing) toast('Update gefunden – wird geladen …');
+  else toast(`Du hast die neueste Version (${APP_VERSION}).`);
+}
+function initPWA(){
+  // Einmalige Meldung nach einem Update
+  const prev = localStorage.getItem(VER_KEY);
+  localStorage.setItem(VER_KEY, APP_VERSION);
+  if (prev && cmpVer(APP_VERSION, prev) > 0) setTimeout(()=>showInstalled(prev), 700);
+
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); PWA.deferred = e; if (UI.tab==='status'||UI.tab==='more') render(); });
+  window.addEventListener('appinstalled', () => { PWA.deferred = null; toast('📲 Installiert! „Das System“ liegt jetzt auf deinem Homescreen.'); render(); });
+
+  if (!('serviceWorker' in navigator) || !location.protocol.startsWith('http')) return; // file:// → ohne SW
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    PWA.reg = reg;
+    if (reg.waiting && navigator.serviceWorker.controller) showUpdateAvailable(reg.waiting);
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing; if (!w) return;
+      w.addEventListener('statechange', () => {
+        if (w.state === 'installed' && navigator.serviceWorker.controller) showUpdateAvailable(w);
+        if (w.state === 'activated' && UI.tab==='more') render();
+      });
+    });
+    checkUpdate();
+  }).catch(e => console.warn('SW', e));
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (PWA.reloading){ PWA.reloading = false; location.reload(); } });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
+  window.addEventListener('online', () => checkUpdate());
+  setInterval(() => checkUpdate(), 30*60*1000);
+}
+Object.assign(A, {
+  doUpdate(){
+    const w = PWA.waiting || (PWA.reg && PWA.reg.waiting);
+    save(); // Spielstand sichern (bleibt in localStorage, wird vom Update nicht angefasst)
+    if (!w){ location.reload(); return; }
+    PWA.reloading = true;
+    updOverlay(`<div class="dim c" style="letter-spacing:.3em">[SYSTEM]</div><h2>Aktualisiere …</h2><p class="c">Das System wird neu gestartet.</p>`);
+    w.postMessage('SKIP_WAITING');
+    setTimeout(() => { if (PWA.reloading) location.reload(); }, 4000);
+  },
+  laterUpdate(){ updClose(); toast('Okay – das Update findest du jederzeit unter „Mehr“. Es wird spätestens beim nächsten Neustart der App aktiv.'); },
+  closeUpd(){ updClose(); },
+  checkUpdate(){ checkUpdate(true); },
+  showUpdate(){ const w = PWA.waiting || (PWA.reg && PWA.reg.waiting); if (w) showUpdateAvailable(w); },
+  showChangelog(){ modal(`<h2>Changelog</h2>${RELEASES.map(r=>`<h3>v${esc(r.version)} <span class="dim small">${esc(r.date||'')}</span></h3>${changeList(r.changes)}`).join('')}<button class="full" style="margin-top:10px" data-a="closeModal">Schließen</button>`); },
+  installApp(){
+    if (PWA.deferred){
+      const ev = PWA.deferred; PWA.deferred = null; ev.prompt();
+      ev.userChoice.then(c => { if (c.outcome !== 'accepted') toast('Installation abgebrochen – du kannst es jederzeit unter „Mehr“ erneut versuchen.'); render(); }).catch(()=>{});
+      return;
+    }
+    if (isStandalone()){ toast('Läuft bereits als installierte App ✅'); return; }
+    if (isIOS()) modal(`<h2>📲 Als App installieren</h2><p class="c">[SYSTEM] So kommt „Das System“ auf deinen iPhone-Homescreen:</p>
+      <ol class="chg"><li>Diese Seite in <b>Safari</b> öffnen</li><li>Unten auf <b>Teilen</b> tippen (Quadrat mit Pfeil ⬆️)</li><li><b>„Zum Home-Bildschirm“</b> wählen</li><li>Oben rechts auf <b>„Hinzufügen“</b> tippen</li></ol>
+      <p class="dim small">Danach startet die App im Vollbild, funktioniert offline und meldet Updates automatisch.</p><button class="full prim" data-a="closeModal">Verstanden</button>`);
+    else modal(`<h2>📲 Als App installieren</h2><p class="c">[SYSTEM] Im Browser-Menü <b>⋮</b> auf <b>„App installieren“</b> bzw. <b>„Zum Startbildschirm hinzufügen“</b> tippen.</p>
+      <p class="dim small">Tipp: In Chrome auf Android erscheint der Button hier automatisch, sobald die Installation möglich ist.</p><button class="full prim" data-a="closeModal">Verstanden</button>`);
+  },
+  dismissInstall(){ localStorage.setItem(INSTALL_DISMISS_KEY, '1'); },
+});
+function installBanner(){
+  if (!canInstallHint() || localStorage.getItem(INSTALL_DISMISS_KEY)) return '';
+  return `<section class="win installwin"><div class="row"><div style="font-size:30px">📲</div><div class="sp"><b>Als App installieren</b><div class="dim small">Homescreen, Vollbild, offline & automatische Updates</div></div><button class="sq ghost" data-a="dismissInstall" aria-label="Ausblenden">✕</button></div>
+   <button class="full prim" style="margin-top:10px" data-a="installApp">Als App installieren</button></section>`;
+}
+function appCard(){
+  const w = PWA.waiting || (PWA.reg && PWA.reg.waiting);
+  const ctl = 'serviceWorker' in navigator && navigator.serviceWorker.controller;
+  return `<section class="win"><h2>App &amp; Updates</h2>
+   <div class="row"><span class="sp">Version</span><b>${APP_VERSION}</b></div>
+   <div class="row small"><span class="sp dim">Modus</span><span>${isStandalone()?'📲 Installierte App':'🌐 Browser'}</span></div>
+   <div class="row small"><span class="sp dim">Offline</span><span>${ctl?'✅ bereit':(location.protocol==='file:'?'– (lokale Datei)':'⏳ wird eingerichtet')}</span></div>
+   ${w?`<button class="full prim" style="margin-top:10px" data-a="showUpdate">⬆️ Update ${PWA.newVer?'auf v'+esc(PWA.newVer)+' ':''}installieren</button>`:''}
+   <div class="grid2" style="margin-top:10px"><button data-a="checkUpdate">🔄 Updates suchen</button><button data-a="showChangelog">📋 Changelog</button></div>
+   ${isStandalone()?'':`<button class="full" style="margin-top:8px" data-a="installApp">📲 Als App installieren</button>`}
+   <p class="dim small" style="margin-top:8px">Die App sucht beim Öffnen, beim Zurückkehren und alle 30 Min. automatisch nach Updates.</p></section>`;
+}
+
 /* =================== Start =================== */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
@@ -1141,8 +1275,8 @@ load(); rollover(); checkUnlocks(); save(); render(); setTimeout(showPenaltyIntr
 setInterval(tick, 1000);
 setInterval(()=>{ checkDay(); if (UI.tab==='systems' && UI.detail==='guild' && !$('#modal').classList.contains('on')) render(); }, 30000);
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkDay(); });
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW', e));
-window.App = {get S(){return S}, A, UI, render, save, rollover};
+initPWA();
+window.App = {get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate};
 </script>
 </body>
 </html>
