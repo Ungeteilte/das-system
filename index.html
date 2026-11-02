@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#050a18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Das System">
+<title>Das System</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050a18'/%3E%3Cpath d='M50 15 L58 42 L85 50 L58 58 L50 85 L42 58 L15 50 L42 42 Z' fill='%233ad7ff'/%3E%3C/svg%3E">
+<style>
+:root{--acc:#3ad7ff;--acc2:#7f8cff;--bg:#050a18;--bg2:#0a1630;--txt:#dff6ff;--dim:#7d9bb8;--grad:linear-gradient(90deg,var(--acc),var(--acc2));--bad:#ff4d6d;--ok:#4dffa6;--gold:#ffd55a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(ellipse at 50% -10%,var(--bg2),var(--bg) 60%) fixed,var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;overscroll-behavior:none;transition:background .6s}
+body.gamer{font-family:ui-monospace,"Cascadia Mono",Menlo,monospace}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px);z-index:0}
+#app{overflow-x:clip;position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom))}
+header.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+header.top .sysname{flex:1;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:13px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+header.top .pill{font-size:13px;padding:6px 10px;border:1px solid var(--acc);border-radius:20px;box-shadow:0 0 8px color-mix(in srgb,var(--acc) 50%,transparent);white-space:nowrap}
+.win{position:relative;border:1.5px solid var(--acc);border-radius:10px;background:linear-gradient(180deg,color-mix(in srgb,var(--bg2) 85%,transparent),color-mix(in srgb,var(--bg) 92%,transparent));box-shadow:0 0 14px color-mix(in srgb,var(--acc) 45%,transparent),inset 0 0 18px color-mix(in srgb,var(--acc) 15%,transparent);padding:14px;margin:12px 0}
+.win.fusionwin{border-image:var(--grad) 1;border-radius:0}
+.win h2{margin:-2px 0 10px;font-size:15px;letter-spacing:.18em;text-transform:uppercase;text-align:center;color:var(--acc);text-shadow:0 0 10px var(--acc)}
+.win h2::before,.win h2::after{content:"◆";font-size:9px;margin:0 8px;vertical-align:middle;opacity:.8}
+.win h3{margin:14px 0 8px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc2)}
+.row{display:flex;align-items:center;gap:10px}
+.sp{flex:1}
+.dim{color:var(--dim);font-size:13px}
+.small{font-size:12px}
+.c{text-align:center}
+.bar{height:12px;border-radius:6px;background:#0008;border:1px solid color-mix(in srgb,var(--acc) 60%,transparent);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--grad);box-shadow:0 0 10px var(--acc);transition:width .5s}
+.bar.hp>i{background:linear-gradient(90deg,#ff3355,#ff7a59);box-shadow:0 0 8px #ff3355}
+.bar.mp>i{background:linear-gradient(90deg,#3a6bff,#3ad7ff)}
+.bar.en>i{background:linear-gradient(90deg,#a01030,#ff4d6d)}
+button,.btn{font:inherit;color:var(--txt);background:color-mix(in srgb,var(--acc) 14%,#000a);border:1.5px solid var(--acc);border-radius:9px;min-height:46px;padding:10px 14px;font-weight:700;letter-spacing:.04em;cursor:pointer;box-shadow:0 0 8px color-mix(in srgb,var(--acc) 35%,transparent);touch-action:manipulation;transition:transform .08s,background .2s}
+button:active{transform:scale(.96);background:color-mix(in srgb,var(--acc) 35%,#000a)}
+button:disabled{opacity:.38;filter:grayscale(.7);box-shadow:none}
+button.full{width:100%}
+button.prim{background:var(--grad);color:#021;border:none;text-shadow:none}
+button.ghost{background:transparent;box-shadow:none}
+button.bad{border-color:var(--bad);box-shadow:0 0 8px #ff4d6d55;background:#ff4d6d22}
+button.sq{width:48px;min-width:48px;padding:0;font-size:22px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grid3 button,.grid2 button{padding:8px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat{display:flex;align-items:center;gap:8px;padding:10px 4px;border-bottom:1px dashed color-mix(in srgb,var(--acc) 30%,transparent)}
+.stat .ico{width:30px;text-align:center;font-size:20px}
+.stat b{font-size:20px;min-width:44px;text-align:right}
+.bonus{color:var(--ok);font-size:13px;margin-left:4px}
+.rank{display:inline-grid;place-items:center;width:46px;height:46px;border:2px solid var(--acc);border-radius:8px;font-size:26px;font-weight:900;color:var(--acc);text-shadow:0 0 12px var(--acc);box-shadow:0 0 12px var(--acc) inset}
+.big{font-size:30px;font-weight:900;letter-spacing:.05em}
+.quest{border:1px solid color-mix(in srgb,var(--acc) 45%,transparent);border-radius:9px;padding:10px;margin:8px 0;background:#0004}
+.quest.done{border-color:var(--ok);box-shadow:0 0 10px #4dffa644}
+.quest .qn{font-weight:700}
+.quest .qp{font-variant-numeric:tabular-nums;font-weight:800}
+.quest input[type=number]{width:80px}
+.tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;border:1px solid currentColor;margin-left:4px;vertical-align:middle;opacity:.9}
+.okc{color:var(--ok)}.badc{color:var(--bad)}.goldc{color:var(--gold)}
+input,select,textarea{font:inherit;color:var(--txt);background:#0008;border:1.5px solid color-mix(in srgb,var(--acc) 60%,transparent);border-radius:8px;padding:11px;min-height:46px;width:100%}
+textarea{min-height:120px;font-size:12px;font-family:ui-monospace,monospace}
+label{display:block;margin:10px 0 4px;font-size:13px;color:var(--dim)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-top:1.5px solid var(--acc);box-shadow:0 -4px 18px color-mix(in srgb,var(--acc) 30%,transparent);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs button{border:none;box-shadow:none;background:transparent;border-radius:0;min-height:64px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim);padding:6px 0}
+nav.tabs button span{font-size:22px;filter:grayscale(.6)}
+nav.tabs button.on{color:var(--acc);text-shadow:0 0 8px var(--acc)}
+nav.tabs button.on span{filter:none}
+nav.tabs .badge{position:absolute;margin-left:22px;margin-top:-2px;background:var(--bad);color:#fff;border-radius:10px;font-size:10px;padding:1px 5px}
+#toasts{position:fixed;top:calc(8px + env(safe-area-inset-top));left:0;right:0;z-index:60;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 12px}
+.toast{max-width:520px;width:100%;border:1.5px solid var(--acc);background:color-mix(in srgb,var(--bg) 94%,transparent);border-radius:8px;padding:10px 12px;box-shadow:0 0 16px var(--acc);animation:tin .35s ease-out, tout .4s ease-in forwards;animation-delay:0s,var(--d,3.2s);font-size:14px}
+.toast b{color:var(--acc);letter-spacing:.08em}
+@keyframes tin{from{transform:translateY(-30px) scaleY(.2);opacity:0}to{transform:none;opacity:1}}
+@keyframes tout{to{transform:translateY(-20px);opacity:0}}
+#modal{position:fixed;inset:0;z-index:50;background:#000b;display:none;align-items:center;justify-content:center;padding:14px}
+#modal.on{display:flex}
+#modal .win{width:100%;max-width:520px;max-height:88vh;overflow:auto;animation:pop .3s ease-out}
+@keyframes pop{from{transform:scaleY(.05);opacity:0}60%{transform:scaleY(1.04)}to{transform:none;opacity:1}}
+#fx{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle,color-mix(in srgb,var(--acc) 25%,#000d),#000e 70%);text-align:center;padding:20px}
+#fx.on{display:flex}
+.lvlup{font-size:46px;font-weight:900;letter-spacing:.12em;color:#fff;text-shadow:0 0 12px var(--acc),0 0 30px var(--acc),0 0 60px var(--acc);animation:lv 1.2s ease-out}
+@keyframes lv{0%{transform:scale(3);opacity:0;filter:blur(8px)}50%{transform:scale(.9);opacity:1;filter:none}100%{transform:scale(1)}}
+.ring{width:220px;height:220px;border-radius:50%;border:3px solid var(--acc);box-shadow:0 0 30px var(--acc),inset 0 0 30px var(--acc);position:absolute;animation:ring 1.4s ease-out forwards;pointer-events:none}
+@keyframes ring{from{transform:scale(.1);opacity:1}to{transform:scale(3);opacity:0}}
+.arise{font-size:52px;font-weight:900;color:#c9a6ff;text-shadow:0 0 14px #7a3cff,0 0 40px #7a3cff;letter-spacing:.1em;animation:lv 1s ease-out}
+.shadowrise{font-size:90px;filter:drop-shadow(0 0 18px #7a3cff) brightness(.35) sepia(1) hue-rotate(220deg) saturate(4);animation:rise 1.6s ease-out}
+@keyframes rise{from{transform:translateY(120px) scaleY(.2);opacity:0}to{transform:none;opacity:1}}
+.smoke{position:absolute;bottom:0;left:0;right:0;height:50%;background:radial-gradient(ellipse at 50% 100%,#5a1fd0aa,transparent 70%);animation:smoke 2s ease-in-out infinite alternate;pointer-events:none}
+@keyframes smoke{from{opacity:.5;transform:scaleX(.9)}to{opacity:1;transform:scaleX(1.15)}}
+.orbit{position:relative;width:240px;height:240px}
+.orbit .o{position:absolute;left:50%;top:50%;font-size:44px;margin:-28px;width:56px;height:56px;display:grid;place-items:center;animation:orb 2.2s cubic-bezier(.6,0,.4,1) forwards}
+@keyframes orb{0%{transform:rotate(var(--a)) translateX(110px) rotate(calc(-1*var(--a)));opacity:1}80%{transform:rotate(calc(var(--a) + 720deg)) translateX(0) rotate(calc(-1*var(--a) - 720deg));opacity:1}100%{transform:scale(0);opacity:0}}
+.flash{position:fixed;inset:0;background:#fff;animation:flash .9s ease-out forwards;pointer-events:none}
+@keyframes flash{from{opacity:.95}to{opacity:0}}
+.fusname{font-size:34px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;animation:lv 1.1s ease-out;filter:drop-shadow(0 0 12px var(--acc))}
+.syscard{border:1.5px solid var(--c,var(--acc));border-radius:10px;padding:12px;margin:10px 0;background:linear-gradient(135deg,color-mix(in srgb,var(--c,var(--acc)) 14%,#0008),#0006);box-shadow:0 0 10px color-mix(in srgb,var(--c,var(--acc)) 35%,transparent)}
+.syscard.locked{filter:grayscale(.85) brightness(.75);border-style:dashed}
+.syscard .si{font-size:34px;width:48px;text-align:center}
+.enemy{font-size:84px;text-align:center;line-height:1.1;filter:drop-shadow(0 0 14px #ff335588);transition:transform .15s}
+.enemy.hit{animation:hit .3s}
+@keyframes hit{0%,100%{transform:none}25%{transform:translateX(-10px) rotate(-6deg);filter:brightness(3)}75%{transform:translateX(8px)}}
+.dmg{position:absolute;font-weight:900;font-size:28px;color:#fff;text-shadow:0 0 8px var(--bad);animation:dmg .9s ease-out forwards;pointer-events:none;left:50%;top:30%}
+@keyframes dmg{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-60px);opacity:0}}
+.log{max-height:130px;overflow:auto;font-size:13px;color:var(--dim);background:#0006;border-radius:8px;padding:8px;margin-top:8px}
+.log div{padding:2px 0}
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.cal i{aspect-ratio:1;border-radius:4px;background:#ffffff12;border:1px solid #ffffff20}
+.cal i.y{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+.cal i.n{background:#ff4d6d66}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--c,var(--acc));border-radius:20px;padding:8px 12px;margin:4px;min-height:42px;cursor:pointer;background:#0006}
+.chip.on{background:color-mix(in srgb,var(--c,var(--acc)) 35%,#000a);box-shadow:0 0 10px var(--c,var(--acc))}
+.penalty{border-color:var(--bad)!important;box-shadow:0 0 16px #ff4d6d88,inset 0 0 18px #ff4d6d33!important}
+.penalty h2{color:var(--bad)!important;text-shadow:0 0 10px var(--bad)!important}
+.fadein{animation:fi .25s ease-out}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+hr{border:none;border-top:1px dashed color-mix(in srgb,var(--acc) 35%,transparent);margin:12px 0}
+.item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #ffffff18}
+.item .ii{font-size:26px;width:36px;text-align:center}
+</style>
+</head>
+<body>
+<div id="toasts"></div>
+<div id="app"><header class="top"><div class="sysname" id="hdrName">System</div><div class="pill" id="hdrPill"></div></header><main id="main"></main></div>
+<nav class="tabs" id="tabs"></nav>
+<div id="modal"><div class="win" id="modalBox"></div></div>
+<div id="fx"></div>
+<script>
+'use strict';
+/* =====================================================================
+   DAS SYSTEM – Real-Life Leveling (v1)
+   Datengetrieben: neue Systeme einfach in SYSTEMS + MECH ergänzen.
+   ===================================================================== */
+const SAVE_KEY = 'das-system-save-v1';
+const STATS = {str:{n:'Stärke',i:'💪'},vit:{n:'Ausdauer',i:'❤️'},agi:{n:'Beweglichkeit',i:'⚡'},int:{n:'Intelligenz',i:'🧠'},per:{n:'Wahrnehmung',i:'👁️'}};
+const RANKS = [{r:'E',l:1},{r:'D',l:10},{r:'C',l:20},{r:'B',l:35},{r:'A',l:50},{r:'S',l:70}];
+const POINTS_PER_LEVEL = 3;
+const xpNeed = l => Math.round(80 * Math.pow(l, 1.35));
+
+/* ---------- Freischalt-Bedingungen ---------- */
+const COND = {
+  level:   {n:v=>`Level ${v} erreichen`, val:()=>S.level},
+  streak:  {n:v=>`${v}-Tage-Streak`, val:()=>Math.max(curStreak(), S.bestStreak)},
+  dungeons:{n:v=>`${v} Gates abschließen`, val:()=>S.cnt.dungeons},
+  side:    {n:v=>`${v} Nebenquests erledigen`, val:()=>S.cnt.side},
+  quests:  {n:v=>`${v} Quests insgesamt erledigen`, val:()=>S.cnt.quests},
+  shadows: {n:v=>`${v} Schatten erwecken`, val:()=>S.cnt.arise},
+  systems: {n:v=>`${v} Systeme freischalten`, val:()=>S.sys.unlocked.length},
+  allDone: {n:v=>`${v}× alle Daily Quests geschafft`, val:()=>S.cnt.allDone},
+};
+const condMet = c => c.every(x => COND[x.k].val() >= x.v);
+
+/* ---------- SYSTEME (datengetrieben) ----------
+   id, name, icon, tag (Popup-Präfix), theme {acc,acc2,bg,bg2}, unlock [{k,v}], res (Ressource),
+   quests (Standard-System-Quests), flavor, mech (Mechanik-Schlüssel in MECH)                      */
+const SYSTEMS = [
+ {id:'solo', name:'System des Erwachten', icon:'💠', tag:'[SYSTEM]', theme:{acc:'#3ad7ff',acc2:'#7f8cff',bg:'#050a18',bg2:'#0a1a3a'},
+  desc:'Das Startsystem. Tägliche Pflicht-Quests, Strafquests, Gates und eine Armee aus Schatten.',
+  unlock:[], res:{n:'Gate-Schlüssel',i:'🗝️',key:'keys'}, mech:'shadows',
+  flavor:{unlock:'Du wurdest als Spieler ausgewählt.',all:'Belohnung für das Abschließen der Daily Quest erhalten.'},
+  quests:[
+   {name:'Liegestütze',target:100,unit:'Wdh.',stat:'str',xp:40},
+   {name:'Sit-ups',target:100,unit:'Wdh.',stat:'vit',xp:40},
+   {name:'Kniebeugen',target:100,unit:'Wdh.',stat:'agi',xp:40},
+   {name:'Laufen',target:10,unit:'km',stat:'vit',xp:60}]},
+ {id:'ninja', name:'Chakra-System', icon:'🌀', tag:'[CHAKRA]', theme:{acc:'#ff8a2a',acc2:'#ffcf3a',bg:'#120804',bg2:'#2a1206'},
+  desc:'Pfad des Schattenkriegers. Sammle Chakra durch Training und schalte Jutsu-Techniken frei.',
+  unlock:[{k:'level',v:5}], res:{n:'Chakra',i:'🌀'}, mech:'jutsu',
+  flavor:{unlock:'Dein Chakra ist erwacht. Die Ninja-Akademie öffnet ihre Tore.',all:'Chakra-Fluss gemeistert!'},
+  quests:[
+   {name:'Klimmzüge',target:20,unit:'Wdh.',stat:'str',xp:25,res:15},
+   {name:'Seilspringen',target:300,unit:'Sprünge',stat:'agi',xp:25,res:15},
+   {name:'Chakra-Meditation',target:10,unit:'Min',stat:'int',xp:20,res:15}]},
+ {id:'gamer', name:'Gamer-System', icon:'🎮', tag:'[GAME]', theme:{acc:'#8cff4a',acc2:'#3affd2',bg:'#040d05',bg2:'#0b200d'},
+  desc:'Das Leben ist ein RPG. Skillpunkte, Inventar, Materialien und Crafting.',
+  unlock:[{k:'dungeons',v:3}], res:{n:'Skillpunkte',i:'🔷'}, mech:'gamer',
+  flavor:{unlock:'Willkommen, Spieler 1. Drücke START.',all:'Tagesquest-Kette abgeschlossen! Bonus-Loot!'},
+  quests:[
+   {name:'Zimmer aufräumen',target:1,unit:'×',stat:'per',xp:20,res:2},
+   {name:'Neue Fähigkeit üben',target:20,unit:'Min',stat:'int',xp:25,res:2},
+   {name:'Gesund kochen',target:1,unit:'Mahlzeit',stat:'vit',xp:20,res:2}]},
+ {id:'hero', name:'Helden-System', icon:'🦸', tag:'[HELDENVERBAND]', theme:{acc:'#ff4a5a',acc2:'#ffd23a',bg:'#12050a',bg2:'#2a0a14'},
+  desc:'Werde zum Helden. Gute Taten bringen Heldenpunkte, Heldenrang und eine einzigartige Gabe.',
+  unlock:[{k:'side',v:15}], res:{n:'Heldenpunkte',i:'⭐'}, mech:'hero',
+  flavor:{unlock:'Der Heldenverband hat deine Taten bemerkt. Lizenz erteilt!',all:'Die Stadt ist heute sicherer dank dir!'},
+  quests:[
+   {name:'Eine gute Tat',target:1,unit:'×',stat:'per',xp:25,res:20},
+   {name:'Jemandem helfen',target:1,unit:'×',stat:'vit',xp:25,res:20},
+   {name:'Ehrliches Kompliment machen',target:1,unit:'×',stat:'int',xp:15,res:10}]},
+ {id:'cult', name:'Kultivierungs-System', icon:'☯️', tag:'[DAO]', theme:{acc:'#3be8a8',acc2:'#f5c86a',bg:'#03110d',bg2:'#08261c'},
+  desc:'Der Pfad des Unsterblichen. Sammle Qi durch Meditation und Studium und wage den Durchbruch.',
+  unlock:[{k:'streak',v:7}], res:{n:'Qi',i:'☯️'}, mech:'cult',
+  flavor:{unlock:'Dein Dao-Herz ist stabil. Der Pfad der Kultivierung öffnet sich.',all:'Das Qi zirkuliert harmonisch durch deine Meridiane.'},
+  quests:[
+   {name:'Meditation',target:15,unit:'Min',stat:'int',xp:25,res:20},
+   {name:'Lernen / Studium',target:30,unit:'Min',stat:'int',xp:30,res:20},
+   {name:'Lesen',target:20,unit:'Seiten',stat:'per',xp:20,res:15}]},
+ {id:'tower', name:'Turm-System', icon:'🗼', tag:'[TURM]', theme:{acc:'#c8d3ff',acc2:'#6f7bff',bg:'#06071a',bg2:'#121640'},
+  desc:'Erklimme den endlosen Turm. Jede Etage hat einen Wächter – nur echte Stärke bringt dich höher.',
+  unlock:[{k:'quests',v:50}], res:{n:'Aufstiegsenergie',i:'🔺'}, mech:'tower',
+  flavor:{unlock:'Der Turm hat dich auserwählt. Steige auf.',all:'Der Turm erkennt deine Beständigkeit an.'},
+  quests:[
+   {name:'Treppen steigen',target:10,unit:'Etagen',stat:'vit',xp:25,res:15},
+   {name:'Plank halten',target:3,unit:'Min',stat:'str',xp:25,res:15},
+   {name:'Dehnen / Mobility',target:10,unit:'Min',stat:'agi',xp:20,res:10}]},
+ {id:'evo', name:'Evolutions-System', icon:'🧬', tag:'[EVOLUTION]', theme:{acc:'#d65bff',acc2:'#5bffb0',bg:'#0e0414',bg2:'#230a30'},
+  desc:'Fressen. Wachsen. Entwickeln. Sammle Evolutionspunkte und steige zu einer höheren Lebensform auf.',
+  unlock:[{k:'shadows',v:3}], res:{n:'Evolutionspunkte',i:'🧬'}, mech:'evo',
+  flavor:{unlock:'Deine DNA beginnt zu mutieren …',all:'Zellen stabilisiert. Evolutionsdruck steigt.'},
+  quests:[
+   {name:'Proteinreich essen',target:3,unit:'Mahlzeiten',stat:'vit',xp:20,res:15},
+   {name:'8 Std. schlafen',target:1,unit:'Nacht',stat:'vit',xp:25,res:20},
+   {name:'Kalt duschen',target:1,unit:'×',stat:'str',xp:20,res:15}]},
+ {id:'guild', name:'Gilden-System', icon:'🏰', tag:'[GILDE]', theme:{acc:'#b77bff',acc2:'#ff7bd5',bg:'#0b0516',bg2:'#1e0c36'},
+  desc:'Gründe deine eigene Gilde. Rekrutiere Mitglieder und schicke sie auf Expeditionen.',
+  unlock:[{k:'level',v:15},{k:'shadows',v:5}], res:{n:'Gildenmarken',i:'🛡️'}, mech:'guild',
+  flavor:{unlock:'Gildenlizenz erteilt. Deine Halle wartet auf Mitglieder.',all:'Die Gilde jubelt ihrem Meister zu!'},
+  quests:[
+   {name:'Stream machen',target:1,unit:'Stream',stat:'per',xp:40,res:20},
+   {name:'Mit der Community interagieren',target:15,unit:'Min',stat:'int',xp:20,res:10},
+   {name:'Content planen',target:20,unit:'Min',stat:'int',xp:20,res:10}]},
+];
+const SYS = Object.fromEntries(SYSTEMS.map(s=>[s.id,s]));
+const FUSION_UNLOCK = [{k:'systems',v:4},{k:'level',v:20}];
+const FUSION_XP_PER_SYS = 5; // % XP-Bonus pro verschmolzenem System
+const FUSION_RES_PER_SYS = 10; // % Ressourcen-Bonus pro System
+
+/* ---------- Gates / Dungeons ---------- */
+const GATES = [
+ {id:'E',rank:'E',lvl:1,name:'Goblin-Höhle',xp:60,gold:30,mobs:[['Goblin','👺',40,6],['Riesenratte','🐀',35,7],['Goblin-Schamane','🧌',50,8]],boss:['Steinwolf-Alpha','🐺',140,12],
+  shadow:{id:'wolf',n:'Schattenwolf',i:'🐺',b:{agi:1},t:'+1 Beweglichkeit / Stufe'}},
+ {id:'D',rank:'D',lvl:10,name:'Versunkene Ruinen',xp:180,gold:80,mobs:[['Ork-Krieger','👹',110,16],['Höhlenspinne','🕷️',95,18],['Ork-Berserker','👹',130,19]],boss:['Ork-Häuptling','🪓',380,26],
+  shadow:{id:'ork',n:'Schatten-Ork',i:'🪓',b:{str:2},t:'+2 Stärke / Stufe'}},
+ {id:'C',rank:'C',lvl:20,name:'Gruft der Ritter',xp:420,gold:180,mobs:[['Skelettritter','💀',230,30],['Geist','👻',200,34],['Gargoyle','🗿',260,32]],boss:['Leichenfürst','☠️',750,44],
+  shadow:{id:'lich',n:'Schatten-Magier',i:'☠️',b:{int:3},t:'+3 Intelligenz / Stufe'}},
+ {id:'B',rank:'B',lvl:35,name:'Schlangentempel',xp:900,gold:400,mobs:[['Naga-Wächter','🐍',420,48],['Echsenkrieger','🦎',450,50],['Naga-Priesterin','🐍',400,55]],boss:['Hydra','🐉',1400,70],
+  shadow:{id:'hydra',n:'Schatten-Hydra',i:'🐉',b:{vit:3,str:1},t:'+3 Ausdauer, +1 Stärke / Stufe'}},
+ {id:'A',rank:'A',lvl:50,name:'Dämonenschloss',xp:1800,gold:900,mobs:[['Dämonenritter','👹',700,72],['Höllenhund','🐕',650,78],['Sukkubus','😈',680,80]],boss:['Dämonenkönig','👿',2600,105],
+  shadow:{id:'demon',n:'Schatten-Dämonenkönig',i:'👿',b:{str:3,int:3},t:'+3 Stärke, +3 Intelligenz / Stufe'}},
+ {id:'S',rank:'S',lvl:70,name:'Drachenhort',xp:4000,gold:2500,mobs:[['Wyvern','🦖',1100,105],['Feuerelementar','🔥',1000,115],['Drachenwächter','🐲',1300,110]],boss:['Uralter Drache','🐲',5000,160],
+  shadow:{id:'dragon',n:'Schattendrache',i:'🐲',b:{str:5,vit:5,agi:5,int:5,per:5},t:'+5 auf alle Werte / Stufe'}},
+];
+const MAX_SHADOW_LVL = 5;
+
+/* ---------- Mechanik-Daten ---------- */
+const JUTSU = [
+ {id:'clone',n:'Doppelgänger-Jutsu',i:'👥',cost:60,b:{xp:10},t:'+10 % XP'},
+ {id:'fire',n:'Feuerball-Technik',i:'🔥',cost:100,b:{dmg:15},t:'+15 % Schaden'},
+ {id:'swap',n:'Tausch-Technik',i:'🪵',cost:120,b:{dodge:8},t:'+8 % Ausweichen'},
+ {id:'armor',n:'Chakra-Panzer',i:'🛡️',cost:180,b:{hp:15},t:'+15 % HP'},
+ {id:'sage',n:'Weisen-Modus',i:'🐸',cost:350,b:{all:5},t:'+5 auf alle Werte'},
+];
+const NINJA_RANKS = ['Akademie-Schüler','Genin','Chunin','Chunin','Jonin','Kage'];
+const REALMS = [
+ {n:'Sterblicher',cost:0},{n:'Qi-Verdichtung',cost:50},{n:'Fundamentbildung',cost:120},{n:'Goldener Kern',cost:250},
+ {n:'Urseele',cost:500},{n:'Seelentransformation',cost:900},{n:'Unsterblicher Aufstieg',cost:1500}];
+const MATS = {ore:{n:'Eisenerz',i:'🪨'},leather:{n:'Leder',i:'🟫'},crystal:{n:'Kristall',i:'💎'},core:{n:'Monsterkern',i:'🔮'}};
+const RECIPES = [
+ {id:'sword',n:'Eisenschwert',i:'🗡️',need:{ore:3,leather:1},b:{dmg:10},t:'+10 % Schaden'},
+ {id:'armor',n:'Lederrüstung',i:'🥋',need:{leather:4},b:{hp:10},t:'+10 % HP'},
+ {id:'boots',n:'Stiefel des Windes',i:'👢',need:{leather:2,crystal:1},b:{dodge:5},t:'+5 % Ausweichen'},
+ {id:'amulet',n:'Kristallamulett',i:'📿',need:{crystal:2,core:1},b:{xp:10},t:'+10 % XP'},
+ {id:'crown',n:'Monsterkern-Krone',i:'👑',need:{core:3,crystal:3},b:{all:3},t:'+3 auf alle Werte'},
+];
+const GSKILLS = [
+ {id:'heal',n:'Heilkunde',i:'🧪',cost:3,b:{potion:1},t:'+1 Heiltrank pro Gate'},
+ {id:'crit',n:'Kritischer Blick',i:'🎯',cost:4,b:{crit:8},t:'+8 % Krit-Chance'},
+ {id:'mana',n:'Manafluss',i:'🔵',cost:4,b:{mp:25},t:'+25 % MP'},
+ {id:'loot',n:'Glückspilz',i:'🍀',cost:5,b:{loot:1},t:'Mehr Material-Drops'},
+ {id:'learn',n:'Schnelllerner',i:'📈',cost:8,b:{xp:8},t:'+8 % XP'},
+];
+const HERO_RANKS = [{n:'C-Klasse',p:0},{n:'B-Klasse',p:100},{n:'A-Klasse',p:300},{n:'S-Klasse',p:700},{n:'Held Nr. 1',p:1500}];
+const QUIRKS = [
+ {id:'power',n:'Übermenschliche Kraft',i:'👊',b:{dmg:20},t:'+20 % Schaden'},
+ {id:'regen',n:'Regeneration',i:'💚',b:{hp:30},t:'+30 % HP'},
+ {id:'sense',n:'Hypersinne',i:'👁️',b:{crit:10,dodge:5},t:'+10 % Krit, +5 % Ausweichen'},
+ {id:'mind',n:'Supergehirn',i:'🧠',b:{xp:12},t:'+12 % XP'},
+];
+const EVO = [
+ {n:'Schleim',i:'🫧',cost:0,b:{}},{n:'Wolfling',i:'🐺',cost:40,b:{agi:3}},{n:'Echsenkrieger',i:'🦎',cost:100,b:{agi:3,vit:4}},
+ {n:'Drakonier',i:'🐉',cost:220,b:{agi:4,vit:5,str:5,hp:10}},{n:'Phönixgestalt',i:'🐦‍🔥',cost:450,b:{agi:5,vit:6,str:6,int:5,hp:15}},
+ {n:'Urwesen',i:'🌌',cost:800,b:{all:10,hp:25,dmg:15}}];
+const EXPEDITIONS = [{h:1,n:'Kurze Patrouille',xp:15,marks:5},{h:4,n:'Gate-Erkundung',xp:50,marks:15},{h:8,n:'Fernexpedition',xp:110,marks:35}];
+const PENALTIES = [
+ {name:'50 Burpees',target:50,unit:'Wdh.'},{name:'Plank 4 Minuten',target:4,unit:'Min'},{name:'200 Hampelmänner',target:200,unit:'Wdh.'},
+ {name:'3 km Laufen',target:3,unit:'km'},{name:'100 Ausfallschritte',target:100,unit:'Wdh.'}];
+const TITLES = [
+ {n:'Erwachter',c:[]},
+ {n:'Wolfsjäger',c:[{k:'dungeons',v:1}]},
+ {n:'Der Unermüdliche',c:[{k:'streak',v:7}]},
+ {n:'Eiserne Disziplin',c:[{k:'allDone',v:30}]},
+ {n:'Gate-Brecher',c:[{k:'dungeons',v:10}]},
+ {n:'Herr der Schatten',c:[{k:'shadows',v:5}]},
+ {n:'Mehrfach-Erwachter',c:[{k:'systems',v:3}]},
+ {n:'Hüter vieler Pfade',c:[{k:'systems',v:6}]},
+ {n:'Content-Krieger',c:[{k:'side',v:50}]},
+ {n:'Monarch des Systems',c:[{k:'level',v:70}]},
+];
+
+/* =================== Zustand & Speicherung =================== */
+const pad = n => String(n).padStart(2,'0');
+const dayStr = (d=new Date()) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseDay = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+const daysBetween = (a,b) => Math.round((parseDay(b)-parseDay(a))/864e5);
+const uid = () => Math.random().toString(36).slice(2,9);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => Math.round(n).toLocaleString('de-DE');
+const rnd = (a,b) => a + Math.random()*(b-a);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+function mkQuest(q, sys){ return {id:uid(), sys, name:q.name, target:q.target, unit:q.unit, stat:q.stat||'', xp:q.xp, res:q.res??0, progress:0, done:false}; }
+function newState(){
+  return {v:1, name:'Marvin', level:1, xp:0, points:0, base:{str:10,vit:10,agi:10,int:10,per:10}, title:'Erwachter', titles:['Erwachter'],
+    day:dayStr(), streak:0, bestStreak:0, keys:3, gold:0, cry:0, todayXP:0,
+    inv:{}, owned:[], equip:{weapon:null,armor:null,acc:null}, cosTheme:null, buffs:{xpUntil:0}, elixir:false, welcomed:false,
+    rewards: DEFAULT_REWARDS.map(r=>({id:uid(),...r})), rewardLog:[],
+    quests: SYS.solo.quests.map(q=>mkQuest(q,'solo')),
+    side:[
+      {id:uid(),sys:'solo',name:'2 Liter Wasser trinken',xp:15,repeat:'daily',done:false},
+      {id:uid(),sys:'solo',name:'30 Min. lernen',xp:25,repeat:'daily',done:false},
+      {id:uid(),sys:'solo',name:'Stream machen',xp:40,repeat:'daily',done:false},
+      {id:uid(),sys:'solo',name:'Vor Mitternacht schlafen',xp:20,repeat:'daily',done:false}],
+    penalty:null, penaltySeen:true, allBonus:{},
+    shadows:{}, cnt:{dungeons:0,bosses:0,side:0,quests:0,arise:0,allDone:0},
+    sys:{unlocked:['solo'], active:['solo'], main:'solo', res:{}, fusions:[], fusionUnlocked:false},
+    m:{ninja:{jutsu:[]}, cult:{realm:0}, gamer:{mats:{},items:[],skills:[]}, hero:{quirk:null}, evo:{stage:0}, tower:{floor:0}, guild:{members:0,exp:null}},
+    history:[], log:[], created:Date.now()};
+}
+function merge(def, s){ // fehlende Felder aus Defaults ergänzen (Migration)
+  if (Array.isArray(def) || typeof def!=='object' || def===null) return s===undefined?def:s;
+  const o = {...def};
+  if (s && typeof s==='object') for (const k in s) o[k] = (k in def) ? merge(def[k], s[k]) : s[k];
+  return o;
+}
+let S;
+function load(){
+  try { const raw = localStorage.getItem(SAVE_KEY); S = raw ? merge(newState(), JSON.parse(raw)) : newState(); }
+  catch(e){ console.warn('Speicherstand defekt, neu gestartet', e); S = newState(); }
+}
+function save(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch(e){ toast('Speichern fehlgeschlagen: '+e.message,'[FEHLER]'); } }
+function log(msg){ S.log.unshift({t:Date.now(),m:msg}); S.log.length = Math.min(S.log.length,150); }
+
+/* =================== Boni / abgeleitete Werte =================== */
+function addB(t, b, mult=1){ for (const k in b) t[k] = (t[k]||0) + b[k]*mult; }
+function bonuses(){
+  const B = {};
+  for (const id of S.sys.unlocked){ const m = MECH[SYS[id].mech]; if (m && m.bonus) addB(B, m.bonus()); }
+  for (const s of Object.values(S.equip)) if (s && SHOPI[s]) addB(B, SHOPI[s].b);
+  for (const id of S.owned) if (SHOPI[id]?.type==='perm') addB(B, SHOPI[id].b);
+  if (S.buffs.xpUntil > Date.now()) B.xp = (B.xp||0) + 50;
+  const f = activeFusion(); if (f && S.owned.includes('f_cat')) B.xp = (B.xp||0) + 5*f.src.length;
+  if (f){ B.xp = (B.xp||0) + FUSION_XP_PER_SYS*f.src.length; B.res = (B.res||0) + FUSION_RES_PER_SYS*f.src.length; }
+  return B;
+}
+function stat(k, B=bonuses()){ return S.base[k] + (B[k]||0) + (B.all||0); }
+function derived(){
+  const B = bonuses(), st = {}; for (const k in STATS) st[k] = stat(k,B);
+  return {B, st,
+    hp: Math.round((100 + st.vit*10) * (1+(B.hp||0)/100)),
+    mp: Math.round((30 + st.int*3) * (1+(B.mp||0)/100)),
+    atk: (5 + st.str*1.5) * (1+(B.dmg||0)/100),
+    skill: (10 + st.int*2.6) * (1+(B.dmg||0)/100),
+    crit: Math.min(60, st.per*0.4 + (B.crit||0)),
+    dodge: Math.min(45, st.agi*0.35 + (B.dodge||0)),
+    def: st.vit*0.4,
+    power: Object.values(st).reduce((a,b)=>a+b,0)};
+}
+const rankOf = l => RANKS.filter(r=>l>=r.l).pop().r;
+
+/* =================== Systeme / Fusion Hilfen =================== */
+function activeFusion(){ return S.sys.main.startsWith('f:') ? S.sys.fusions.find(f=>'f:'+f.id===S.sys.main) : null; }
+function activeIds(){ const f = activeFusion(); return [...new Set([...S.sys.active, ...(f?f.src:[])])].filter(id=>S.sys.unlocked.includes(id)); }
+function mainTag(){ const f = activeFusion(); return f ? `[${f.name.toUpperCase()}]` : SYS[S.sys.main]?.tag || '[SYSTEM]'; }
+function res(id){ return id==='solo' ? S.keys : (S.sys.res[id]||0); }
+function addRes(id, n){
+  const amt = Math.round(n * (1 + (bonuses().res||0)/100));
+  if (id==='solo') S.keys += n; else S.sys.res[id] = (S.sys.res[id]||0) + amt;
+  return id==='solo'?n:amt;
+}
+function themeOf(ids){
+  const t = ids.map(id=>SYS[id].theme);
+  return {acc:t[0].acc, acc2:t[t.length-1].acc === t[0].acc ? t[0].acc2 : t[t.length-1].acc, bg:t[0].bg, bg2:t[Math.min(1,t.length-1)].bg2,
+    grad:`linear-gradient(90deg,${t.map(x=>x.acc).join(',')})`};
+}
+function applyTheme(){
+  const f = activeFusion();
+  const th = f ? themeOf(f.src) : {...SYS[S.sys.main].theme, grad:null};
+  if (S.cosTheme && SHOPI[S.cosTheme]){ const c = SHOPI[S.cosTheme].theme; th.acc = c.acc; th.acc2 = c.acc2; th.grad = `linear-gradient(90deg,${c.acc},${c.acc2})`; }
+  const r = document.documentElement.style;
+  r.setProperty('--acc',th.acc); r.setProperty('--acc2',th.acc2); r.setProperty('--bg',th.bg); r.setProperty('--bg2',th.bg2);
+  r.setProperty('--grad', th.grad || `linear-gradient(90deg,${th.acc},${th.acc2})`);
+  document.body.classList.toggle('gamer', !f && S.sys.main==='gamer');
+  document.querySelector('meta[name=theme-color]').setAttribute('content', th.bg);
+}
+
+/* =================== XP / Level =================== */
+function gainXP(base, why){
+  const B = bonuses(); const amt = Math.max(0, Math.round(base * (1+(B.xp||0)/100)));
+  S.xp += amt; S.todayXP += amt;
+  const before = S.level, rankBefore = rankOf(S.level);
+  while (S.xp >= xpNeed(S.level)){ S.xp -= xpNeed(S.level); S.level++; S.points += POINTS_PER_LEVEL; }
+  if (S.level > before){
+    log(`Level-Up! ${before} → ${S.level}`);
+    const rk = rankOf(S.level);
+    queueFx(()=>fxLevelUp(S.level, (S.level-before)*POINTS_PER_LEVEL, rk!==rankBefore?rk:null));
+  }
+  return amt;
+}
+function curStreak(){ return S.streak + (soloAllDone() ? 1 : 0); }
+function soloQuests(){ return S.quests.filter(q=>q.sys==='solo'); }
+function soloAllDone(){ const q = soloQuests(); return q.length>0 && q.every(x=>x.done); }
+
+function checkUnlocks(){
+  for (const s of SYSTEMS){
+    if (!S.sys.unlocked.includes(s.id) && condMet(s.unlock)){
+      S.sys.unlocked.push(s.id); S.sys.active.push(s.id);
+      s.quests.forEach(q=>S.quests.push(mkQuest(q,s.id)));
+      log(`Neues System freigeschaltet: ${s.name}`);
+      queueFx(()=>fxUnlock(s));
+    }
+  }
+  if (!S.sys.fusionUnlocked && condMet(FUSION_UNLOCK)){
+    S.sys.fusionUnlocked = true; log('Verschmelzung freigeschaltet');
+    queueFx(()=>fxGeneric('🔀','VERSCHMELZUNG ENTSPERRT','Du kannst nun Systeme zu einem eigenen Fusions-System verschmelzen. (Systeme → Verschmelzung)'));
+  }
+  for (const t of TITLES){
+    if (!S.titles.includes(t.n) && condMet(t.c)){ S.titles.push(t.n); log(`Titel erhalten: ${t.n}`); toast(`Titel erhalten: <b>„${esc(t.n)}“</b>`); }
+  }
+}
+
+/* =================== Tageswechsel / Strafquest =================== */
+function rollover(){
+  const today = dayStr();
+  if (S.day === today) return false;
+  const gap = daysBetween(S.day, today);
+  if (gap < 0){ S.day = today; return false; } // Uhr zurückgestellt – nichts bestrafen
+  const all = soloAllDone(), sq = soloQuests();
+  S.history.unshift({d:S.day, done:sq.filter(q=>q.done).length, total:sq.length, all, xp:S.todayXP});
+  for (let i=1;i<gap;i++){ const d = new Date(parseDay(S.day)); d.setDate(d.getDate()+i); S.history.unshift({d:dayStr(d),done:0,total:sq.length,all:false,xp:0}); }
+  S.history.length = Math.min(S.history.length, 400);
+  const missed = !all || gap>1;
+  let shielded = false;
+  if (missed && (S.inv.shield||0) > 0){ S.inv.shield--; S.shieldUsed = true; shielded = true; log('Streak-Schutz verbraucht'); }
+  else S.streak = (all && gap===1) ? S.streak+1 : 0;
+  S.bestStreak = Math.max(S.bestStreak, S.streak);
+  // offene Strafquest vom Vortag → Strafe
+  if (S.penalty && !S.penalty.done){
+    const loss = Math.round(xpNeed(S.level)*0.3); S.xp = Math.max(0, S.xp-loss);
+    log(`Strafquest nicht erfüllt: −${loss} XP`);
+    S.penaltyLoss = loss;
+  }
+  S.penalty = null;
+  if (missed && !shielded){
+    const p = pick(PENALTIES);
+    S.penalty = {...p, progress:0, done:false, from:S.day}; S.penaltySeen = false;
+    log(`Strafquest aktiviert: ${p.name}`);
+  }
+  S.quests.forEach(q=>{q.progress=0;q.done=false;});
+  S.side.forEach(q=>{ if (q.repeat==='daily') q.done=false; });
+  S.allBonus = {}; S.todayXP = 0; S.day = today;
+  return true;
+}
+
+/* =================== WÄHRUNG & SHOP (datengetrieben) ===================
+   Gold 🪙 (Quests, Boni, Gates, Turm) · Kristalle 💎 (selten: Bosse, Streaks, Etagen) – kein Echtgeld!
+   type: consumable | equip | key | protect | skip | cosmetic | title | perm
+   sys: nur sichtbar wenn System freigeschaltet ('fusion' = Verschmelzung entsperrt)                    */
+const CUR = {gold:{n:'Gold',i:'🪙'}, cry:{n:'Kristalle',i:'💎'}};
+const SLOTS = {weapon:'Waffe', armor:'Rüstung', acc:'Accessoire'};
+const SHOP = [
+ // Tränke
+ {id:'hp_s',cat:'potion',n:'Heiltrank',i:'🧪',p:{gold:40},type:'consumable',t:'Heilt im Gate 40 % HP'},
+ {id:'hp_l',cat:'potion',n:'Großer Heiltrank',i:'⚗️',p:{gold:120},type:'consumable',t:'Heilt im Gate 100 % HP'},
+ {id:'mp_s',cat:'potion',n:'Manatrank',i:'🫙',p:{gold:60},type:'consumable',t:'Stellt im Gate 60 % MP her'},
+ {id:'xp_p',cat:'potion',n:'XP-Trank',i:'🍶',p:{gold:250},type:'consumable',t:'+50 % XP für 2 Stunden'},
+ // Ausrüstung
+ {id:'w1',cat:'gear',n:'Kurzschwert',i:'🗡️',p:{gold:150},type:'equip',slot:'weapon',b:{str:3},t:'+3 Stärke'},
+ {id:'w2',cat:'gear',n:'Assassinen-Dolch',i:'🔪',p:{gold:600},type:'equip',slot:'weapon',b:{agi:5,crit:5},t:'+5 Beweglichkeit, +5 % Krit'},
+ {id:'w3',cat:'gear',n:'Runenklinge',i:'⚔️',p:{gold:2000},type:'equip',slot:'weapon',b:{str:10,dmg:10},t:'+10 Stärke, +10 % Schaden'},
+ {id:'w4',cat:'gear',n:'Klinge des Monarchen',i:'🌌',p:{cry:8},type:'equip',slot:'weapon',b:{str:20,dmg:20},t:'+20 Stärke, +20 % Schaden'},
+ {id:'a1',cat:'gear',n:'Lederweste',i:'🦺',p:{gold:150},type:'equip',slot:'armor',b:{vit:3},t:'+3 Ausdauer'},
+ {id:'a2',cat:'gear',n:'Kettenhemd',i:'🛡️',p:{gold:700},type:'equip',slot:'armor',b:{vit:8,hp:10},t:'+8 Ausdauer, +10 % HP'},
+ {id:'a3',cat:'gear',n:'Drachenschuppen-Panzer',i:'🐲',p:{cry:6},type:'equip',slot:'armor',b:{vit:15,hp:25},t:'+15 Ausdauer, +25 % HP'},
+ {id:'c1',cat:'gear',n:'Ring der Weisheit',i:'💍',p:{gold:400},type:'equip',slot:'acc',b:{int:5},t:'+5 Intelligenz'},
+ {id:'c2',cat:'gear',n:'Amulett des Jägers',i:'📿',p:{gold:900},type:'equip',slot:'acc',b:{per:5,xp:5},t:'+5 Wahrnehmung, +5 % XP'},
+ {id:'c3',cat:'gear',n:'Krone des Systems',i:'👑',p:{cry:10},type:'equip',slot:'acc',b:{all:5,xp:10},t:'+5 alle Werte, +10 % XP'},
+ // Spezial
+ {id:'key',cat:'special',n:'Gate-Schlüssel',i:'🗝️',p:{gold:100},type:'key',t:'+1 Schlüssel für ein Gate'},
+ {id:'shield',cat:'special',n:'Streak-Schutz',i:'🔰',p:{cry:2},type:'protect',t:'Schützt automatisch Streak & verhindert die Strafquest bei einem verpassten Tag'},
+ {id:'skip',cat:'special',n:'Strafquest-Erlass',i:'📜',p:{gold:300},type:'skip',t:'Erlässt eine aktive Strafquest (ohne Belohnung)'},
+ // Kosmetik
+ {id:'th_blood',cat:'cosmetic',n:'Thema „Blutmond“',i:'🌕',p:{cry:3},type:'cosmetic',theme:{acc:'#ff3b5c',acc2:'#ff9a3b'},t:'Rote Akzentfarbe'},
+ {id:'th_gold',cat:'cosmetic',n:'Thema „Goldener Monarch“',i:'✨',p:{cry:3},type:'cosmetic',theme:{acc:'#ffd55a',acc2:'#fff3b0'},t:'Goldene Akzentfarbe'},
+ {id:'th_void',cat:'cosmetic',n:'Thema „Leere“',i:'🕳️',p:{cry:3},type:'cosmetic',theme:{acc:'#a66bff',acc2:'#5b7bff'},t:'Violette Akzentfarbe'},
+ {id:'ti_inv',cat:'cosmetic',n:'Titel „Der Unbesiegbare“',i:'🏷️',p:{gold:1500},type:'title',title:'Der Unbesiegbare',t:'Kaufbarer Titel'},
+ {id:'ti_vt',cat:'cosmetic',n:'Titel „VTuber des Systems“',i:'🎙️',p:{cry:5},type:'title',title:'VTuber des Systems',t:'Kaufbarer Titel'},
+ // System-spezifisch
+ {id:'s_ess',cat:'system',sys:'solo',n:'Schatten-Essenz',i:'🟣',p:{cry:3},type:'consumable',t:'Stärkt einen zufälligen Schatten um 1 Stufe'},
+ {id:'n_pill',cat:'system',sys:'ninja',n:'Chakra-Pille',i:'💊',p:{gold:200},type:'consumable',t:'+60 Chakra'},
+ {id:'n_sword',cat:'system',sys:'ninja',n:'Schwertkunst-Rolle: Mondsichel-Schnitt',i:'🌙',p:{gold:1200},type:'perm',b:{dmg:12},t:'Schwertskill: +12 % Schaden (permanent)'},
+ {id:'g_box',cat:'system',sys:'gamer',n:'Materialkiste',i:'📦',p:{gold:180},type:'consumable',t:'4 zufällige Materialien'},
+ {id:'g_book',cat:'system',sys:'gamer',n:'Skillbuch',i:'📘',p:{cry:1},type:'consumable',t:'+3 Skillpunkte'},
+ {id:'h_suit',cat:'system',sys:'hero',n:'Heldenkostüm',i:'🦹',p:{gold:1000},type:'perm',b:{hp:5,dmg:5},t:'+5 % HP, +5 % Schaden (permanent)'},
+ {id:'c_pill',cat:'system',sys:'cult',n:'Qi-Sammelpille',i:'🟢',p:{gold:220},type:'consumable',t:'+80 Qi'},
+ {id:'c_elix',cat:'system',sys:'cult',n:'Durchbruchs-Elixier',i:'🏺',p:{cry:2},type:'consumable',t:'+25 % Chance beim nächsten Durchbruch'},
+ {id:'t_comp',cat:'system',sys:'tower',n:'Turm-Kompass',i:'🧭',p:{gold:200},type:'consumable',t:'+40 Aufstiegsenergie'},
+ {id:'e_muta',cat:'system',sys:'evo',n:'Mutagen',i:'🧪',p:{gold:220},type:'consumable',t:'+60 Evolutionspunkte'},
+ {id:'e_core',cat:'system',sys:'evo',n:'Evolutionskern',i:'🥚',p:{cry:4},type:'perm',b:{all:3},t:'+3 alle Werte (permanent)'},
+ {id:'gu_post',cat:'system',sys:'guild',n:'Rekrutierungsplakat',i:'📯',p:{gold:500},type:'consumable',t:'+1 Gildenmitglied (max. 10)'},
+ {id:'f_cat',cat:'system',sys:'fusion',n:'Fusions-Katalysator',i:'🔀',p:{cry:12},type:'perm',b:{xp:10},t:'+10 % XP permanent; aktive Fusion erhält zusätzlich +5 % pro System'},
+];
+const SHOPI = Object.fromEntries(SHOP.map(x=>[x.id,x]));
+const SHOP_CATS = {potion:'🧪 Tränke',gear:'⚔️ Ausrüstung',special:'🔰 Spezial',cosmetic:'🎨 Kosmetik',system:'💠 System-Items'};
+const DEFAULT_REWARDS = [
+ {n:'1 Folge Anime schauen',i:'📺',price:100},{n:'1 Stunde zocken (ohne Stream)',i:'🎮',price:200},
+ {n:'Pizza bestellen',i:'🍕',price:600},{n:'Ausschlafen ohne Wecker',i:'😴',price:400},{n:'Neues Gadget / Merch kaufen',i:'🛍️',price:3000}];
+
+/* =================== MECHANIKEN je System =================== */
+const lvlOfHero = p => HERO_RANKS.filter(r=>p>=r.p).length-1;
+const MECH = {
+ shadows:{
+  bonus(){ const B={}; for (const g of GATES){ const l=S.shadows[g.shadow.id]; if(l) addB(B,g.shadow.b,l); } return B; },
+  render(){
+    const list = GATES.filter(g=>S.shadows[g.shadow.id]);
+    return `<p class="dim">Besiegte Bosse können mit „Steh auf!“ als Schatten erweckt werden. Erneutes Erwecken stärkt den Schatten (max. Stufe ${MAX_SHADOW_LVL}).</p>
+    ${list.length? list.map(g=>`<div class="item"><div class="ii" style="filter:drop-shadow(0 0 6px #7a3cff) brightness(.6)">${g.shadow.i}</div><div class="sp"><b>${esc(g.shadow.n)}</b> <span class="tag">Stufe ${S.shadows[g.shadow.id]}</span><div class="dim">${g.shadow.t}</div></div></div>`).join('') : '<p class="c dim">Noch keine Schatten. Besiege einen Gate-Boss!</p>'}`;
+  }},
+ jutsu:{
+  bonus(){ const B={}; S.m.ninja.jutsu.forEach(id=>addB(B,JUTSU.find(j=>j.id===id).b)); return B; },
+  render(){ const n=S.m.ninja.jutsu.length;
+    return `<div class="row"><div class="big">${fmt(res('ninja'))} 🌀</div><div class="sp"></div><span class="tag">${NINJA_RANKS[n]}</span></div>
+    <p class="dim">Chakra erhältst du durch Chakra-Quests. Lerne Jutsus für dauerhafte Boni.</p>
+    ${JUTSU.map(j=>{const has=S.m.ninja.jutsu.includes(j.id);return `<div class="item"><div class="ii">${j.i}</div><div class="sp"><b>${j.n}</b><div class="dim">${j.t}</div></div>${has?'<span class="okc">✔ Gelernt</span>':`<button data-a="learnJutsu" data-id="${j.id}" ${res('ninja')<j.cost?'disabled':''}>${j.cost} 🌀</button>`}</div>`}).join('')}`; }},
+ gamer:{
+  bonus(){ const B={}; const g=S.m.gamer; g.items.forEach(id=>addB(B,RECIPES.find(r=>r.id===id).b)); g.skills.forEach(id=>addB(B,GSKILLS.find(r=>r.id===id).b)); return B; },
+  render(){ const g=S.m.gamer;
+    return `<div class="row"><div class="big">${fmt(res('gamer'))} 🔷</div><div class="sp dim">Skillpunkte</div></div>
+    <h3>🎒 Materialien</h3><div class="grid2">${Object.entries(MATS).map(([k,m])=>`<div class="item"><div class="ii">${m.i}</div><div class="sp">${m.n}</div><b>${g.mats[k]||0}</b></div>`).join('')}</div>
+    <p class="dim small">Materialien droppen bei erledigten Quests und in Gates. Händler: 1 zufälliges Material für 40 🪙 <button data-a="buyMat">Kaufen</button></p>
+    <h3>✨ Skills</h3>${GSKILLS.map(s=>{const has=g.skills.includes(s.id);return `<div class="item"><div class="ii">${s.i}</div><div class="sp"><b>${s.n}</b><div class="dim">${s.t}</div></div>${has?'<span class="okc">✔</span>':`<button data-a="learnSkill" data-id="${s.id}" ${res('gamer')<s.cost?'disabled':''}>${s.cost} 🔷</button>`}</div>`}).join('')}
+    <h3>🔨 Crafting</h3>${RECIPES.map(r=>{const has=g.items.includes(r.id);const can=Object.entries(r.need).every(([k,v])=>(g.mats[k]||0)>=v);
+      return `<div class="item"><div class="ii">${r.i}</div><div class="sp"><b>${r.n}</b><div class="dim">${r.t} · ${Object.entries(r.need).map(([k,v])=>`${v}×${MATS[k].i}`).join(' ')}</div></div>${has?'<span class="okc">✔</span>':`<button data-a="craft" data-id="${r.id}" ${can?'':'disabled'}>Craften</button>`}</div>`}).join('')}`; }},
+ hero:{
+  bonus(){ const B={}; const r=lvlOfHero(res('hero')); B.dmg=r*3; B.hp=r*3; if(S.m.hero.quirk) addB(B,QUIRKS.find(q=>q.id===S.m.hero.quirk).b); return B; },
+  render(){ const p=res('hero'), r=lvlOfHero(p), nx=HERO_RANKS[r+1];
+    return `<div class="row"><div class="big">${fmt(p)} ⭐</div><div class="sp"></div><span class="tag goldc">${HERO_RANKS[r].n}</span></div>
+    ${nx?`<div class="bar" style="margin:8px 0"><i style="width:${Math.min(100,(p-HERO_RANKS[r].p)/(nx.p-HERO_RANKS[r].p)*100)}%"></i></div><p class="dim small">Nächster Rang: ${nx.n} bei ${nx.p} ⭐ · Jeder Rang: +3 % Schaden & HP</p>`:'<p class="goldc">Du bist der größte Held!</p>'}
+    <h3>Deine Gabe</h3>${S.m.hero.quirk?(q=>`<div class="item"><div class="ii">${q.i}</div><div class="sp"><b>${q.n}</b><div class="dim">${q.t}</div></div></div>`)(QUIRKS.find(q=>q.id===S.m.hero.quirk)):
+      `<p class="dim">Wähle einmalig deine Gabe:</p>${QUIRKS.map(q=>`<div class="item"><div class="ii">${q.i}</div><div class="sp"><b>${q.n}</b><div class="dim">${q.t}</div></div><button data-a="quirk" data-id="${q.id}">Wählen</button></div>`).join('')}`}`; }},
+ cult:{
+  bonus(){ const i=S.m.cult.realm; return {all:i*2, hp:i*5}; },
+  render(){ const i=S.m.cult.realm, nx=REALMS[i+1]; const ch=breakChance();
+    return `<div class="row"><div class="big">${fmt(res('cult'))} ☯️</div><div class="sp"></div><span class="tag">${REALMS[i].n}</span></div>
+    <p class="dim">Jedes Reich: +2 alle Werte, +5 % HP. Ein misslungener Durchbruch kostet die Hälfte des Qi.</p>
+    ${REALMS.map((r,k)=>`<div class="item"><div class="ii">${k<=i?'🟢':'⚪'}</div><div class="sp">${r.n}</div><span class="dim">${r.cost?r.cost+' ☯️':''}</span></div>`).join('')}
+    ${nx?`<button class="full prim" style="margin-top:10px" data-a="breakthrough" ${res('cult')<nx.cost?'disabled':''}>Durchbruch zu „${nx.n}“ (${nx.cost} ☯️ · ${ch} %)</button>`:'<p class="goldc c">Du hast die Unsterblichkeit erreicht.</p>'}`; }},
+ tower:{
+  bonus(){ const f=S.m.tower.floor; return {all:Math.floor(f/10), xp:Math.floor(f/5)}; },
+  render(){ const f=S.m.tower.floor, cost=(f+1)*3, need=towerNeed(f+1), pw=derived().power;
+    return `<div class="row"><div class="big">Etage ${f}</div><div class="sp"></div><span class="tag">${fmt(res('tower'))} 🔺</span></div>
+    <p class="dim">Alle 5 Etagen: +1 % XP · alle 10 Etagen: +1 alle Werte · alle 10 Etagen: 1 💎</p>
+    <div class="item"><div class="ii">🛡️</div><div class="sp">Wächter Etage ${f+1}<div class="dim">Benötigte Kampfkraft: ${need} (deine: ${pw})</div></div></div>
+    <button class="full prim" data-a="climb" ${res('tower')<cost?'disabled':''}>Aufsteigen (${cost} 🔺)</button>`; }},
+ evo:{
+  bonus(){ return {...EVO[S.m.evo.stage].b}; },
+  render(){ const s=S.m.evo.stage, nx=EVO[s+1];
+    return `<div class="c" style="font-size:80px;filter:drop-shadow(0 0 16px var(--acc))">${EVO[s].i}</div><div class="c big">${EVO[s].n}</div>
+    <div class="row c" style="justify-content:center">${EVO.map((e,k)=>`<span style="font-size:22px;opacity:${k<=s?1:.3}">${e.i}</span>`).join('→')}</div>
+    <p class="c">${fmt(res('evo'))} 🧬</p>
+    ${nx?`<button class="full prim" data-a="evolve" ${res('evo')<nx.cost?'disabled':''}>Entwickeln zu ${nx.i} ${nx.n} (${nx.cost} 🧬)</button>`:'<p class="c goldc">Höchste Lebensform erreicht.</p>'}`; }},
+ guild:{
+  bonus(){ return {xp:S.m.guild.members*2}; },
+  render(){ const g=S.m.guild, cost=20*(g.members+1), e=g.exp;
+    const left = e ? e.until-Date.now() : 0;
+    return `<div class="row"><div class="big">${g.members}/10 👥</div><div class="sp"></div><span class="tag">${fmt(res('guild'))} 🛡️</span></div>
+    <p class="dim">Jedes Mitglied: +2 % XP und stärkere Expeditionen.</p>
+    <button class="full" data-a="recruit" ${g.members>=10||res('guild')<cost?'disabled':''}>Mitglied rekrutieren (${cost} 🛡️)</button>
+    <h3>🧭 Expeditionen</h3>
+    ${e?`<div class="quest"><b>${esc(e.n)}</b><div class="dim">${left>0?'Zurück in '+fmtDur(left):'Zurückgekehrt!'}</div>${left<=0?'<button class="full prim" data-a="claimExp">Belohnung abholen</button>':''}</div>`:
+      EXPEDITIONS.map((x,k)=>`<div class="item"><div class="ii">🧭</div><div class="sp"><b>${x.n}</b><div class="dim">${x.h} Std. · ca. ${x.xp*Math.max(1,g.members)} XP, ${x.marks} 🛡️, Gold</div></div><button data-a="expedition" data-k="${k}" ${g.members?'':'disabled'}>Start</button></div>`).join('')}`; }},
+};
+const towerNeed = f => 40 + f*10;
+function breakChance(){ const d=derived(); return Math.min(95, Math.round(60 + d.st.int*0.3 + (S.elixir?25:0) - S.m.cult.realm*4)); }
+function fmtDur(ms){ const s=Math.max(0,Math.floor(ms/1000)); return `${pad(Math.floor(s/3600))}:${pad(Math.floor(s%3600/60))}:${pad(s%60)}`; }
+
+/* =================== UI-Grundlagen =================== */
+const UI = {tab:'status', edit:false, detail:null, battle:null, shopTab:'shop', shopCat:'potion', fuseSel:[]};
+const $ = s => document.querySelector(s);
+function toast(html, tag, dur=3200){
+  const d = document.createElement('div'); d.className='toast'; d.style.setProperty('--d',dur+'ms');
+  d.innerHTML = `<b>${esc(tag||mainTag())}</b> ${html}`; $('#toasts').appendChild(d);
+  setTimeout(()=>d.remove(), dur+500);
+}
+function modal(html){ $('#modalBox').innerHTML = html; $('#modal').classList.add('on'); }
+function closeModal(){ $('#modal').classList.remove('on'); }
+const fxQ = []; let fxBusy = false;
+function queueFx(fn){ fxQ.push(fn); if (!fxBusy) nextFx(); }
+function nextFx(){ const fn = fxQ.shift(); if (!fn){ fxBusy=false; return; } fxBusy=true; fn(); }
+function showFx(html, ms=2600){
+  const fx = $('#fx'); fx.innerHTML = html + `<p class="dim" style="margin-top:24px">Tippen zum Fortfahren</p>`; fx.classList.add('on');
+  let done=false; const close=()=>{ if(done) return; done=true; fx.classList.remove('on'); fx.onclick=null; setTimeout(nextFx,150); };
+  fx.onclick = close; if (ms) setTimeout(close, ms);
+}
+function fxLevelUp(l, pts, rank){
+  vibrate([60,40,120]);
+  showFx(`<div class="ring"></div><div class="ring" style="animation-delay:.3s"></div><div class="dim" style="letter-spacing:.3em">[SYSTEM]</div><div class="lvlup">LEVEL UP!</div>
+  <div class="big" style="margin-top:8px">Level ${l}</div><p>+${pts} freie Statuspunkte</p>${rank?`<p class="goldc" style="font-size:20px">Rang aufgestiegen: <b>${rank}</b></p>`:''}`, 3200);
+}
+function fxUnlock(s){
+  vibrate([100,50,100,50,200]);
+  const t = s.theme;
+  showFx(`<div class="ring" style="border-color:${t.acc};box-shadow:0 0 30px ${t.acc}"></div><div class="dim" style="letter-spacing:.3em">${esc(s.tag)}</div>
+  <div style="font-size:80px;filter:drop-shadow(0 0 20px ${t.acc})">${s.icon}</div><div class="lvlup" style="font-size:24px;text-shadow:0 0 14px ${t.acc}">NEUES SYSTEM</div>
+  <div class="big" style="color:${t.acc}">${esc(s.name)}</div><p>${esc(s.flavor.unlock)}</p>`, 4500);
+}
+function fxGeneric(icon,title,txt){ showFx(`<div class="ring"></div><div style="font-size:70px">${icon}</div><div class="lvlup" style="font-size:26px">${title}</div><p>${txt}</p>`, 4000); }
+function vibrate(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
+
+/* =================== Views =================== */
+const TABS = [['status','👤','Status'],['quests','📜','Quests'],['gates','🌀','Gates'],['shop','🛒','Shop'],['systems','💠','Systeme'],['more','☰','Mehr']];
+function render(){
+  applyTheme();
+  const f = activeFusion();
+  $('#hdrName').textContent = f ? `🔀 ${f.name}` : `${SYS[S.sys.main].icon} ${SYS[S.sys.main].name}`;
+  $('#hdrPill').innerHTML = `🪙 ${fmt(S.gold)} · 💎 ${fmt(S.cry)}`;
+  const open = S.quests.filter(q=>activeIds().includes(q.sys) && !q.done).length + (S.penalty&&!S.penalty.done?1:0);
+  $('#tabs').style.gridTemplateColumns = `repeat(${TABS.length},1fr)`;
+  $('#tabs').innerHTML = TABS.map(([id,i,n])=>`<button data-a="tab" data-id="${id}" class="${UI.tab===id?'on':''}"><span>${i}</span>${n}${id==='quests'&&open?`<em class="badge">${open}</em>`:''}</button>`).join('');
+  const v = {status:vStatus, quests:vQuests, gates:vGates, shop:vShop, systems:vSystems, more:vMore}[UI.tab];
+  $('#main').innerHTML = `<div class="fadein">${v()}</div>`;
+  if (UI.tab==='gates' && UI.battle) afterBattleRender();
+}
+
+function vStatus(){
+  const d = derived(), need = xpNeed(S.level), rk = rankOf(S.level);
+  return `<section class="win ${activeFusion()?'fusionwin':''}"><h2>Status</h2>
+   <div class="row"><div class="sp"><div class="dim small">NAME</div><div class="big" data-a="editName" style="cursor:pointer">${esc(S.name)} <span style="font-size:16px">✏️</span></div>
+     <div class="dim small" style="margin-top:6px">TITEL</div><div data-a="pickTitle" style="cursor:pointer;color:var(--acc2);font-weight:700">„${esc(S.title)}“ ▾</div></div>
+     <div class="c"><div class="dim small">RANG</div><div class="rank">${rk}</div></div></div>
+   <div class="row" style="margin-top:14px"><div class="big">LV. ${S.level}</div><div class="sp"></div><div class="dim">${fmt(S.xp)} / ${fmt(need)} XP</div></div>
+   <div class="bar"><i style="width:${Math.min(100,S.xp/need*100)}%"></i></div>
+   <div class="grid2" style="margin-top:10px"><div><div class="dim small">HP ${fmt(d.hp)}</div><div class="bar hp"><i style="width:100%"></i></div></div><div><div class="dim small">MP ${fmt(d.mp)}</div><div class="bar mp"><i style="width:100%"></i></div></div></div>
+   <div class="grid3 c" style="margin-top:12px"><div>🔥<br><b>${curStreak()}</b><div class="dim small">Streak</div></div><div>🗝️<br><b>${S.keys}</b><div class="dim small">Schlüssel</div></div><div>⚔️<br><b>${fmt(d.power)}</b><div class="dim small">Kampfkraft</div></div></div>
+  </section>
+  <section class="win"><h2>Werte</h2>
+   ${S.points?`<p class="c" style="color:var(--acc)">Verfügbare Punkte: <b style="font-size:22px">${S.points}</b></p>`:''}
+   ${Object.entries(STATS).map(([k,s])=>{const b=d.st[k]-S.base[k];return `<div class="stat"><span class="ico">${s.i}</span><span class="sp">${s.n}</span><b>${S.base[k]}</b>${b?`<span class="bonus">+${b}</span>`:''}${S.points?`<button class="sq" data-a="addStat" data-k="${k}" aria-label="${s.n} erhöhen">+</button>`:''}</div>`}).join('')}
+   ${bonusSummary(d.B)}
+  </section>
+  ${S.penalty&&!S.penalty.done?`<section class="win penalty" data-a="tab" data-id="quests"><h2>⚠ Strafquest aktiv</h2><p class="c">${esc(S.penalty.name)} – tippe hier.</p></section>`:''}
+  <section class="win"><h2>Aktive Systeme</h2><div class="c">${activeIds().map(id=>`<span class="chip on" style="--c:${SYS[id].theme.acc}">${SYS[id].icon} ${esc(SYS[id].name)}</span>`).join('')}</div></section>`;
+}
+function bonusSummary(B){
+  const parts = [['xp','% XP'],['dmg','% Schaden'],['hp','% HP'],['mp','% MP'],['crit','% Krit'],['dodge','% Ausweichen'],['res','% Ressourcen']].filter(([k])=>B[k]).map(([k,n])=>`+${Math.round(B[k])}${n}`);
+  if (S.buffs.xpUntil>Date.now()) parts.push(`🍶 XP-Trank aktiv (${fmtDur(S.buffs.xpUntil-Date.now())})`);
+  return parts.length ? `<p class="dim small c" style="margin-top:10px">Boni: ${parts.join(' · ')}</p>` : '';
+}
+
+function questCard(q){
+  const pct = Math.min(100, q.progress/q.target*100), big = q.target>=50, st = q.stat?STATS[q.stat]:null;
+  return `<div class="quest ${q.done?'done':''}">
+   <div class="row"><div class="sp"><span class="qn">${esc(q.name)}</span>${st?`<span class="tag">${st.i} ${st.n}</span>`:''}</div>
+     ${UI.edit?`<button data-a="editQuest" data-id="${q.id}">✏️</button>`:`<span class="qp ${q.done?'okc':''}" data-a="setProg" data-id="${q.id}">${fmt(q.progress)} / ${fmt(q.target)} ${esc(q.unit)}</span>`}</div>
+   <div class="bar" style="margin:8px 0"><i style="width:${pct}%"></i></div>
+   ${q.done?`<div class="row"><span class="okc">✔ ERLEDIGT</span><span class="sp"></span><span class="dim small">+${q.xp} XP${q.res?` · +${q.res} ${resIcon(q.sys)}`:''}</span></div>`:
+   `<div class="row"><button class="sq" data-a="prog" data-id="${q.id}" data-d="${big?-10:-1}">−</button><button class="sp" data-a="prog" data-id="${q.id}" data-d="1">+1</button>${big?`<button class="sp" data-a="prog" data-id="${q.id}" data-d="10">+10</button>`:''}<button class="sp prim" data-a="prog" data-id="${q.id}" data-d="all">✓</button></div>
+   <div class="dim small" style="margin-top:4px">Belohnung: ${q.xp} XP${q.res?` · ${q.res} ${resIcon(q.sys)}`:''}</div>`}
+  </div>`;
+}
+const resIcon = id => SYS[id].res.i;
+function vQuests(){
+  let h = '';
+  if (S.penalty && !S.penalty.done){
+    const p = S.penalty;
+    h += `<section class="win penalty"><h2>Strafquest</h2><p class="c dim">Die Daily Quest wurde nicht abgeschlossen. Bis Mitternacht erfüllen – sonst verlierst du XP. Gates sind gesperrt.</p>
+    <div class="quest"><div class="row"><span class="qn sp">${esc(p.name)}</span><span class="qp">${p.progress} / ${p.target} ${esc(p.unit)}</span></div><div class="bar en" style="margin:8px 0"><i style="width:${p.progress/p.target*100}%"></i></div>
+    <div class="row"><button class="sq" data-a="penProg" data-d="-1">−</button><button class="sp" data-a="penProg" data-d="1">+1</button><button class="sp" data-a="penProg" data-d="10">+10</button><button class="sp prim" data-a="penProg" data-d="all">✓</button></div></div>
+    ${(S.inv.skip||0)?'<button class="full" data-a="useItem" data-id="skip">📜 Strafquest-Erlass einsetzen</button>':''}</section>`;
+  }
+  const now = new Date(), mid = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+  h += `<p class="c dim small">⏳ Reset in <b id="cd">${fmtDur(mid-now)}</b> · Tages-XP: ${fmt(S.todayXP)}</p>
+  <div class="row"><button class="sp ${UI.edit?'prim':''}" data-a="toggleEdit">${UI.edit?'✔ Fertig':'✏️ Bearbeiten'}</button><button class="sp" data-a="newQuest">＋ Quest</button></div>`;
+  const f = activeFusion(), ids = activeIds();
+  const groups = f ? [{title:`🔀 ${f.name}`, key:'f:'+f.id, ids:f.src}] : [];
+  ids.filter(id=>!f || !f.src.includes(id)).forEach(id=>groups.push({title:id==='solo'?'Daily Quest: Training zur Stärkung':`${SYS[id].icon} ${SYS[id].name}`, key:id, ids:[id]}));
+  // Solo immer zuerst (Pflicht)
+  for (const g of groups){
+    const qs = S.quests.filter(q=>g.ids.includes(q.sys)); if (!qs.length && !UI.edit) continue;
+    const doneN = qs.filter(q=>q.done).length;
+    h += `<section class="win ${g.key.startsWith('f:')?'fusionwin':''}"><h2>${esc(g.title)}</h2>
+    ${g.ids.includes('solo')?`<p class="c dim small">[Daily Quest eingetroffen] Pflichtquests – alle erledigen für den Bonus. Unvollständig = Strafquest.</p>`:''}
+    <p class="c small">${doneN} / ${qs.length} erledigt ${S.allBonus[g.key]?'<span class="okc">· Bonus erhalten ✔</span>':''}</p>
+    ${qs.map(questCard).join('')}</section>`;
+  }
+  const side = S.side.filter(q=>!(q.repeat==='once' && q.done));
+  h += `<section class="win"><h2>Nebenquests</h2>
+   ${side.map(q=>`<div class="quest ${q.done?'done':''}"><div class="row"><div class="sp"><span class="qn">${esc(q.name)}</span><div class="dim small">${q.xp} XP · ${q.repeat==='daily'?'täglich':'einmalig'}</div></div>
+     ${UI.edit?`<button data-a="editSide" data-id="${q.id}">✏️</button>`:(q.done?'<span class="okc">✔</span>':`<button class="prim" data-a="sideDone" data-id="${q.id}">Erledigt</button>`)}</div></div>`).join('')||'<p class="dim c">Keine Nebenquests.</p>'}
+   <button class="full" data-a="newSide">＋ Nebenquest hinzufügen</button></section>`;
+  return h;
+}
+
+/* ---------- Gates ---------- */
+function vGates(){
+  if (UI.battle) return vBattle();
+  const pen = S.penalty && !S.penalty.done;
+  return `<section class="win"><h2>Gates</h2>
+   <div class="row"><div class="sp">🗝️ Gate-Schlüssel: <b>${S.keys}</b></div><span class="dim small">+1 je Daily-Quest, +2 Tagesbonus</span></div>
+   ${pen?'<p class="badc c">⚠ Gates sind gesperrt, bis die Strafquest erfüllt ist.</p>':''}
+   ${GATES.map(g=>{const lock=S.level<g.lvl;return `<div class="quest" style="${lock?'opacity:.5':''}"><div class="row"><div class="rank" style="width:40px;height:40px;font-size:22px">${g.rank}</div><div class="sp"><b>${g.name}</b><div class="dim small">${lock?`🔒 ab Level ${g.lvl}`:`Boss: ${g.boss[1]} ${g.boss[0]} · ${g.xp} XP · ${g.gold} 🪙`}</div></div>
+   <button data-a="enterGate" data-id="${g.id}" ${lock||pen||S.keys<1?'disabled':''}>Betreten</button></div></div>`}).join('')}
+  </section>
+  <section class="win"><h2>Schattenarmee</h2>${MECH.shadows.render()}</section>`;
+}
+function vBattle(){
+  const b = UI.battle, e = b.enemy, all = b.list.length;
+  if (b.over==='win') return `<section class="win"><h2>Gate geschlossen</h2><div class="c" style="font-size:60px">🏆</div>
+    <p class="c">${b.reward}</p>
+    ${b.arise && b.arise.tries>0 && !b.arise.ok ? `<div class="quest c" style="border-color:#7a3cff;box-shadow:0 0 16px #7a3cff"><div class="enemy" style="filter:brightness(.3) drop-shadow(0 0 12px #7a3cff)">${b.g.boss[1]}</div>
+      <p>Die Leiche des Bosses pulsiert mit Mana …<br><span class="dim small">Chance: ${ariseChance(b.g)} % · Versuche: ${b.arise.tries}</span></p><button class="full prim" style="font-size:22px;background:linear-gradient(90deg,#5a1fd0,#b07bff)" data-a="arise">Steh auf!</button></div>` : ''}
+    ${b.arise && b.arise.ok ? `<p class="c" style="color:#c9a6ff">${b.g.shadow.i} ${esc(b.g.shadow.n)} hat sich deiner Armee angeschlossen.</p>`:''}
+    ${b.arise && b.arise.tries===0 && !b.arise.ok ? '<p class="c dim">Der Schatten ist verblasst …</p>':''}
+    <button class="full" data-a="leaveGate">Gate verlassen</button></section>`;
+  if (b.over==='lose') return `<section class="win penalty"><h2>Niederlage</h2><div class="c" style="font-size:60px">💀</div><p class="c">Du bist im Gate gefallen. Werde stärker und kehre zurück.</p><button class="full" data-a="leaveGate">Zurück</button></section>`;
+  const pots = potionCount();
+  return `<section class="win"><h2>${b.g.rank}-Gate · ${esc(b.g.name)}</h2>
+   <div class="row dim small"><span class="sp">${e.boss?'⚠ BOSS':'Gegner '+(b.idx+1)+' / '+all}</span><span>${esc(e.n)}</span></div>
+   <div style="position:relative"><div class="enemy" id="enemy">${e.i}</div><div id="dmgfx"></div></div>
+   <div class="bar en"><i style="width:${Math.max(0,e.hp/e.max*100)}%"></i></div><div class="dim small c">${fmt(Math.max(0,e.hp))} / ${fmt(e.max)}</div>
+   <hr><div class="row small"><span class="sp">${esc(S.name)} · HP ${fmt(Math.max(0,b.php))}/${fmt(b.pmax)}</span><span>MP ${fmt(b.mp)}/${fmt(b.mpmax)}</span></div>
+   <div class="bar hp"><i style="width:${Math.max(0,b.php/b.pmax*100)}%"></i></div><div class="bar mp" style="margin-top:4px"><i style="width:${b.mp/b.mpmax*100}%"></i></div>
+   <div class="grid2" style="margin-top:12px"><button data-a="bAct" data-k="atk" ${b.auto?'disabled':''}>⚔️ Angriff</button><button data-a="bAct" data-k="skill" ${b.auto||b.mp<15?'disabled':''}>✨ Mana-Klinge (15)</button>
+    <button data-a="bAct" data-k="pot" ${b.auto||!pots?'disabled':''}>🧪 Trank (${pots})</button><button data-a="bAuto" class="${b.auto?'prim':''}">${b.auto?'⏸ Auto aus':'▶ Auto-Kampf'}</button></div>
+   <button class="full ghost" style="margin-top:8px" data-a="flee">🏃 Fliehen</button>
+   <div class="log">${b.log.slice(0,12).map(l=>`<div>${l}</div>`).join('')}</div></section>`;
+}
+function afterBattleRender(){
+  const b = UI.battle; if (!b || !b.anim) return;
+  const el = $('#enemy'); if (el && b.anim.hit){ el.classList.add('hit'); }
+  const fx = $('#dmgfx'); if (fx && b.anim.txt){ fx.innerHTML = `<div class="dmg">${b.anim.txt}</div>`; }
+  b.anim = null;
+}
+
+/* ---------- Shop ---------- */
+function price(it){ const f = activeFusion() ? 0.9 : 1; const p = {}; for (const k in it.p) p[k] = Math.max(1, Math.round(it.p[k]*(k==='gold'?f:1))); return p; }
+const priceTxt = p => Object.entries(p).map(([k,v])=>`${fmt(v)} ${CUR[k].i}`).join(' ');
+const canPay = p => Object.entries(p).every(([k,v])=>S[k==='gold'?'gold':'cry']>=v);
+const owned = id => S.owned.includes(id);
+function shopVisible(it){ if (!it.sys) return true; if (it.sys==='fusion') return S.sys.fusionUnlocked; return S.sys.unlocked.includes(it.sys); }
+function vShop(){
+  const tabs = `<div class="grid3"><button class="${UI.shopTab==='shop'?'prim':''}" data-a="shopTab" data-id="shop">🛒 Shop</button><button class="${UI.shopTab==='inv'?'prim':''}" data-a="shopTab" data-id="inv">🎒 Inventar</button><button class="${UI.shopTab==='rew'?'prim':''}" data-a="shopTab" data-id="rew">🎁 Belohn.</button></div>`;
+  const wallet = `<div class="row c" style="justify-content:space-around;margin:10px 0"><div>🪙 <b>${fmt(S.gold)}</b><div class="dim small">Gold</div></div><div>💎 <b>${fmt(S.cry)}</b><div class="dim small">Kristalle</div></div><div>🗝️ <b>${S.keys}</b><div class="dim small">Schlüssel</div></div></div>`;
+  if (UI.shopTab==='inv') return tabs + `<section class="win"><h2>Inventar</h2>${wallet}${vInventory()}</section>`;
+  if (UI.shopTab==='rew') return tabs + `<section class="win"><h2>Echte Belohnungen</h2>${wallet}${vRewards()}</section>`;
+  const items = SHOP.filter(it=>it.cat===UI.shopCat && shopVisible(it));
+  return tabs + `<section class="win"><h2>Händler des Systems</h2>${wallet}
+   ${activeFusion()?'<p class="c small okc">🔀 Fusions-Rabatt aktiv: −10 % auf Gold-Preise</p>':''}
+   <div class="c">${Object.entries(SHOP_CATS).map(([k,n])=>`<span class="chip ${UI.shopCat===k?'on':''}" data-a="shopCat" data-id="${k}">${n}</span>`).join('')}</div>
+   ${items.map(it=>{const p=price(it), once=['equip','perm','cosmetic','title'].includes(it.type), has=once&&owned(it.id), cnt=S.inv[it.id]||0;
+     return `<div class="item"><div class="ii">${it.i}</div><div class="sp"><b>${esc(it.n)}</b>${it.sys?` <span class="tag">${it.sys==='fusion'?'🔀 Fusion':SYS[it.sys].icon}</span>`:''}${it.slot?` <span class="tag">${SLOTS[it.slot]}</span>`:''}<div class="dim small">${esc(it.t)}${cnt?` · Besitz: ${cnt}`:''}</div></div>
+     ${has?'<span class="okc">✔</span>':`<button data-a="buy" data-id="${it.id}" ${canPay(p)?'':'disabled'}>${priceTxt(p)}</button>`}</div>`}).join('') || '<p class="dim c">Hier gibt es (noch) nichts. Schalte Systeme frei!</p>'}
+  </section>`;
+}
+function vInventory(){
+  const cons = Object.entries(S.inv).filter(([id,n])=>n>0 && SHOPI[id]);
+  const usable = id => !['hp_s','hp_l','mp_s'].includes(id);
+  const gear = S.owned.filter(id=>SHOPI[id]?.type==='equip');
+  const themes = S.owned.filter(id=>SHOPI[id]?.type==='cosmetic');
+  const perms = S.owned.filter(id=>SHOPI[id]?.type==='perm');
+  return `<h3>Ausrüstung</h3>${Object.entries(SLOTS).map(([s,n])=>{const it=SHOPI[S.equip[s]];return `<div class="item"><div class="ii">${it?it.i:'▫️'}</div><div class="sp"><div class="dim small">${n}</div><b>${it?esc(it.n):'– leer –'}</b>${it?`<div class="dim small">${esc(it.t)}</div>`:''}</div>${it?`<button data-a="unequip" data-id="${s}">Ablegen</button>`:''}</div>`}).join('')}
+   ${gear.filter(id=>!Object.values(S.equip).includes(id)).map(id=>{const it=SHOPI[id];return `<div class="item"><div class="ii">${it.i}</div><div class="sp"><b>${esc(it.n)}</b><div class="dim small">${SLOTS[it.slot]} · ${esc(it.t)}</div></div><button data-a="equip" data-id="${id}">Ausrüsten</button></div>`}).join('')}
+   <h3>Verbrauchsgüter</h3>${cons.map(([id,n])=>{const it=SHOPI[id];return `<div class="item"><div class="ii">${it.i}</div><div class="sp"><b>${esc(it.n)}</b> ×${n}<div class="dim small">${esc(it.t)}</div></div>${usable(id)?`<button data-a="useItem" data-id="${id}">Benutzen</button>`:'<span class="dim small">im Gate</span>'}</div>`}).join('')||'<p class="dim">Leer.</p>'}
+   ${perms.length?`<h3>Permanente Boni</h3>${perms.map(id=>`<div class="item"><div class="ii">${SHOPI[id].i}</div><div class="sp"><b>${esc(SHOPI[id].n)}</b><div class="dim small">${esc(SHOPI[id].t)}</div></div></div>`).join('')}`:''}
+   <h3>Themen</h3><div class="item"><div class="ii">💠</div><div class="sp">Systemfarben (Standard)</div>${S.cosTheme?'<button data-a="setTheme" data-id="">Anwenden</button>':'<span class="okc">aktiv</span>'}</div>
+   ${themes.map(id=>`<div class="item"><div class="ii">${SHOPI[id].i}</div><div class="sp">${esc(SHOPI[id].n)}</div>${S.cosTheme===id?'<span class="okc">aktiv</span>':`<button data-a="setTheme" data-id="${id}">Anwenden</button>`}</div>`).join('')}
+   ${S.sys.unlocked.includes('gamer')?`<h3>Materialien</h3><div class="grid2">${Object.entries(MATS).map(([k,m])=>`<div>${m.i} ${m.n}: <b>${S.m.gamer.mats[k]||0}</b></div>`).join('')}</div>`:''}`;
+}
+function vRewards(){
+  return `<p class="dim small c">Lege eigene Belohnungen aus dem echten Leben fest und kaufe sie dir mit hart erarbeitetem Gold. Ehrensache: erst einlösen, dann genießen!</p>
+   ${S.rewards.map(r=>`<div class="item"><div class="ii">${esc(r.i||'🎁')}</div><div class="sp"><b>${esc(r.n)}</b><div class="dim small">${fmt(r.price)} 🪙</div></div>
+     <button class="ghost" data-a="editReward" data-id="${r.id}" aria-label="Bearbeiten">✏️</button><button data-a="redeem" data-id="${r.id}" ${S.gold<r.price?'disabled':''}>Einlösen</button></div>`).join('')}
+   <button class="full" style="margin-top:10px" data-a="newReward">＋ Belohnung hinzufügen</button>
+   ${S.rewardLog.length?`<h3>Zuletzt eingelöst</h3>${S.rewardLog.slice(0,10).map(l=>`<div class="dim small">${new Date(l.t).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})} – ${esc(l.n)} (${fmt(l.price)} 🪙)</div>`).join('')}`:''}`;
+}
+
+/* ---------- Systeme & Verschmelzung ---------- */
+const FUSE_FRAG = {solo:'Schatten',ninja:'Chakra',gamer:'Pixel',hero:'Helden',cult:'Dao',tower:'Turm',evo:'Chimären',guild:'Gilden'};
+function suggestName(ids){ const fr = ids.map(id=>FUSE_FRAG[id]||SYS[id].name.split('-')[0]); const suf = ids.length>=4?'Omni-System':ids.length===3?'Konvergenz':'System'; return (ids.length>3?fr.slice(0,3):fr).join('-')+'-'+suf; }
+function vSystems(){
+  if (UI.detail) return vSysDetail(SYS[UI.detail]);
+  let h = `<section class="win"><h2>Verschmelzung</h2>`;
+  if (!S.sys.fusionUnlocked){
+    h += `<p class="c" style="font-size:40px">🔒🔀</p><p class="dim c">Endgame: Verschmelze beliebige Systeme zu deinem eigenen Fusions-System.</p>${condList(FUSION_UNLOCK)}`;
+  } else {
+    h += `<p class="dim small c">Fusion: Quest-Pools, Mechaniken und Boni aller Quellsysteme laufen gemeinsam. Bonus: +${FUSION_XP_PER_SYS} % XP & +${FUSION_RES_PER_SYS} % Ressourcen pro System, −10 % Shop-Preise.</p>`;
+    h += S.sys.fusions.map(f=>{const th=themeOf(f.src), on=S.sys.main==='f:'+f.id;return `<div class="syscard" style="--c:${th.acc};border-image:${th.grad} 1"><div class="row"><div class="sp"><b style="background:${th.grad};-webkit-background-clip:text;background-clip:text;color:transparent;font-size:18px">🔀 ${esc(f.name)}</b><div>${f.src.map(id=>SYS[id].icon).join(' + ')}</div><div class="dim small">+${f.src.length*FUSION_XP_PER_SYS} % XP · +${f.src.length*FUSION_RES_PER_SYS} % Ressourcen</div></div>${on?'<span class="okc">AKTIV</span>':''}</div>
+      <div class="grid3" style="margin-top:8px"><button data-a="fuseActivate" data-id="${f.id}">${on?'Deaktiv.':'Aktivieren'}</button><button data-a="fuseRename" data-id="${f.id}">✏️ Name</button><button class="bad" data-a="fuseDissolve" data-id="${f.id}">Auflösen</button></div></div>`}).join('');
+    h += `<button class="full prim" data-a="fuseNew">🔀 Neue Verschmelzung</button>`;
+  }
+  h += `</section><section class="win"><h2>Systeme</h2><p class="dim small c">Spielerlevel und Werte gelten global. Mehrere Systeme können gleichzeitig laufen.</p>`;
+  for (const s of SYSTEMS){
+    const un = S.sys.unlocked.includes(s.id), act = S.sys.active.includes(s.id), main = S.sys.main===s.id;
+    h += `<div class="syscard ${un?'':'locked'}" style="--c:${s.theme.acc}"><div class="row"><div class="si">${un?s.icon:'🔒'}</div><div class="sp"><b style="color:${s.theme.acc}">${esc(s.name)}</b>${main?' <span class="tag">Haupt</span>':''}${un&&act&&!main?' <span class="tag okc">aktiv</span>':''}<div class="dim small">${esc(s.desc)}</div></div></div>
+     ${un?`<div class="grid3" style="margin-top:8px"><button data-a="sysOpen" data-id="${s.id}">Öffnen</button><button data-a="sysMain" data-id="${s.id}" ${main?'disabled':''}>Haupt</button><button data-a="sysToggle" data-id="${s.id}" ${s.id==='solo'?'disabled':''}>${act?'Pause':'Start'}</button></div>`:condList(s.unlock)}</div>`;
+  }
+  return h + `</section>`;
+}
+function condList(c){ return c.map(x=>{const v=COND[x.k].val();return `<div class="small" style="margin-top:6px">${v>=x.v?'✅':'🔸'} ${COND[x.k].n(x.v)} <span class="dim">(${Math.min(v,x.v)}/${x.v})</span><div class="bar" style="height:6px"><i style="width:${Math.min(100,v/x.v*100)}%"></i></div></div>`}).join(''); }
+function vSysDetail(s){
+  return `<button class="ghost" data-a="sysBack">← Zurück</button><section class="win" style="--acc:${s.theme.acc};--acc2:${s.theme.acc2};--grad:linear-gradient(90deg,${s.theme.acc},${s.theme.acc2})"><h2>${s.icon} ${esc(s.name)}</h2><p class="dim c">${esc(s.desc)}</p>
+   <p class="c">Ressource: ${s.res.i} ${esc(s.res.n)}: <b>${fmt(res(s.id))}</b></p>${MECH[s.mech].render()}</section>`;
+}
+function vFuseNew(){
+  const sel = UI.fuseSel, th = sel.length ? themeOf(sel) : null;
+  return `<h2>Neue Verschmelzung</h2><p class="dim small c">Wähle mindestens 2 freigeschaltete Systeme.</p>
+  <div class="c">${S.sys.unlocked.map(id=>`<span class="chip ${sel.includes(id)?'on':''}" style="--c:${SYS[id].theme.acc}" data-a="fuseSel" data-id="${id}">${SYS[id].icon} ${esc(SYS[id].name)}</span>`).join('')}</div>
+  ${th?`<div style="height:10px;border-radius:6px;margin:12px 0;background:${th.grad};box-shadow:0 0 12px ${th.acc}"></div>`:''}
+  <label>Name des Fusions-Systems</label><input id="fuseName" value="${esc(UI.fuseName ?? (sel.length>=2?suggestName(sel):''))}" placeholder="Name" oninput="UI.fuseName=this.value">
+  <p class="small c">${sel.length>=2?`Bonus: +${sel.length*FUSION_XP_PER_SYS} % XP · +${sel.length*FUSION_RES_PER_SYS} % Ressourcen`:''}</p>
+  <div class="grid2"><button data-a="closeModal">Abbrechen</button><button class="prim" data-a="fuseDo" ${sel.length<2?'disabled':''}>Verschmelzen!</button></div>`;
+}
+
+/* ---------- Mehr ---------- */
+function vMore(){
+  const days = []; for (let i=29;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=dayStr(d); const h=S.history.find(x=>x.d===ds);
+    days.push(i===0?`<i class="${soloAllDone()?'y':''}" title="heute" style="outline:1px solid var(--acc)"></i>`:`<i class="${h?(h.all?'y':'n'):''}" title="${ds}"></i>`); }
+  return `<section class="win"><h2>Verlauf</h2><div class="grid3 c"><div>🔥<br><b>${curStreak()}</b><div class="dim small">Streak</div></div><div>🏅<br><b>${Math.max(S.bestStreak,curStreak())}</b><div class="dim small">Rekord</div></div><div>✅<br><b>${S.cnt.allDone}</b><div class="dim small">Perfekte Tage</div></div></div>
+   <h3>Letzte 30 Tage</h3><div class="cal">${days.join('')}</div><p class="dim small">Grün = alle Daily Quests · Rot = verpasst</p>
+   <div class="grid2 small"><div>Quests erledigt: <b>${S.cnt.quests}</b></div><div>Nebenquests: <b>${S.cnt.side}</b></div><div>Gates: <b>${S.cnt.dungeons}</b></div><div>Schatten erweckt: <b>${S.cnt.arise}</b></div></div>
+   <h3>Tage</h3>${S.history.slice(0,14).map(h=>`<div class="row small"><span class="sp">${parseDay(h.d).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})}</span><span>${h.done}/${h.total}</span><span style="width:70px;text-align:right">${fmt(h.xp)} XP</span><span>${h.all?'✅':'❌'}</span></div>`).join('')||'<p class="dim">Noch keine abgeschlossenen Tage.</p>'}</section>
+  <section class="win"><h2>Protokoll</h2><div class="log" style="max-height:220px">${S.log.slice(0,40).map(l=>`<div>${new Date(l.t).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})} – ${esc(l.m)}</div>`).join('')||'Leer'}</div></section>
+  <section class="win"><h2>Backup</h2><p class="dim small">Alle Daten liegen nur lokal in diesem Browser. Exportiere regelmäßig!</p>
+   <div class="grid2"><button data-a="exportSave">⬇️ Export (JSON)</button><button data-a="importSave">⬆️ Import</button></div>
+   <button class="full ghost" style="margin-top:8px" data-a="copySave">📋 Spielstand als Text kopieren / einfügen</button>
+   <input type="file" id="importFile" accept="application/json,.json" style="display:none"></section>
+  <section class="win"><h2>Einstellungen</h2><button class="full bad" data-a="resetAll">Spielstand komplett zurücksetzen</button>
+   <p class="dim small c" style="margin-top:12px">Das System v1 · Fan-Projekt, inspiriert von „System“-Geschichten. Keine offiziellen Inhalte.</p></section>`;
+}
+
+/* =================== Quest-Logik =================== */
+function dropMats(n){
+  if (!S.sys.unlocked.includes('gamer')) return '';
+  const B = bonuses(); n += (B.loot||0); const got = {};
+  for (let i=0;i<n;i++){ const k = pick(Object.keys(MATS)); S.m.gamer.mats[k]=(S.m.gamer.mats[k]||0)+1; got[k]=(got[k]||0)+1; }
+  return Object.entries(got).map(([k,v])=>`${v}×${MATS[k].i}`).join(' ');
+}
+function completeQuest(q){
+  q.done = true; q.progress = q.target;
+  const xp = gainXP(q.xp), gold = Math.round(q.xp/2); S.gold += gold;
+  if (q.stat) S.base[q.stat]++;
+  let extra = '';
+  if (q.sys==='solo'){ S.keys++; extra=' · +1 🗝️'; }
+  else if (q.res){ const r = addRes(q.sys,q.res); extra = ` · +${r} ${resIcon(q.sys)}`; }
+  if (Math.random() < .5){ const m = dropMats(1); if (m) extra += ' · '+m; }
+  S.cnt.quests++; log(`Quest erledigt: ${q.name}`);
+  toast(`Quest abgeschlossen: <b>${esc(q.name)}</b><br>+${xp} XP · +${gold} 🪙${q.stat?` · +1 ${STATS[q.stat].n}`:''}${extra}`, SYS[q.sys].tag);
+  vibrate(40);
+  checkAllDone();
+}
+function checkAllDone(){
+  for (const id of activeIds()){
+    const qs = S.quests.filter(q=>q.sys===id);
+    if (!qs.length || S.allBonus[id] || !qs.every(q=>q.done)) continue;
+    S.allBonus[id] = true; const s = SYS[id];
+    if (id==='solo'){
+      S.cnt.allDone++; S.keys += 2; S.points += 1; S.gold += 60;
+      let cryTxt = ''; const st = curStreak(); if (st>0 && st%7===0){ S.cry += 3; cryTxt = `<br>🔥 ${st}-Tage-Streak: +3 💎`; }
+      const xp = gainXP(100);
+      log('Daily Quest abgeschlossen – Bonus erhalten');
+      queueFx(()=>fxGeneric('🏆','DAILY QUEST ABGESCHLOSSEN',`[SYSTEM] ${s.flavor.all}<br>+${xp} XP · +60 🪙 · +2 🗝️ · +1 Statuspunkt${cryTxt}`));
+    } else {
+      const xp = gainXP(30), r = addRes(id,25); S.gold += 30; const m = id==='gamer'?dropMats(3):'';
+      toast(`${esc(s.flavor.all)}<br>Bonus: +${xp} XP · +${r} ${s.res.i} · +30 🪙 ${m}`, s.tag, 4500);
+    }
+  }
+  const f = activeFusion();
+  if (f && !S.allBonus['f:'+f.id]){
+    const qs = S.quests.filter(q=>f.src.includes(q.sys));
+    if (qs.length && qs.every(q=>q.done)){
+      S.allBonus['f:'+f.id] = true; const n = f.src.length; const xp = gainXP(40*n); S.gold += 50*n; S.cry += 1;
+      queueFx(()=>fxGeneric('🔀','FUSIONS-QUESTS ABGESCHLOSSEN',`${esc(f.name)}: +${xp} XP · +${50*n} 🪙 · +1 💎`));
+    }
+  }
+  checkUnlocks();
+}
+
+/* =================== Kampf =================== */
+const potionCount = () => (UI.battle?UI.battle.freePot:0) + (S.inv.hp_s||0) + (S.inv.hp_l||0);
+function ariseChance(g){ const d = derived(); return Math.max(10, Math.min(90, Math.round(40 + d.st.int*0.8 + d.st.per*0.4 - GATES.indexOf(g)*8))); }
+function startBattle(g){
+  const d = derived();
+  const list = [...g.mobs.map(m=>({n:m[0],i:m[1],hp:m[2],max:m[2],atk:m[3]})), {n:g.boss[0],i:g.boss[1],hp:g.boss[2],max:g.boss[2],atk:g.boss[3],boss:true}];
+  UI.battle = {g, list, idx:0, enemy:{...list[0]}, php:d.hp, pmax:d.hp, mp:d.mp, mpmax:d.mp, freePot:1+(d.B.potion||0), log:[`[SYSTEM] Du hast das ${g.rank}-Gate „${g.name}“ betreten.`], over:null, auto:false};
+}
+function bLog(t){ UI.battle.log.unshift(t); }
+function playerAct(kind){
+  const b = UI.battle; if (!b || b.over) return;
+  const d = derived(), e = b.enemy;
+  if (kind==='pot'){
+    if (b.freePot>0){ b.freePot--; heal(.4); }
+    else if (S.inv.hp_s>0){ S.inv.hp_s--; heal(.4); }
+    else if (S.inv.hp_l>0){ S.inv.hp_l--; heal(1); }
+    else return;
+  } else if (kind==='skill' && b.mp < 15){
+    if (!(S.inv.mp_s>0)) return; S.inv.mp_s--; b.mp = Math.min(b.mpmax, b.mp + Math.round(b.mpmax*.6)); bLog('🫙 Manatrank getrunken.');
+  } else {
+    let dmg = kind==='skill' ? d.skill : d.atk; if (kind==='skill') b.mp -= 15;
+    dmg *= rnd(.85,1.15); const crit = Math.random()*100 < d.crit; if (crit) dmg *= 1.8; dmg = Math.round(dmg);
+    e.hp -= dmg; b.anim = {hit:true, txt:(crit?'KRIT! ':'')+dmg};
+    bLog(`${kind==='skill'?'✨ Mana-Klinge':'⚔️ Angriff'}: ${dmg} Schaden${crit?' (Kritisch!)':''}`);
+    if (e.hp <= 0){ bLog(`💥 ${e.n} besiegt!`); return nextEnemy(); }
+  }
+  // Gegnerzug
+  if (Math.random()*100 < d.dodge){ bLog(`💨 Du weichst ${e.n} aus!`); }
+  else { const hit = Math.max(1, Math.round(e.atk*rnd(.85,1.2) - d.def)); b.php -= hit; bLog(`🩸 ${e.n} trifft dich: ${hit}`); }
+  if (b.php <= 0){ b.over='lose'; stopAuto(); log(`Niederlage im ${b.g.rank}-Gate`); vibrate(300); }
+  function heal(p){ const h = Math.round(b.pmax*p); b.php = Math.min(b.pmax, b.php+h); bLog(`🧪 Trank: +${h} HP`); }
+}
+function nextEnemy(){
+  const b = UI.battle; b.idx++;
+  if (b.idx < b.list.length){ b.enemy = {...b.list[b.idx]}; bLog(b.enemy.boss?`⚠ Der Boss erscheint: ${b.enemy.n}!`:`Ein ${b.enemy.n} taucht auf.`); return; }
+  // Sieg
+  stopAuto(); b.over = 'win'; const g = b.g;
+  const xp = gainXP(g.xp); const gold = Math.round(g.gold*(1+(bonuses().res||0)/100)); S.gold += gold;
+  const cry = 1 + (Math.random() < GATES.indexOf(g)*0.15 ? 1 : 0); S.cry += cry;
+  const mats = dropMats(2 + GATES.indexOf(g));
+  S.cnt.dungeons++; S.cnt.bosses++;
+  b.reward = `+${xp} XP · +${gold} 🪙 · +${cry} 💎${mats?'<br>Materialien: '+mats:''}`;
+  b.arise = {tries:3, ok:false};
+  log(`${g.rank}-Gate „${g.name}“ abgeschlossen`);
+  checkUnlocks();
+}
+function stopAuto(){ const b = UI.battle; if (b && b.timer){ clearInterval(b.timer); b.timer=null; b.auto=false; } }
+function autoStep(){
+  const b = UI.battle; if (!b || b.over){ stopAuto(); render(); return; }
+  const d = derived();
+  if (b.php < b.pmax*.35 && potionCount()) playerAct('pot');
+  else if (b.mp >= 15 && d.skill > d.atk) playerAct('skill');
+  else playerAct('atk');
+  save(); render();
+}
+
+/* =================== Aktionen =================== */
+let confirmFn = null;
+function ask(text, fn, yes='Ja'){ confirmFn = fn; modal(`<h2>Bestätigen</h2><p class="c">${text}</p><div class="grid2"><button data-a="closeModal">Abbrechen</button><button class="prim bad" data-a="confirmYes">${yes}</button></div>`); }
+function questForm(q, isNew){
+  const sysOpts = S.sys.unlocked.map(id=>`<option value="${id}" ${q.sys===id?'selected':''}>${SYS[id].icon} ${esc(SYS[id].name)}</option>`).join('');
+  modal(`<h2>${isNew?'Neue Quest':'Quest bearbeiten'}</h2>
+   <label>Name</label><input id="fName" value="${esc(q.name)}" maxlength="60">
+   <div class="grid2"><div><label>Zielmenge</label><input id="fTarget" type="number" inputmode="decimal" min="1" value="${q.target}"></div><div><label>Einheit</label><input id="fUnit" value="${esc(q.unit)}" maxlength="15"></div></div>
+   <div class="grid2"><div><label>Stärkt Wert</label><select id="fStat"><option value="">– keiner –</option>${Object.entries(STATS).map(([k,s])=>`<option value="${k}" ${q.stat===k?'selected':''}>${s.i} ${s.n}</option>`).join('')}</select></div>
+   <div><label>XP</label><input id="fXP" type="number" inputmode="numeric" min="0" max="1000" value="${q.xp}"></div></div>
+   <label>System</label><select id="fSys">${sysOpts}</select>
+   <div class="grid2" style="margin-top:14px">${isNew?'<button data-a="closeModal">Abbrechen</button>':`<button class="bad" data-a="delQuest" data-id="${q.id}">Löschen</button>`}<button class="prim" data-a="saveQuest" data-id="${isNew?'':q.id}">Speichern</button></div>`);
+}
+function sideForm(q, isNew){
+  modal(`<h2>${isNew?'Neue Nebenquest':'Nebenquest bearbeiten'}</h2><label>Name</label><input id="fName" value="${esc(q.name)}" maxlength="60" placeholder="z. B. Wasser trinken">
+   <div class="grid2"><div><label>XP</label><input id="fXP" type="number" inputmode="numeric" min="0" max="500" value="${q.xp}"></div><div><label>Wiederholung</label><select id="fRep"><option value="daily" ${q.repeat==='daily'?'selected':''}>täglich</option><option value="once" ${q.repeat==='once'?'selected':''}>einmalig</option></select></div></div>
+   <div class="grid2" style="margin-top:14px">${isNew?'<button data-a="closeModal">Abbrechen</button>':`<button class="bad" data-a="delSide" data-id="${q.id}">Löschen</button>`}<button class="prim" data-a="saveSide" data-id="${isNew?'':q.id}">Speichern</button></div>`);
+}
+const val = id => document.getElementById(id).value;
+const numv = (id,min=0) => Math.max(min, Number(String(val(id)).replace(',','.')) || 0);
+function rewardForm(r, isNew){
+  modal(`<h2>${isNew?'Neue Belohnung':'Belohnung bearbeiten'}</h2><label>Belohnung (echtes Leben)</label><input id="fName" value="${esc(r.n)}" maxlength="60" placeholder="z. B. Pizza bestellen">
+   <div class="grid2"><div><label>Emoji</label><input id="fIcon" value="${esc(r.i)}" maxlength="4"></div><div><label>Preis (Gold)</label><input id="fPrice" type="number" inputmode="numeric" min="1" value="${r.price}"></div></div>
+   <div class="grid2" style="margin-top:14px">${isNew?'<button data-a="closeModal">Abbrechen</button>':`<button class="bad" data-a="delReward" data-id="${r.id}">Löschen</button>`}<button class="prim" data-a="saveReward" data-id="${isNew?'':r.id}">Speichern</button></div>`);
+}
+function fxFusion(f){
+  vibrate([80,40,80,40,80,40,400]);
+  const th = themeOf(f.src), n = f.src.length;
+  showFx(`<div class="dim" style="letter-spacing:.3em">[VERSCHMELZUNG]</div><div class="orbit">${f.src.map((id,k)=>`<div class="o" style="--a:${k*360/n}deg;filter:drop-shadow(0 0 12px ${SYS[id].theme.acc})">${SYS[id].icon}</div>`).join('')}</div>`, 0);
+  setTimeout(()=>{ const fx=$('#fx'); fx.insertAdjacentHTML('beforeend','<div class="flash"></div>');
+    fx.querySelector('.orbit').outerHTML = `<div class="ring" style="border-color:${th.acc}"></div><div style="font-size:84px;filter:drop-shadow(0 0 24px ${th.acc})">🔀</div><div class="fusname" style="background:${th.grad};-webkit-background-clip:text;background-clip:text">${esc(f.name)}</div><p>+${n*FUSION_XP_PER_SYS} % XP · +${n*FUSION_RES_PER_SYS} % Ressourcen · Fusions-Rabatt im Shop</p>`; }, 2100);
+  setTimeout(()=>{ if ($('#fx').classList.contains('on')) $('#fx').click(); }, 6500);
+}
+function fxArise(sh){
+  vibrate([50,50,50,50,500]);
+  showFx(`<div class="smoke"></div><div class="arise">STEH AUF!</div><div class="shadowrise">${sh.i}</div><div class="big" style="color:#c9a6ff">${esc(sh.n)}</div><p>Ein Schatten wurde erweckt. ${esc(sh.t)}</p>`, 4200);
+}
+
+const A = {
+ tab(d){ UI.tab=d.id; UI.detail=null; window.scrollTo(0,0); },
+ closeModal(){ closeModal(); },
+ confirmYes(){ closeModal(); const f=confirmFn; confirmFn=null; f&&f(); },
+ editName(){ modal(`<h2>Name ändern</h2><input id="fName" value="${esc(S.name)}" maxlength="24"><button class="full prim" style="margin-top:12px" data-a="saveName">Speichern</button>`); },
+ saveName(){ const n=val('fName').trim(); if(n) S.name=n; closeModal(); },
+ pickTitle(){ modal(`<h2>Titel wählen</h2>${TITLES.concat(S.titles.filter(t=>!TITLES.find(x=>x.n===t)).map(n=>({n,c:[]}))).map(t=>{const has=S.titles.includes(t.n);return `<div class="item"><div class="sp"><b style="${has?'':'opacity:.45'}">${esc(t.n)}</b>${!has&&t.c.length?`<div class="dim small">${t.c.map(c=>COND[c.k].n(c.v)).join(', ')}</div>`:''}</div>${has?(S.title===t.n?'<span class="okc">✔</span>':`<button data-a="setTitle" data-id="${esc(t.n)}">Wählen</button>`):'🔒'}</div>`}).join('')}<button class="full" style="margin-top:10px" data-a="closeModal">Schließen</button>`); },
+ setTitle(d){ S.title=d.id; closeModal(); },
+ addStat(d){ if(S.points>0){ S.points--; S.base[d.k]++; } },
+ toggleEdit(){ UI.edit=!UI.edit; },
+ newQuest(){ questForm({name:'',target:10,unit:'Wdh.',stat:'str',xp:30,sys:activeFusion()?activeFusion().src[0]:(S.sys.main.startsWith('f:')?'solo':S.sys.main)}, true); },
+ editQuest(d){ questForm(S.quests.find(q=>q.id===d.id)); },
+ saveQuest(d){
+  const name=val('fName').trim(); if(!name){ toast('Bitte einen Namen eingeben.'); return; }
+  const o={name, target:numv('fTarget',1), unit:val('fUnit').trim()||'×', stat:val('fStat'), xp:Math.min(1000,Math.round(numv('fXP'))), sys:val('fSys')};
+  if (d.id){ const q=S.quests.find(q=>q.id===d.id); Object.assign(q,o); if(!q.done && q.progress>=q.target) completeQuest(q); }
+  else { const q=mkQuest({...o,res:o.sys==='solo'?0:15},o.sys); S.quests.push(q); if(!S.sys.active.includes(o.sys)) S.sys.active.push(o.sys); }
+  closeModal(); toast(d.id?'Quest gespeichert.':'Neue Quest hinzugefügt.');
+ },
+ delQuest(d){ ask('Diese Quest wirklich löschen?', ()=>{ S.quests=S.quests.filter(q=>q.id!==d.id); save(); render(); }, 'Löschen'); },
+ prog(d){
+  const q=S.quests.find(q=>q.id===d.id); if(!q||q.done) return;
+  q.progress = d.d==='all' ? q.target : Math.max(0, Math.round((q.progress + Number(d.d))*100)/100);
+  if (q.progress >= q.target) completeQuest(q);
+ },
+ setProg(d){ const q=S.quests.find(q=>q.id===d.id); if(!q||q.done) return;
+  modal(`<h2>${esc(q.name)}</h2><label>Fortschritt (${esc(q.unit)})</label><input id="fProg" type="number" inputmode="decimal" min="0" value="${q.progress}"><button class="full prim" style="margin-top:12px" data-a="setProgSave" data-id="${q.id}">Übernehmen</button>`);
+  setTimeout(()=>{const i=$('#fProg'); i&&i.select();},50); },
+ setProgSave(d){ const q=S.quests.find(q=>q.id===d.id); q.progress=numv('fProg'); closeModal(); if(q.progress>=q.target) completeQuest(q); },
+ penProg(d){ const p=S.penalty; if(!p||p.done) return; p.progress = d.d==='all'?p.target:Math.max(0,p.progress+Number(d.d));
+  if (p.progress>=p.target){ p.done=true; p.progress=p.target; log('Strafquest überstanden'); queueFx(()=>fxGeneric('⚔️','STRAFQUEST ÜBERSTANDEN','Die Strafe wurde aufgehoben. Gates sind wieder geöffnet.')); } },
+ sideDone(d){ const q=S.side.find(q=>q.id===d.id); if(!q||q.done) return; q.done=true; const xp=gainXP(q.xp), g=Math.round(q.xp/2); S.gold+=g; S.cnt.side++;
+  if (S.sys.unlocked.includes('hero')) addRes('hero',5);
+  log(`Nebenquest erledigt: ${q.name}`); toast(`Nebenquest erledigt: <b>${esc(q.name)}</b> · +${xp} XP · +${g} 🪙`); checkUnlocks(); },
+ newSide(){ sideForm({name:'',xp:20,repeat:'daily'}, true); },
+ editSide(d){ sideForm(S.side.find(q=>q.id===d.id)); },
+ saveSide(d){ const name=val('fName').trim(); if(!name){ toast('Bitte einen Namen eingeben.'); return; }
+  const o={name, xp:Math.min(500,Math.round(numv('fXP'))), repeat:val('fRep')};
+  if (d.id) Object.assign(S.side.find(q=>q.id===d.id),o); else S.side.push({id:uid(),sys:'solo',done:false,...o}); closeModal(); },
+ delSide(d){ S.side=S.side.filter(q=>q.id!==d.id); closeModal(); },
+ // Gates
+ enterGate(d){ const g=GATES.find(x=>x.id===d.id); if(S.keys<1||S.level<g.lvl||(S.penalty&&!S.penalty.done)) return; S.keys--; startBattle(g); toast(`Ein ${g.rank}-Gate hat sich geöffnet.`,'[SYSTEM]'); },
+ bAct(d){ playerAct(d.k); },
+ bAuto(){ const b=UI.battle; if(!b) return; if(b.auto) stopAuto(); else { b.auto=true; b.timer=setInterval(autoStep, 450); } },
+ flee(){ ask('Fliehen? Der Schlüssel ist verloren.', ()=>{ stopAuto(); UI.battle=null; log('Aus einem Gate geflohen'); save(); render(); }, 'Fliehen'); },
+ leaveGate(){ stopAuto(); UI.battle=null; },
+ arise(){ const b=UI.battle; if(!b||!b.arise||b.arise.ok||b.arise.tries<=0) return; b.arise.tries--;
+  if (Math.random()*100 < ariseChance(b.g)){ b.arise.ok=true; const sh=b.g.shadow; S.shadows[sh.id]=Math.min(MAX_SHADOW_LVL,(S.shadows[sh.id]||0)+1); S.cnt.arise++; log(`Schatten erweckt: ${sh.n}`); queueFx(()=>fxArise(sh)); checkUnlocks(); }
+  else toast(b.arise.tries?`Erweckung fehlgeschlagen. Noch ${b.arise.tries} Versuch(e).`:'Erweckung fehlgeschlagen. Der Schatten ist verblasst.','[SYSTEM]'); },
+ // Shop
+ shopTab(d){ UI.shopTab=d.id; }, shopCat(d){ UI.shopCat=d.id; },
+ buy(d){ const it=SHOPI[d.id], p=price(it); if(!canPay(p)) return; const once=['equip','perm','cosmetic','title'].includes(it.type); if(once&&owned(it.id)) return;
+  S.gold-=p.gold||0; S.cry-=p.cry||0;
+  if (it.type==='key') S.keys++;
+  else if (it.type==='title'){ S.owned.push(it.id); if(!S.titles.includes(it.title)) S.titles.push(it.title); }
+  else if (once){ S.owned.push(it.id); if(it.type==='equip' && !S.equip[it.slot]) S.equip[it.slot]=it.id; }
+  else if (it.type==='protect'||it.type==='skip'||it.type==='consumable'){ const k=it.type==='protect'?'shield':it.type==='skip'?'skip':it.id; S.inv[k]=(S.inv[k]||0)+1; }
+  log(`Gekauft: ${it.n}`); toast(`Gekauft: <b>${esc(it.n)}</b>`,'[HÄNDLER]'); },
+ equip(d){ const it=SHOPI[d.id]; S.equip[it.slot]=it.id; toast(`${esc(it.n)} ausgerüstet.`); },
+ unequip(d){ S.equip[d.id]=null; },
+ setTheme(d){ S.cosTheme=d.id||null; },
+ useItem(d){ const id=d.id; if(!(S.inv[id]>0)) return; let msg='';
+  const need = s => { if(!S.sys.unlocked.includes(s)){ toast('Dafür ist das passende System noch gesperrt.'); return false; } return true; };
+  switch(id){
+   case 'xp_p': S.buffs.xpUntil=Math.max(Date.now(),S.buffs.xpUntil)+2*3600e3; msg='XP-Trank: +50 % XP für 2 Std.'; break;
+   case 'skip': if(!S.penalty||S.penalty.done){ toast('Keine aktive Strafquest.'); return; } S.penalty.done=true; S.penalty.progress=S.penalty.target; msg='Strafquest erlassen.'; break;
+   case 's_ess': { const ids=GATES.map(g=>g.shadow.id).filter(s=>S.shadows[s]&&S.shadows[s]<MAX_SHADOW_LVL); if(!ids.length){ toast('Kein Schatten kann gestärkt werden.'); return; } const s=pick(ids); S.shadows[s]++; msg=`${GATES.find(g=>g.shadow.id===s).shadow.n} → Stufe ${S.shadows[s]}`; break; }
+   case 'n_pill': if(!need('ninja')) return; S.sys.res.ninja=(S.sys.res.ninja||0)+60; msg='+60 Chakra'; break;
+   case 'g_box': if(!need('gamer')) return; msg='Erhalten: '+dropMats(4); break;
+   case 'g_book': if(!need('gamer')) return; S.sys.res.gamer=(S.sys.res.gamer||0)+3; msg='+3 Skillpunkte'; break;
+   case 'c_pill': if(!need('cult')) return; S.sys.res.cult=(S.sys.res.cult||0)+80; msg='+80 Qi'; break;
+   case 'c_elix': if(!need('cult')) return; if(S.elixir){ toast('Ein Elixier wirkt bereits.'); return; } S.elixir=true; msg='Nächster Durchbruch +25 %'; break;
+   case 't_comp': if(!need('tower')) return; S.sys.res.tower=(S.sys.res.tower||0)+40; msg='+40 Aufstiegsenergie'; break;
+   case 'e_muta': if(!need('evo')) return; S.sys.res.evo=(S.sys.res.evo||0)+60; msg='+60 Evolutionspunkte'; break;
+   case 'gu_post': if(!need('guild')) return; if(S.m.guild.members>=10){ toast('Gilde ist voll.'); return; } S.m.guild.members++; msg='Neues Gildenmitglied!'; break;
+   default: return;
+  }
+  S.inv[id]--; log(`Benutzt: ${SHOPI[id].n}`); toast(msg); },
+ redeem(d){ const r=S.rewards.find(x=>x.id===d.id); if(!r||S.gold<r.price) return;
+  ask(`„${esc(r.n)}“ für ${fmt(r.price)} 🪙 einlösen?`, ()=>{ S.gold-=r.price; S.rewardLog.unshift({t:Date.now(),n:r.n,price:r.price}); S.rewardLog.length=Math.min(S.rewardLog.length,50); log(`Belohnung eingelöst: ${r.n}`);
+   save(); render(); queueFx(()=>fxGeneric(r.i||'🎁','BELOHNUNG FREIGEGEBEN',`${esc(r.n)}<br>Du hast es dir verdient. Genieß es!`)); }, 'Einlösen'); },
+ newReward(){ rewardForm({n:'',i:'🎁',price:200}, true); },
+ editReward(d){ rewardForm(S.rewards.find(r=>r.id===d.id)); },
+ saveReward(d){ const n=val('fName').trim(); if(!n){ toast('Bitte einen Namen eingeben.'); return; } const o={n, i:val('fIcon').trim()||'🎁', price:Math.max(1,Math.round(numv('fPrice',1)))};
+  if(d.id) Object.assign(S.rewards.find(r=>r.id===d.id),o); else S.rewards.push({id:uid(),...o}); closeModal(); },
+ delReward(d){ S.rewards=S.rewards.filter(r=>r.id!==d.id); closeModal(); },
+ // Systeme
+ sysOpen(d){ UI.detail=d.id; window.scrollTo(0,0); }, sysBack(){ UI.detail=null; },
+ sysMain(d){ S.sys.main=d.id; if(!S.sys.active.includes(d.id)) S.sys.active.push(d.id); toast(`Hauptsystem: ${esc(SYS[d.id].name)}`, SYS[d.id].tag); },
+ sysToggle(d){ if(d.id==='solo') return; const a=S.sys.active; if(a.includes(d.id)){ S.sys.active=a.filter(x=>x!==d.id); if(S.sys.main===d.id) S.sys.main='solo'; } else a.push(d.id); },
+ fuseNew(){ UI.fuseSel=[]; UI.fuseName=null; modal(vFuseNew()); },
+ fuseSel(d){ const s=UI.fuseSel; UI.fuseSel = s.includes(d.id)?s.filter(x=>x!==d.id):[...s,d.id]; UI.fuseName=null; modal(vFuseNew()); },
+ fuseDo(){ if(UI.fuseSel.length<2) return; const name=(val('fuseName').trim()||suggestName(UI.fuseSel)).slice(0,40);
+  const f={id:uid(), name, src:[...UI.fuseSel], created:Date.now()}; S.sys.fusions.push(f); S.sys.main='f:'+f.id; closeModal(); log(`Verschmelzung: ${name}`); queueFx(()=>fxFusion(f)); },
+ fuseActivate(d){ const on=S.sys.main==='f:'+d.id; S.sys.main = on?'solo':'f:'+d.id; },
+ fuseRename(d){ const f=S.sys.fusions.find(x=>x.id===d.id); modal(`<h2>Umbenennen</h2><input id="fName" value="${esc(f.name)}" maxlength="40"><button class="full prim" style="margin-top:12px" data-a="fuseRenameSave" data-id="${f.id}">Speichern</button>`); },
+ fuseRenameSave(d){ const n=val('fName').trim(); if(n) S.sys.fusions.find(x=>x.id===d.id).name=n; closeModal(); },
+ fuseDissolve(d){ const f=S.sys.fusions.find(x=>x.id===d.id); ask(`„${esc(f.name)}“ auflösen? Die Quellsysteme bleiben erhalten.`, ()=>{ S.sys.fusions=S.sys.fusions.filter(x=>x.id!==d.id); if(S.sys.main==='f:'+d.id) S.sys.main='solo'; log(`Fusion aufgelöst: ${f.name}`); save(); render(); toast('Verschmelzung aufgelöst.','[SYSTEM]'); }, 'Auflösen'); },
+ // Mechaniken
+ learnJutsu(d){ const j=JUTSU.find(x=>x.id===d.id); if(res('ninja')<j.cost||S.m.ninja.jutsu.includes(j.id)) return; S.sys.res.ninja-=j.cost; S.m.ninja.jutsu.push(j.id); log(`Jutsu gelernt: ${j.n}`); toast(`Jutsu gelernt: <b>${j.n}</b>`,'[CHAKRA]'); },
+ buyMat(){ if(S.gold<40){ toast('Nicht genug Gold.'); return; } S.gold-=40; toast('Gekauft: '+dropMats(1),'[GAME]'); },
+ learnSkill(d){ const s=GSKILLS.find(x=>x.id===d.id); if(res('gamer')<s.cost) return; S.sys.res.gamer-=s.cost; S.m.gamer.skills.push(s.id); toast(`Skill erlernt: <b>${s.n}</b>`,'[GAME]'); },
+ craft(d){ const r=RECIPES.find(x=>x.id===d.id), m=S.m.gamer.mats; if(!Object.entries(r.need).every(([k,v])=>(m[k]||0)>=v)) return; for(const [k,v] of Object.entries(r.need)) m[k]-=v; S.m.gamer.items.push(r.id); toast(`Gecraftet: <b>${r.n}</b>`,'[GAME]'); },
+ quirk(d){ if(S.m.hero.quirk) return; S.m.hero.quirk=d.id; queueFx(()=>fxGeneric(QUIRKS.find(q=>q.id===d.id).i,'GABE ERWACHT',QUIRKS.find(q=>q.id===d.id).n)); },
+ breakthrough(){ const i=S.m.cult.realm, nx=REALMS[i+1]; if(!nx||res('cult')<nx.cost) return; const ch=breakChance(); S.elixir=false;
+  if (Math.random()*100<ch){ S.sys.res.cult-=nx.cost; S.m.cult.realm++; log(`Durchbruch: ${nx.n}`); queueFx(()=>fxGeneric('☯️','DURCHBRUCH!',`Du hast das Reich „${nx.n}“ erreicht.`)); }
+  else { S.sys.res.cult=Math.floor(S.sys.res.cult/2); toast('Qi-Abweichung! Der Durchbruch ist gescheitert – die Hälfte deines Qi ist verloren.','[DAO]',4500); } },
+ climb(){ const f=S.m.tower.floor, cost=(f+1)*3; if(res('tower')<cost) return; S.sys.res.tower-=cost;
+  if (derived().power >= towerNeed(f+1)){ S.m.tower.floor++; const g=20*(f+1); S.gold+=g; let t=`Etage ${f+1} erreicht! +${g} 🪙`; if((f+1)%10===0){ S.cry++; t+=' · +1 💎'; } toast(t,'[TURM]'); gainXP(10+f*2); }
+  else toast(`Der Wächter war zu stark (benötigt ${towerNeed(f+1)} Kampfkraft). Energie verloren.`,'[TURM]',4500); },
+ evolve(){ const s=S.m.evo.stage, nx=EVO[s+1]; if(!nx||res('evo')<nx.cost) return; S.sys.res.evo-=nx.cost; S.m.evo.stage++; log(`Evolution: ${nx.n}`); queueFx(()=>fxGeneric(nx.i,'EVOLUTION!',`Du hast dich zu „${nx.n}“ entwickelt.`)); },
+ recruit(){ const g=S.m.guild, cost=20*(g.members+1); if(g.members>=10||res('guild')<cost) return; S.sys.res.guild-=cost; g.members++; toast('Neues Gildenmitglied rekrutiert!','[GILDE]'); },
+ expedition(d){ const x=EXPEDITIONS[d.k], g=S.m.guild; if(g.exp||!g.members) return; g.exp={...x, until:Date.now()+x.h*3600e3, members:g.members}; toast(`Expedition „${x.n}“ gestartet.`,'[GILDE]'); },
+ claimExp(){ const e=S.m.guild.exp; if(!e||e.until>Date.now()) return; const xp=gainXP(e.xp*Math.max(1,e.members)); const gold=e.h*25*e.members; S.gold+=gold; const r=addRes('guild',e.marks); S.m.guild.exp=null; toast(`Expedition zurück: +${xp} XP · +${gold} 🪙 · +${r} 🛡️ ${dropMats(e.h>=4?2:1)}`,'[GILDE]',4500); },
+ // Backup
+ exportSave(){ const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`das-system-backup-${dayStr()}.json`; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000); toast('Backup exportiert.'); },
+ importSave(){ const i=$('#importFile'); i.onchange=()=>{ const f=i.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>importText(rd.result); rd.readAsText(f); }; i.click(); },
+ copySave(){ modal(`<h2>Spielstand als Text</h2><textarea id="fSave">${esc(JSON.stringify(S))}</textarea><div class="grid2" style="margin-top:10px"><button data-a="copyNow">📋 Kopieren</button><button class="prim" data-a="pasteSave">Text laden</button></div><button class="full ghost" data-a="closeModal">Schließen</button>`); },
+ copyNow(){ const t=$('#fSave'); t.select(); (navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).then(()=>toast('Kopiert!')).catch(()=>{ document.execCommand('copy'); toast('Kopiert!'); }); },
+ pasteSave(){ importText(val('fSave')); },
+ resetAll(){ ask('Wirklich ALLES löschen? Das kann nicht rückgängig gemacht werden.', ()=>{ localStorage.removeItem(SAVE_KEY); S=newState(); UI.battle=null; save(); render(); toast('Neuer Spielstand erstellt.'); }, 'Alles löschen'); },
+};
+function importText(txt){
+  try { const o=JSON.parse(txt); if(!o||typeof o!=='object'||!o.base||!o.level) throw new Error('Kein gültiger Spielstand');
+    ask(`Spielstand von „${esc(o.name)}“ (Level ${o.level}) laden? Der aktuelle Stand wird überschrieben.`, ()=>{ S=merge(newState(),o); rollover(); checkUnlocks(); save(); render(); toast('Spielstand importiert.'); }, 'Laden');
+  } catch(e){ toast('Import fehlgeschlagen: '+esc(e.message),'[FEHLER]'); }
+}
+
+/* =================== Start =================== */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
+  const fn = A[el.dataset.a]; if (!fn) return;
+  e.preventDefault();
+  try { fn({...el.dataset}, el); } catch(err){ console.error(err); toast('Fehler: '+esc(err.message),'[FEHLER]'); }
+  save(); render();
+});
+$('#modal').addEventListener('click', e => { if (e.target.id==='modal') closeModal(); });
+function showPenaltyIntro(){
+  if (S.penaltyLoss){ toast(`Die Strafquest wurde nicht erfüllt: −${S.penaltyLoss} XP`,'[SYSTEM]',5000); S.penaltyLoss=0; }
+  if (S.shieldUsed){ toast('🔰 Streak-Schutz wurde verbraucht – dein Streak ist sicher.','[SYSTEM]',5000); S.shieldUsed=false; }
+  if (S.penalty && !S.penalty.done && !S.penaltySeen){
+    S.penaltySeen = true; save();
+    modal(`<div class="penalty" style="margin:-14px;padding:14px;border-radius:10px"><h2>⚠ Strafquest</h2><p class="c">[SYSTEM] Die Daily Quest von gestern wurde nicht abgeschlossen.<br>Du wirst in die Strafzone versetzt.</p>
+    <div class="quest c"><b style="font-size:22px">${esc(S.penalty.name)}</b><div class="dim small">Zeitlimit: bis Mitternacht · Gates gesperrt bis zur Erfüllung</div></div>
+    <button class="full bad" data-a="closeModal">Verstanden</button></div>`);
+  } else if (!S.welcomed){
+    S.welcomed = true; save();
+    modal(`<h2>Benachrichtigung</h2><p class="c">[SYSTEM] Du hast die Bedingungen erfüllt, um ein <b>Spieler</b> zu werden.</p><p class="c">Willst du akzeptieren, <b>${esc(S.name)}</b>?</p>
+    <p class="dim small c">Erledige echte Daily Quests, um im Spiel stärker zu werden. Weitere Systeme werden mit der Zeit freigeschaltet.</p><button class="full prim" data-a="closeModal">Akzeptieren</button>`);
+  } else {
+    const open = soloQuests().filter(q=>!q.done).length;
+    if (open) toast(`Daily Quest eingetroffen: noch ${open} Aufgabe(n) offen.`, '[SYSTEM]');
+  }
+}
+function tick(){
+  const cd = $('#cd'); if (cd){ const n=new Date(), m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1); cd.textContent = fmtDur(m-n); }
+}
+function checkDay(){ if (rollover()){ checkUnlocks(); save(); render(); showPenaltyIntro(); } }
+load(); rollover(); checkUnlocks(); save(); render(); setTimeout(showPenaltyIntro, 300);
+setInterval(tick, 1000);
+setInterval(()=>{ checkDay(); if (UI.tab==='systems' && UI.detail==='guild' && !$('#modal').classList.contains('on')) render(); }, 30000);
+document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkDay(); });
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW', e));
+window.App = {get S(){return S}, A, UI, render, save, rollover};
+</script>
+</body>
+</html>
