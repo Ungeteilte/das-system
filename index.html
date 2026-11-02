@@ -126,6 +126,37 @@ nav.tabs .badge{position:absolute;margin-left:22px;margin-top:-2px;background:va
 hr{border:none;border-top:1px dashed color-mix(in srgb,var(--acc) 35%,transparent);margin:12px 0}
 .item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #ffffff18}
 .item .ii{font-size:26px;width:36px;text-align:center}
+/* Nachweis-System */
+#proof{position:fixed;inset:0;z-index:45;display:none;background:radial-gradient(ellipse at 50% 0%,#0a1630,#050a18 70%);overflow:auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(16px + env(safe-area-inset-bottom))}
+#proof.on{display:block}
+#proof .pwin{max-width:560px;margin:0 auto;border:1.5px solid var(--acc);border-radius:10px;padding:14px;background:#0a1630cc;box-shadow:0 0 18px color-mix(in srgb,var(--acc) 45%,transparent);animation:pop .3s ease-out}
+.phead{text-align:center;margin-bottom:10px}.phead .pq{font-size:22px;font-weight:900;letter-spacing:.06em;color:#fff;text-shadow:0 0 12px var(--acc)}
+.pinfo{border:1px dashed color-mix(in srgb,var(--acc) 50%,transparent);border-radius:8px;padding:10px;margin:8px 0;font-size:14px;line-height:1.45;background:#0005}
+.stage{position:relative;border:1.5px solid var(--acc);border-radius:10px;overflow:hidden;background:#000;box-shadow:0 0 14px var(--acc)}
+.stage video,.stage img{display:block;width:100%;max-height:62vh;object-fit:contain}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.mirror{transform:scaleX(-1)}
+.repbox{position:absolute;top:8px;right:10px;text-align:right;text-shadow:0 0 10px #000,0 0 4px #000}
+.repn{font-size:64px;font-weight:900;line-height:1;color:#fff;text-shadow:0 0 16px var(--acc),0 0 4px #000}
+.repn.pop{animation:lv .5s ease-out}
+.pstat{position:absolute;left:0;right:0;bottom:0;padding:8px;text-align:center;font-weight:800;background:linear-gradient(transparent,#000c);letter-spacing:.06em}
+.pstat2{text-align:center;font-weight:800;margin:6px 0;letter-spacing:.04em}
+.gpsbig{text-align:center;margin:6px 0}.gpsbig b{font-size:64px;font-weight:900;color:#fff;text-shadow:0 0 16px var(--acc);font-variant-numeric:tabular-nums}.gpsbig span{margin-left:6px;color:var(--acc);font-weight:800}
+.gpsst b{font-size:22px;font-variant-numeric:tabular-nums}
+.gpsmap{width:100%;height:auto;border:1px solid color-mix(in srgb,var(--acc) 50%,transparent);border-radius:8px;background:#0006;margin-top:8px}
+.tring{position:relative;width:240px;max-width:80vw;margin:6px auto}.tring svg{width:100%;transform:rotate(-90deg)}
+.tring .tbg{fill:none;stroke:#ffffff14;stroke-width:10}.tring .tfg{fill:none;stroke:var(--acc);stroke-width:10;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--acc));transition:stroke-dashoffset .25s linear}
+.tclock{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.tclock b{font-size:46px;font-weight:900;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 14px var(--acc)}
+.proofbtn{margin-top:2px;border-style:dashed}
+.ptag{color:var(--acc2)}
+.lockln{margin-top:6px;text-align:center}
+.verif{display:inline-block;margin-left:8px;font-size:12px;font-weight:800;padding:2px 8px;border-radius:10px;color:#021;background:linear-gradient(90deg,#4dffa6,#3ad7ff);box-shadow:0 0 10px #4dffa6}
+.quest.verified{box-shadow:0 0 14px #4dffa666,inset 0 0 12px #3ad7ff22}
+.gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.gi{position:relative;border:1px solid color-mix(in srgb,var(--acc) 50%,transparent);border-radius:6px;overflow:hidden;cursor:pointer;background:#000}
+.gi img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.gi span{position:absolute;top:2px;left:4px;font-size:11px;text-shadow:0 0 4px #000}
+.gi em{display:block;font-style:normal;font-size:10px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--dim)}
 </style>
 </head>
 <body>
@@ -134,6 +165,8 @@ hr{border:none;border-top:1px dashed color-mix(in srgb,var(--acc) 35%,transparen
 <nav class="tabs" id="tabs"></nav>
 <div id="modal"><div class="win" id="modalBox"></div></div>
 <div id="fx"></div>
+<div id="proof"></div>
+<input type="file" id="photoFile" accept="image/*" capture="environment" style="display:none">
 <script>
 'use strict';
 /* =====================================================================
@@ -314,12 +347,13 @@ const daysBetween = (a,b) => Math.round((parseDay(b)-parseDay(a))/864e5);
 const uid = () => Math.random().toString(36).slice(2,9);
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = n => Math.round(n).toLocaleString('de-DE');
+const fmtQ = n => (n%1 ? Math.round(n*100)/100 : n).toLocaleString('de-DE'); // Quest-Mengen (z. B. 0,07 km)
 const rnd = (a,b) => a + Math.random()*(b-a);
 const pick = a => a[Math.floor(Math.random()*a.length)];
 
-function mkQuest(q, sys){ return {id:uid(), sys, name:q.name, target:q.target, unit:q.unit, stat:q.stat||'', xp:q.xp, res:q.res??0, progress:0, done:false}; }
+function mkQuest(q, sys){ return {id:uid(), sys, name:q.name, target:q.target, unit:q.unit, stat:q.stat||'', xp:q.xp, res:q.res??0, progress:0, done:false, ...proofDefaults(q)}; }
 function newState(){
-  return {v:1, name:'Marvin', level:1, xp:0, points:0, base:{str:10,vit:10,agi:10,int:10,per:10}, title:'Erwachter', titles:['Erwachter'],
+  return {v:2, name:'Marvin', level:1, xp:0, points:0, base:{str:10,vit:10,agi:10,int:10,per:10}, title:'Erwachter', titles:['Erwachter'],
     day:dayStr(), streak:0, bestStreak:0, keys:3, gold:0, cry:0, todayXP:0,
     inv:{}, owned:[], equip:{weapon:null,armor:null,acc:null}, cosTheme:null, buffs:{xpUntil:0}, elixir:false, welcomed:false,
     rewards: DEFAULT_REWARDS.map(r=>({id:uid(),...r})), rewardLog:[],
@@ -333,7 +367,8 @@ function newState(){
     shadows:{}, cnt:{dungeons:0,bosses:0,side:0,quests:0,arise:0,allDone:0},
     sys:{unlocked:['solo'], active:['solo'], main:'solo', res:{}, fusions:[], fusionUnlocked:false},
     m:{ninja:{jutsu:[]}, cult:{realm:0}, gamer:{mats:{},items:[],skills:[]}, hero:{quirk:null}, evo:{stage:0}, tower:{floor:0}, guild:{members:0,exp:null}},
-    history:[], log:[], created:Date.now()};
+    history:[], log:[], created:Date.now(),
+    proofCfg:{timerMode:'pause', beep:true, voice:false}};
 }
 function merge(def, s){ // fehlende Felder aus Defaults ergänzen (Migration)
   if (Array.isArray(def) || typeof def!=='object' || def===null) return s===undefined?def:s;
@@ -345,6 +380,7 @@ let S;
 function load(){
   try { const raw = localStorage.getItem(SAVE_KEY); S = raw ? merge(newState(), JSON.parse(raw)) : newState(); }
   catch(e){ console.warn('Speicherstand defekt, neu gestartet', e); S = newState(); }
+  migrateProof(S);
 }
 function save(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch(e){ toast('Speichern fehlgeschlagen: '+e.message,'[FEHLER]'); } }
 function log(msg){ S.log.unshift({t:Date.now(),m:msg}); S.log.length = Math.min(S.log.length,150); }
@@ -464,7 +500,7 @@ function rollover(){
     S.penalty = {...p, progress:0, done:false, from:S.day}; S.penaltySeen = false;
     log(`Strafquest aktiviert: ${p.name}`);
   }
-  S.quests.forEach(q=>{q.progress=0;q.done=false;});
+  S.quests.forEach(q=>{q.progress=0;q.done=false;q.verified=false;q.manual=false;q.vprog=0;});
   S.side.forEach(q=>{ if (q.repeat==='daily') q.done=false; });
   S.allBonus = {}; S.todayXP = 0; S.day = today;
   return true;
@@ -638,6 +674,7 @@ function render(){
   const v = {status:vStatus, quests:vQuests, gates:vGates, shop:vShop, systems:vSystems, more:vMore}[UI.tab];
   $('#main').innerHTML = `<div class="fadein">${UI.tab==='status'?installBanner():''}${v()}</div>`;
   if (UI.tab==='gates' && UI.battle) afterBattleRender();
+  if (UI.tab==='more') poseOfflineState();
 }
 
 function vStatus(){
@@ -667,13 +704,17 @@ function bonusSummary(B){
 
 function questCard(q){
   const pct = Math.min(100, q.progress/q.target*100), big = q.target>=50, st = q.stat?STATS[q.stat]:null;
-  return `<div class="quest ${q.done?'done':''}">
-   <div class="row"><div class="sp"><span class="qn">${esc(q.name)}</span>${st?`<span class="tag">${st.i} ${st.n}</span>`:''}</div>
-     ${UI.edit?`<button data-a="editQuest" data-id="${q.id}">✏️</button>`:`<span class="qp ${q.done?'okc':''}" data-a="setProg" data-id="${q.id}">${fmt(q.progress)} / ${fmt(q.target)} ${esc(q.unit)}</span>`}</div>
+  const need = proofNeeded(q), lock = proofLocked(q), pf = PROOF[q.proof]||PROOF.none;
+  const proofLbl = {photo:'📸 Beweisfoto aufnehmen', counter:`🎥 Kamera-Zähler · ${EXER[q.ex]?.n||''}`, gps:'🛰️ GPS-Lauf starten', timer:'⏱️ Timer starten'}[q.proof];
+  return `<div class="quest ${q.done?'done':''} ${q.done&&q.verified?'verified':''}">
+   <div class="row"><div class="sp"><span class="qn">${esc(q.name)}</span>${st?`<span class="tag">${st.i} ${st.n}</span>`:''}${need?`<span class="tag ptag" title="Nachweis: ${pf.n}">${pf.i} ${pf.s}${q.honor?' · 🤝':''}</span>`:''}</div>
+     ${UI.edit?`<button data-a="editQuest" data-id="${q.id}">✏️</button>`:`<span class="qp ${q.done?'okc':''}" ${lock?'':`data-a="setProg" data-id="${q.id}"`}>${fmtQ(q.progress)} / ${fmtQ(q.target)} ${esc(q.unit)}</span>`}</div>
    <div class="bar" style="margin:8px 0"><i style="width:${pct}%"></i></div>
-   ${q.done?`<div class="row"><span class="okc">✔ ERLEDIGT</span><span class="sp"></span><span class="dim small">+${q.xp} XP${q.res?` · +${q.res} ${resIcon(q.sys)}`:''}</span></div>`:
-   `<div class="row"><button class="sq" data-a="prog" data-id="${q.id}" data-d="${big?-10:-1}">−</button><button class="sp" data-a="prog" data-id="${q.id}" data-d="1">+1</button>${big?`<button class="sp" data-a="prog" data-id="${q.id}" data-d="10">+10</button>`:''}<button class="sp prim" data-a="prog" data-id="${q.id}" data-d="all">✓</button></div>
-   <div class="dim small" style="margin-top:4px">Belohnung: ${q.xp} XP${q.res?` · ${q.res} ${resIcon(q.sys)}`:''}</div>`}
+   ${q.done?`<div class="row"><span class="okc">✔ ERLEDIGT</span>${q.verified?'<span class="verif">✔ Verifiziert</span>':''}<span class="sp"></span><span class="dim small">+${q.verified?verifiedXP(q):q.xp} XP${q.res?` · +${q.res} ${resIcon(q.sys)}`:''}</span></div>`:
+   `${need?`<button class="full proofbtn" data-a="proofStart" data-id="${q.id}">${proofLbl}</button>`:''}
+   ${lock?`<div class="dim small lockln">🔒 Manuelle Eingabe gesperrt – Nachweis erforderlich</div>`:
+   `<div class="row" ${need?'style="margin-top:6px"':''}><button class="sq" data-a="prog" data-id="${q.id}" data-d="${big?-10:-1}">−</button><button class="sp" data-a="prog" data-id="${q.id}" data-d="1">+1</button>${big?`<button class="sp" data-a="prog" data-id="${q.id}" data-d="10">+10</button>`:''}<button class="sp ${need?'':'prim'}" data-a="prog" data-id="${q.id}" data-d="all">✓</button></div>`}
+   <div class="dim small" style="margin-top:4px">Belohnung: ${q.xp} XP${q.res?` · ${q.res} ${resIcon(q.sys)}`:''}${need&&!q.honor?` · <span class="okc">verifiziert ${verifiedXP(q)} XP</span>`:''}${need&&q.honor?' · 🤝 Ehrenmodus (ohne Bonus)':''}</div>`}
   </div>`;
 }
 const resIcon = id => SYS[id].res.i;
@@ -842,6 +883,7 @@ function vMore(){
    <div class="grid2"><button data-a="exportSave">⬇️ Export (JSON)</button><button data-a="importSave">⬆️ Import</button></div>
    <button class="full ghost" style="margin-top:8px" data-a="copySave">📋 Spielstand als Text kopieren / einfügen</button>
    <input type="file" id="importFile" accept="application/json,.json" style="display:none"></section>
+  ${proofSettingsCard()}
   ${appCard()}
   <section class="win"><h2>Einstellungen</h2><button class="full bad" data-a="resetAll">Spielstand komplett zurücksetzen</button>
    <p class="dim small c" style="margin-top:12px">Das System v${APP_VERSION} · Fan-Projekt, inspiriert von „System“-Geschichten. Keine offiziellen Inhalte.</p></section>`;
@@ -856,14 +898,15 @@ function dropMats(n){
 }
 function completeQuest(q){
   q.done = true; q.progress = q.target;
-  const xp = gainXP(q.xp), gold = Math.round(q.xp/2); S.gold += gold;
+  q.verified = proofNeeded(q) && !q.manual && (q.vprog||0) > 0;
+  const xp = gainXP(q.verified ? verifiedXP(q) : q.xp), gold = Math.round(q.xp/2); S.gold += gold;
   if (q.stat) S.base[q.stat]++;
   let extra = '';
   if (q.sys==='solo'){ S.keys++; extra=' · +1 🗝️'; }
   else if (q.res){ const r = addRes(q.sys,q.res); extra = ` · +${r} ${resIcon(q.sys)}`; }
   if (Math.random() < .5){ const m = dropMats(1); if (m) extra += ' · '+m; }
   S.cnt.quests++; log(`Quest erledigt: ${q.name}`);
-  toast(`Quest abgeschlossen: <b>${esc(q.name)}</b><br>+${xp} XP · +${gold} 🪙${q.stat?` · +1 ${STATS[q.stat].n}`:''}${extra}`, SYS[q.sys].tag);
+  toast(`Quest abgeschlossen: <b>${esc(q.name)}</b>${q.verified?' <span class="verif">✔ Verifiziert</span>':''}<br>+${xp} XP${q.verified?' (inkl. +10 %)':''} · +${gold} 🪙${q.stat?` · +1 ${STATS[q.stat].n}`:''}${extra}`, SYS[q.sys].tag);
   vibrate(40);
   checkAllDone();
 }
@@ -956,11 +999,14 @@ function ask(text, fn, yes='Ja'){ confirmFn = fn; modal(`<h2>Bestätigen</h2><p 
 function questForm(q, isNew){
   const sysOpts = S.sys.unlocked.map(id=>`<option value="${id}" ${q.sys===id?'selected':''}>${SYS[id].icon} ${esc(SYS[id].name)}</option>`).join('');
   modal(`<h2>${isNew?'Neue Quest':'Quest bearbeiten'}</h2>
-   <label>Name</label><input id="fName" value="${esc(q.name)}" maxlength="60">
-   <div class="grid2"><div><label>Zielmenge</label><input id="fTarget" type="number" inputmode="decimal" min="1" value="${q.target}"></div><div><label>Einheit</label><input id="fUnit" value="${esc(q.unit)}" maxlength="15"></div></div>
+   <label>Name</label><input id="fName" oninput="autoProof()" value="${esc(q.name)}" maxlength="60">
+   <div class="grid2"><div><label>Zielmenge</label><input id="fTarget" type="number" inputmode="decimal" min="1" value="${q.target}"></div><div><label>Einheit</label><input id="fUnit" oninput="autoProof()" value="${esc(q.unit)}" maxlength="15"></div></div>
    <div class="grid2"><div><label>Stärkt Wert</label><select id="fStat"><option value="">– keiner –</option>${Object.entries(STATS).map(([k,s])=>`<option value="${k}" ${q.stat===k?'selected':''}>${s.i} ${s.n}</option>`).join('')}</select></div>
    <div><label>XP</label><input id="fXP" type="number" inputmode="numeric" min="0" max="1000" value="${q.xp}"></div></div>
    <label>System</label><select id="fSys">${sysOpts}</select>
+   <div class="grid2"><div><label>Nachweis-Art</label><select id="fProof" onchange="this.dataset.touched=1" ${isNew?'':'data-touched="1"'}>${Object.entries(PROOF).map(([k,p])=>`<option value="${k}" ${(q.proof||defaultProof(q))===k?'selected':''}>${p.i} ${p.n}</option>`).join('')}</select></div>
+   <div><label>Übung (Kamera-Zähler)</label><select id="fEx" onchange="this.dataset.touched=1" ${isNew?'':'data-touched="1"'}>${Object.entries(EXER).map(([k,e])=>`<option value="${k}" ${(q.ex||guessEx(q.name)||'push')===k?'selected':''}>${e.n}</option>`).join('')}</select></div></div>
+   <label class="row" style="gap:8px;color:var(--txt)"><input type="checkbox" id="fHonor" style="width:auto;min-height:0" ${q.honor?'checked':''}> 🤝 Ehrenmodus: manuelle Eingabe erlauben (ohne +10 % Bonus)</label>
    <div class="grid2" style="margin-top:14px">${isNew?'<button data-a="closeModal">Abbrechen</button>':`<button class="bad" data-a="delQuest" data-id="${q.id}">Löschen</button>`}<button class="prim" data-a="saveQuest" data-id="${isNew?'':q.id}">Speichern</button></div>`);
 }
 function sideForm(q, isNew){
@@ -1002,7 +1048,7 @@ const A = {
  editQuest(d){ questForm(S.quests.find(q=>q.id===d.id)); },
  saveQuest(d){
   const name=val('fName').trim(); if(!name){ toast('Bitte einen Namen eingeben.'); return; }
-  const o={name, target:numv('fTarget',1), unit:val('fUnit').trim()||'×', stat:val('fStat'), xp:Math.min(1000,Math.round(numv('fXP'))), sys:val('fSys')};
+  const o={name, target:numv('fTarget',1), unit:val('fUnit').trim()||'×', stat:val('fStat'), xp:Math.min(1000,Math.round(numv('fXP'))), sys:val('fSys'), proof:val('fProof'), ex:val('fEx'), honor:document.getElementById('fHonor').checked};
   if (d.id){ const q=S.quests.find(q=>q.id===d.id); Object.assign(q,o); if(!q.done && q.progress>=q.target) completeQuest(q); }
   else { const q=mkQuest({...o,res:o.sys==='solo'?0:15},o.sys); S.quests.push(q); if(!S.sys.active.includes(o.sys)) S.sys.active.push(o.sys); }
   closeModal(); toast(d.id?'Quest gespeichert.':'Neue Quest hinzugefügt.');
@@ -1010,13 +1056,15 @@ const A = {
  delQuest(d){ ask('Diese Quest wirklich löschen?', ()=>{ S.quests=S.quests.filter(q=>q.id!==d.id); save(); render(); }, 'Löschen'); },
  prog(d){
   const q=S.quests.find(q=>q.id===d.id); if(!q||q.done) return;
+  if (proofLocked(q)){ toast('🔒 Diese Quest erfordert einen Nachweis.','[SYSTEM]'); return; }
+  if (proofNeeded(q)) q.manual = true;
   q.progress = d.d==='all' ? q.target : Math.max(0, Math.round((q.progress + Number(d.d))*100)/100);
   if (q.progress >= q.target) completeQuest(q);
  },
- setProg(d){ const q=S.quests.find(q=>q.id===d.id); if(!q||q.done) return;
+ setProg(d){ const q=S.quests.find(q=>q.id===d.id); if(!q||q.done) return; if(proofLocked(q)){ toast('🔒 Diese Quest erfordert einen Nachweis.','[SYSTEM]'); return; }
   modal(`<h2>${esc(q.name)}</h2><label>Fortschritt (${esc(q.unit)})</label><input id="fProg" type="number" inputmode="decimal" min="0" value="${q.progress}"><button class="full prim" style="margin-top:12px" data-a="setProgSave" data-id="${q.id}">Übernehmen</button>`);
   setTimeout(()=>{const i=$('#fProg'); i&&i.select();},50); },
- setProgSave(d){ const q=S.quests.find(q=>q.id===d.id); q.progress=numv('fProg'); closeModal(); if(q.progress>=q.target) completeQuest(q); },
+ setProgSave(d){ const q=S.quests.find(q=>q.id===d.id); if(proofLocked(q)) return; if(proofNeeded(q)) q.manual=true; q.progress=numv('fProg'); closeModal(); if(q.progress>=q.target) completeQuest(q); },
  penProg(d){ const p=S.penalty; if(!p||p.done) return; p.progress = d.d==='all'?p.target:Math.max(0,p.progress+Number(d.d));
   if (p.progress>=p.target){ p.done=true; p.progress=p.target; log('Strafquest überstanden'); queueFx(()=>fxGeneric('⚔️','STRAFQUEST ÜBERSTANDEN','Die Strafe wurde aufgehoben. Gates sind wieder geöffnet.')); } },
  sideDone(d){ const q=S.side.find(q=>q.id===d.id); if(!q||q.done) return; q.done=true; const xp=gainXP(q.xp), g=Math.round(q.xp/2); S.gold+=g; S.cnt.side++;
@@ -1112,12 +1160,12 @@ const A = {
 };
 function importText(txt){
   try { const o=JSON.parse(txt); if(!o||typeof o!=='object'||!o.base||!o.level) throw new Error('Kein gültiger Spielstand');
-    ask(`Spielstand von „${esc(o.name)}“ (Level ${o.level}) laden? Der aktuelle Stand wird überschrieben.`, ()=>{ S=merge(newState(),o); rollover(); checkUnlocks(); save(); render(); toast('Spielstand importiert.'); }, 'Laden');
+    ask(`Spielstand von „${esc(o.name)}“ (Level ${o.level}) laden? Der aktuelle Stand wird überschrieben.`, ()=>{ S=merge(newState(),o); migrateProof(S); rollover(); checkUnlocks(); save(); render(); toast('Spielstand importiert.'); }, 'Laden');
   } catch(e){ toast('Import fehlgeschlagen: '+esc(e.message),'[FEHLER]'); }
 }
 
 /* =================== App-Version, Updates & Installation (PWA) =================== */
-const RELEASES = [{"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
+const RELEASES = [{"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
 const APP_VERSION = RELEASES[0].version;
 const VER_KEY = 'das-system-app-version'; // getrennt vom Spielstand (das-system-save-v1)
 const INSTALL_DISMISS_KEY = 'das-system-install-hint-off';
@@ -1241,6 +1289,520 @@ function appCard(){
    <p class="dim small" style="margin-top:8px">Die App sucht beim Öffnen, beim Zurückkehren und alle 30 Min. automatisch nach Updates.</p></section>`;
 }
 
+/* =================== Nachweis-System (v1.2.0) =================== */
+const PROOF = {
+  none:   {n:'Kein Nachweis',  s:'keine',          i:'✋'},
+  photo:  {n:'Beweisfoto',     s:'Foto',           i:'📸'},
+  counter:{n:'Kamera-Zähler',  s:'Kamera-Zähler',  i:'🎥'},
+  gps:    {n:'GPS + Schritte', s:'GPS+Schritte',   i:'🛰️'},
+  timer:  {n:'Timer',          s:'Timer',          i:'⏱️'},
+};
+const VERIFY_BONUS = 0.10; // +10 % XP für verifizierte Quests
+// Wiederholungs-Zählung per Gelenkwinkel (MediaPipe-Landmark-Indizes) mit Hysterese: oben (> hi) → unten (< lo) → oben = 1 Wdh.
+const EXER = {
+  push: {n:'Liegestütze', joint:'Ellenbogen', tri:[[11,13,15],[12,14,16]], lo:100, hi:145, posture:'horizontal',
+         hint:'Handy seitlich auf den Boden stellen – ganzer Körper im Bild (Profil).'},
+  squat:{n:'Kniebeugen',  joint:'Knie',       tri:[[23,25,27],[24,26,28]], lo:110, hi:155,
+         hint:'Handy 2–3 m entfernt aufstellen – Hüfte, Knie und Füße im Bild.'},
+  situp:{n:'Sit-ups',     joint:'Hüfte',      tri:[[11,23,25],[12,24,26]], lo:80,  hi:115,
+         hint:'Handy seitlich auf den Boden stellen – Oberkörper und Knie im Bild.'},
+};
+function guessEx(name){ const n = (name||'').toLowerCase();
+  if (/liegest|push|pushup|liegestütz/.test(n)) return 'push';
+  if (/kniebeug|squat/.test(n)) return 'squat';
+  if (/sit-?up|crunch/.test(n)) return 'situp';
+  return null; }
+function defaultProof(q){ const n = (q.name||'').toLowerCase(), u = (q.unit||'').toLowerCase().trim();
+  if (guessEx(n)) return 'counter';
+  if (/lauf|jogg|gehen|spazier|wander/.test(n) || u==='km') return 'gps';
+  if (/meditat|lernen|studi/.test(n) || /^min/.test(u)) return 'timer';
+  return 'photo'; }
+function proofDefaults(q){ return {proof: q.proof || defaultProof(q), ex: q.ex || guessEx(q.name) || 'push', honor: !!q.honor, verified:false, manual:false, vprog:0}; }
+function migrateProof(st){ // Spielstände < v1.2.0: Nachweis-Felder je Quest ergänzen
+  (st.quests||[]).forEach(q => { const d = proofDefaults(q); for (const k in d) if (q[k]===undefined) q[k] = d[k]; });
+  if (!st.proofCfg) st.proofCfg = {timerMode:'pause', beep:true, voice:false};
+  st.v = Math.max(st.v||1, 2);
+}
+function autoProof(){ // Neue Quest: Nachweis-Art aus Name/Einheit vorschlagen, solange nicht manuell gewählt
+  const p = $('#fProof'), e = $('#fEx'), n = val('fName'), u = val('fUnit');
+  if (p && !p.dataset.touched) p.value = defaultProof({name:n, unit:u});
+  const g = guessEx(n); if (e && !e.dataset.touched && g) e.value = g; }
+const proofNeeded = q => !!q && q.proof && q.proof!=='none';
+const proofLocked = q => proofNeeded(q) && !q.honor;
+const verifiedXP = q => Math.round(q.xp*(1+VERIFY_BONUS));
+// Fortschritt aus einem Nachweis gutschreiben (in Quest-Einheit)
+function proofCredit(q, amount, why){
+  if (!q || q.done || !(amount>0)) return false;
+  q.progress = Math.round((q.progress + amount)*100)/100; q.vprog = Math.round(((q.vprog||0) + amount)*100)/100;
+  log(`Nachweis (${PROOF[q.proof]?.n||why}): ${q.name} +${fmtQ(amount)} ${q.unit}`);
+  if (q.progress >= q.target){ completeQuest(q); return true; }
+  save(); return false;
+}
+function unitKind(u){ u = (u||'').toLowerCase().trim();
+  if (u==='km') return 'km'; if (u==='m' || u==='meter') return 'm'; if (/schritt/.test(u)) return 'steps';
+  if (/^min/.test(u)) return 'min'; if (/^std|^h$/.test(u)) return 'h'; return 'other'; }
+
+/* ---------- Speicher: IndexedDB (Fotos nicht im localStorage) ---------- */
+const PDB = {
+  db:null,
+  open(){ if (this.db) return Promise.resolve(this.db);
+    return new Promise((res, rej) => { const r = indexedDB.open('das-system-beweise', 1);
+      r.onupgradeneeded = () => { const d = r.result; d.createObjectStore('meta', {keyPath:'id'}); d.createObjectStore('full', {keyPath:'id'}); };
+      r.onsuccess = () => { this.db = r.result; res(this.db); }; r.onerror = () => rej(r.error); }); },
+  run(stores, mode, fn){ return this.open().then(db => new Promise((res, rej) => {
+    const t = db.transaction(stores, mode); let out; const r = fn(t); if (r) r.onsuccess = () => { out = r.result; };
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); })); },
+  add(meta, full){ return this.run(['meta','full'], 'readwrite', t => { t.objectStore('meta').put(meta); t.objectStore('full').put({id:meta.id, img:full}); }); },
+  all(){ return this.run(['meta'], 'readonly', t => t.objectStore('meta').getAll()).then(a => (a||[]).sort((x,y)=>y.t-x.t)); },
+  full(id){ return this.run(['full'], 'readonly', t => t.objectStore('full').get(id)).then(r => r && r.img); },
+  del(ids){ return this.run(['meta','full'], 'readwrite', t => { ids.forEach(id => { t.objectStore('meta').delete(id); t.objectStore('full').delete(id); }); }); },
+};
+
+/* ---------- Hilfen: Overlay, Ton, Sprache, Wake Lock ---------- */
+const P = {stream:null, raf:0, iv:0, watch:null, wake:null, sess:null, lm:null, lmLoading:null, audio:null, urls:[]};
+function ovOpen(html, cls){ const o = $('#proof'); o.className = 'on ' + (cls||''); o.innerHTML = `<div class="pwin">${html}</div>`; o.scrollTop = 0; }
+function ovSet(html){ const w = $('#proof .pwin'); if (w) w.innerHTML = html; }
+function ovClose(){ stopAllProof(); const o = $('#proof'); o.className = ''; o.innerHTML = ''; render(); }
+function stopAllProof(){
+  if (P.raf) cancelAnimationFrame(P.raf); P.raf = 0; if (P.iv) clearInterval(P.iv); P.iv = 0;
+  if (P.stream){ P.stream.getTracks().forEach(t => t.stop()); P.stream = null; }
+  if (P.watch!=null && navigator.geolocation){ navigator.geolocation.clearWatch(P.watch); } P.watch = null;
+  window.removeEventListener('devicemotion', onMotion);
+  wakeOff(); P.sess = null;
+}
+const proofHead = (q, sub) => `<div class="phead"><div class="dim small" style="letter-spacing:.25em">[SYSTEM] NACHWEIS</div><div class="pq">${esc(q.name)}</div><div class="dim small">${sub||''}</div></div>`;
+function beep(f=880, ms=90, vol=.25){
+  try { const C = window.AudioContext || window.webkitAudioContext; if (!C) return; P.audio = P.audio || new C();
+    const a = P.audio, o = a.createOscillator(), g = a.createGain(); o.frequency.value = f; o.type = 'square';
+    g.gain.setValueAtTime(vol, a.currentTime); g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + ms/1000);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + ms/1000 + .02); } catch(e){}
+}
+function say(t){ try { if (!('speechSynthesis' in window)) return; const u = new SpeechSynthesisUtterance(String(t)); u.lang = 'de-DE'; u.rate = 1.15; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
+async function wakeOn(){ try { if ('wakeLock' in navigator){ P.wake = await navigator.wakeLock.request('screen'); return true; } } catch(e){} return false; }
+function wakeOff(){ try { P.wake && P.wake.release(); } catch(e){} P.wake = null; }
+document.addEventListener('visibilitychange', () => {
+  const s = P.sess; if (!s) return;
+  if (document.hidden){ if (s.kind==='timer') timerHidden(); if (s.kind==='gps'){ s.hiddenAt = Date.now(); } }
+  else { if ((s.kind==='timer' && s.running) || s.kind==='gps') wakeOn(); if (s.kind==='gps' && s.hiddenAt){ s.bgGap = (s.bgGap||0) + (Date.now()-s.hiddenAt); s.hiddenAt = 0; gpsDraw(); } }
+});
+function permErr(e){ const n = e && e.name;
+  if (n==='NotAllowedError' || n==='SecurityError' || n==='PermissionDeniedError' || (e && e.code===1)) return 'Zugriff verweigert. Du kannst ihn in den Browser-/App-Einstellungen wieder erlauben (Website-Einstellungen → Kamera bzw. Standort).';
+  if (n==='NotFoundError' || n==='OverconstrainedError') return 'Keine passende Kamera gefunden.';
+  if (n==='NotReadableError') return 'Die Kamera wird gerade von einer anderen App benutzt.';
+  if (e && e.code===2) return 'Standort nicht verfügbar (kein GPS-Signal?).';
+  if (e && e.code===3) return 'Zeitüberschreitung beim GPS-Signal.';
+  return 'Nicht verfügbar: ' + esc((e && (e.message||e.name)) || 'unbekannter Fehler'); }
+function fallbackBtns(q, except){ return `<div class="grid2" style="margin-top:10px">${except!=='photo'?`<button data-a="proofAlt" data-id="${q.id}" data-k="photo">📸 Stattdessen Beweisfoto</button>`:'<span></span>'}<button data-a="proofClose">Schließen</button></div>
+  ${q.honor?'':'<p class="dim small c">Ohne Kamera/GPS? In <b>Mehr → Nachweis-System</b> kannst du für diese Quest den Ehrenmodus (manuelle Eingabe, ohne Bonus) aktivieren.</p>'}`; }
+async function getCam(facing){
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error('Kamera-API fehlt (nur über https verfügbar)'), {name:'NoApi'});
+  return navigator.mediaDevices.getUserMedia({audio:false, video:{facingMode:{ideal:facing}, width:{ideal:1280}, height:{ideal:720}}});
+}
+
+/* ---------- 1) Beweisfoto ---------- */
+function photoOpen(q){
+  P.sess = {kind:'photo', q, facing:'environment'};
+  ovOpen(`${proofHead(q, '📸 Beweisfoto · live aufnehmen')}
+   <div class="pinfo">Das System benötigt <b>Zugriff auf die Kamera</b>, um ein <b>Live-Beweisfoto</b> aufzunehmen. Fotos aus der Galerie werden nicht akzeptiert.
+   Datum, Uhrzeit und Quest werden ins Bild gestempelt. Das Foto bleibt <b>nur auf deinem Gerät</b>.</div>
+   <button class="full prim" data-a="photoStart">📷 Kamera starten</button><button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
+}
+async function photoStart(){
+  const s = P.sess; if (!s) return;
+  try { if (P.stream) P.stream.getTracks().forEach(t=>t.stop()); P.stream = await getCam(s.facing); }
+  catch(e){ ovSet(`${proofHead(s.q,'📸 Beweisfoto')}<div class="pinfo badc">⚠ ${permErr(e)}</div>
+     <p class="small c">Alternative: Die <b>System-Kamera</b> deines Handys öffnen (nur frisch aufgenommene Fotos werden akzeptiert).</p>
+     <button class="full prim" data-a="photoFile">📷 System-Kamera öffnen</button>${fallbackBtns(s.q,'photo')}`); return; }
+  ovSet(`${proofHead(s.q,'📸 Richte die Kamera auf deinen Beweis')}<div class="stage"><video id="pv" playsinline muted autoplay></video></div>
+   <div class="grid3" style="margin-top:10px"><button data-a="photoFlip">🔄 Wechseln</button><button class="prim" data-a="photoSnap">📸 Aufnehmen</button><button data-a="proofClose">Abbrechen</button></div>`);
+  const v = $('#pv'); v.srcObject = P.stream; v.play().catch(()=>{});
+}
+function stampCanvas(src, sw, sh, q, extra){
+  const max = 1080, k = Math.min(1, max/Math.max(sw, sh)), w = Math.round(sw*k), h = Math.round(sh*k);
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d');
+  x.drawImage(src, 0, 0, w, h);
+  const now = new Date(), fs = Math.max(14, Math.round(w/34)), bh = Math.round(fs*4.2);
+  const g = x.createLinearGradient(0, h-bh-fs, 0, h); g.addColorStop(0,'rgba(5,10,24,0)'); g.addColorStop(.35,'rgba(5,10,24,.82)'); g.addColorStop(1,'rgba(5,10,24,.95)');
+  x.fillStyle = g; x.fillRect(0, h-bh-fs, w, bh+fs);
+  x.strokeStyle = '#3ad7ff'; x.lineWidth = Math.max(2, w/300); x.shadowColor = '#3ad7ff'; x.shadowBlur = 10; x.strokeRect(x.lineWidth, x.lineWidth, w-2*x.lineWidth, h-2*x.lineWidth); x.shadowBlur = 0;
+  x.textBaseline = 'alphabetic'; const pad = Math.round(fs*.8);
+  x.font = `800 ${Math.round(fs*.75)}px system-ui,sans-serif`; x.fillStyle = '#3ad7ff'; x.fillText('[SYSTEM] BEWEIS ✔' + (extra?'  ·  '+extra:''), pad, h-bh+fs*.6);
+  x.font = `800 ${fs}px system-ui,sans-serif`; x.fillStyle = '#ffffff'; x.fillText(q.name.slice(0,48), pad, h-bh+fs*1.95);
+  x.font = `600 ${Math.round(fs*.8)}px ui-monospace,monospace`; x.fillStyle = '#dff6ff';
+  x.fillText(now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'}) + '  ' + now.toLocaleTimeString('de-DE') + '  ·  ' + S.name + ' Lv.' + S.level, pad, h-bh+fs*3.15);
+  return c;
+}
+const toBlob = (c, q=.72) => new Promise(r => c.toBlob(r, 'image/jpeg', q));
+async function saveProofImage(q, canvas, kind, info){
+  const t = Date.now(), tw = 240, th = Math.round(canvas.height*tw/canvas.width);
+  const tc = document.createElement('canvas'); tc.width = tw; tc.height = th; tc.getContext('2d').drawImage(canvas, 0, 0, tw, th);
+  const [full, thumb] = await Promise.all([toBlob(canvas, .72), toBlob(tc, .7)]);
+  await PDB.add({id:uid()+t.toString(36), t, day:dayStr(new Date(t)), qid:q.id, qname:q.name, kind, info:info||'', thumb, size:(full?.size||0)+(thumb?.size||0)}, full);
+}
+function photoPreview(c){
+  const s = P.sess; s.canvas = c;
+  if (P.stream){ P.stream.getTracks().forEach(t=>t.stop()); P.stream = null; }
+  ovSet(`${proofHead(s.q,'Vorschau – Beweis einreichen?')}<div class="stage"><img id="pimg" alt="Beweisfoto"></div>
+   <div class="grid2" style="margin-top:10px"><button data-a="${s.fromFile?'photoFile':'photoStart'}">↺ Neu</button><button class="prim" data-a="photoSubmit">✔ Einreichen</button></div>
+   <button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
+  $('#pimg').src = c.toDataURL('image/jpeg', .8);
+}
+const PA = {
+ proofStart(d){ const q = S.quests.find(x=>x.id===d.id); if (!q || q.done) return;
+   ({photo:photoOpen, counter:counterOpen, gps:gpsOpen, timer:timerOpen})[q.proof]?.(q); },
+ proofAlt(d){ const q = S.quests.find(x=>x.id===d.id); stopAllProof(); if (q && !q.done) photoOpen(q); },
+ proofClose(){ ovClose(); },
+ photoStart(){ P.sess.fromFile = false; photoStart(); },
+ photoFlip(){ const s = P.sess; s.facing = s.facing==='environment'?'user':'environment'; photoStart(); },
+ photoSnap(){ const v = $('#pv'); if (!v || !v.videoWidth){ toast('Kamera noch nicht bereit …'); return; }
+   vibrate(30); beep(1200, 60, .15); photoPreview(stampCanvas(v, v.videoWidth, v.videoHeight, P.sess.q)); },
+ photoFile(){ const i = $('#photoFile'); i.value = ''; i.onchange = () => {
+     const f = i.files[0]; if (!f) return; const age = Date.now() - (f.lastModified||0);
+     if (age > 10*60e3){ toast('⚠ Dieses Foto ist älter als 10 Minuten. Das System akzeptiert nur frisch aufgenommene Beweise.','[SYSTEM]',5000); return; }
+     const img = new Image(); img.onload = () => { P.sess.fromFile = true; photoPreview(stampCanvas(img, img.naturalWidth, img.naturalHeight, P.sess.q)); URL.revokeObjectURL(img.src); };
+     img.src = URL.createObjectURL(f); };
+   i.click(); },
+ async photoSubmit(){ const s = P.sess; if (!s || !s.canvas) return; const q = s.q;
+   try { await saveProofImage(q, s.canvas, 'photo'); } catch(e){ toast('Foto konnte nicht gespeichert werden ('+esc(e.message||e)+') – der Nachweis zählt trotzdem.','[SYSTEM]'); }
+   const live = S.quests.find(x=>x.id===q.id); ovClose();
+   if (live && !live.done){ proofCredit(live, live.target - live.progress, 'Foto'); save(); render(); } },
+};
+
+/* ---------- 2) Kamera-Zähler (Pose-Erkennung, offline) ---------- */
+function angleAt(a, b, c){ const v1 = [a.x-b.x, a.y-b.y], v2 = [c.x-b.x, c.y-b.y];
+  const d = Math.hypot(...v1)*Math.hypot(...v2); if (!d) return null;
+  return Math.acos(Math.max(-1, Math.min(1, (v1[0]*v2[0]+v1[1]*v2[1])/d)))*180/Math.PI; }
+class RepCounter {
+  constructor(ex){ this.ex = EXER[ex]||EXER.push; this.key = ex; this.state = 'init'; this.reps = 0; this.a = null; this.tDown = 0; this.lastRep = -1e9; this.msg = ''; this.minA = 999; }
+  pickSide(lm){ let best = null;
+    for (const t of this.ex.tri){ const v = Math.min(...t.map(i => lm[i] ? (lm[i].visibility ?? 1) : 0)); if (!best || v > best.v) best = {t, v}; }
+    return best; }
+  update(lm, t){ // lm: 33 normierte Landmarks (x,y in 0..1, visibility). Rückgabe 'rep' bei gezählter Wiederholung
+    if (!lm || lm.length < 29){ this.msg = 'Keine Person erkannt'; return null; }
+    const side = this.pickSide(lm); if (side.v < .5){ this.msg = `${this.ex.joint} nicht sichtbar – Körper ganz ins Bild`; return null; }
+    const [i, j, k] = side.t, raw = angleAt(lm[i], lm[j], lm[k]); if (raw==null) return null;
+    this.a = this.a==null ? raw : this.a*.45 + raw*.55; const a = this.a, e = this.ex;
+    if (e.posture==='horizontal'){ const sh = lm[side.t[0]], hip = lm[side.t[0]===11?23:24];
+      const tilt = Math.abs(Math.atan2(hip.y-sh.y, Math.abs(hip.x-sh.x)))*180/Math.PI;
+      if (tilt > 55){ this.msg = 'Liegestütz-Position einnehmen (Körper waagerecht)'; return null; } }
+    if (this.state==='init'){ this.msg = 'Startposition einnehmen'; if (a > e.hi) this.state = 'up'; }
+    else if (this.state==='up'){ this.msg = '⬇ Runter'; if (a < e.lo){ this.state = 'down'; this.tDown = t; } }
+    else if (this.state==='down'){ this.msg = '⬆ Hoch'; if (a > e.hi && t - this.tDown > 120 && t - this.lastRep > 350){ this.state = 'up'; this.reps++; this.lastRep = t; return 'rep'; } }
+    return null; }
+}
+const POSE_BASE = 'vendor/pose/';
+const SKEL = [[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28],[27,31],[28,32],[0,11],[0,12]];
+async function loadPose(onStatus){
+  if (P.lm) return P.lm; if (P.lmLoading) return P.lmLoading;
+  P.lmLoading = (async () => {
+    onStatus && onStatus('Lade Pose-Modell (lokal) …');
+    const mod = await import(new URL(POSE_BASE + 'vision_bundle.mjs', location.href).href);
+    const fileset = {wasmLoaderPath: new URL(POSE_BASE + 'vision_wasm_internal.js', location.href).href, wasmBinaryPath: new URL(POSE_BASE + 'vision_wasm_internal.wasm', location.href).href};
+    const opts = d => ({baseOptions:{modelAssetPath: new URL(POSE_BASE + 'pose_landmarker_lite.task', location.href).href, delegate:d}, runningMode:'VIDEO', numPoses:1,
+      minPoseDetectionConfidence:.5, minPosePresenceConfidence:.5, minTrackingConfidence:.5});
+    try { P.lm = await mod.PoseLandmarker.createFromOptions(fileset, opts('GPU')); P.lmDelegate = 'GPU'; }
+    catch(e){ console.warn('GPU-Delegate nicht verfügbar, nutze CPU', e); P.lm = await mod.PoseLandmarker.createFromOptions(fileset, opts('CPU')); P.lmDelegate = 'CPU'; }
+    return P.lm;
+  })();
+  try { return await P.lmLoading; } catch(e){ P.lmLoading = null; throw e; }
+}
+function counterOpen(q){
+  const ex = EXER[q.ex] ? q.ex : (guessEx(q.name)||'push'), e = EXER[ex];
+  P.sess = {kind:'counter', q, ex, facing:'user', rc:new RepCounter(ex), gained:0};
+  ovOpen(`${proofHead(q, `🎥 Kamera-Zähler · ${e.n}`)}
+   <div class="pinfo">Das System benötigt <b>Zugriff auf die Kamera</b>, um deine Wiederholungen <b>direkt auf dem Gerät</b> zu zählen (Pose-Erkennung, funktioniert offline). Es wird <b>nichts hochgeladen</b> und kein Video gespeichert.</div>
+   <div class="pinfo">📐 ${esc(e.hint)}<br>Gezählt wird über den ${e.joint}-Winkel: ganz runter <b>und</b> ganz hoch = 1 Wiederholung.</div>
+   <div class="row" style="justify-content:center"><span class="chip ${S.proofCfg.beep?'on':''}" data-a="pcfg" data-k="beep">🔊 Ton</span><span class="chip ${S.proofCfg.voice?'on':''}" data-a="pcfg" data-k="voice">🗣️ Sprachansage</span></div>
+   <button class="full prim" style="margin-top:10px" data-a="counterStart">🎥 Kamera starten</button><button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
+}
+async function counterStart(){
+  const s = P.sess; if (!s) return; const q = s.q, e = EXER[s.ex];
+  ovSet(`${proofHead(q, `🎥 ${e.n} · ${e.joint}-Winkel`)}
+   <div class="stage" id="pstage"><video id="pv" playsinline muted autoplay class="${s.facing==='user'?'mirror':''}"></video><canvas id="pc" class="${s.facing==='user'?'mirror':''}"></canvas>
+     <div class="repbox"><div class="repn" id="repn">0</div><div class="dim small" id="reptot">${fmt(q.progress)} / ${fmt(q.target)} ${esc(q.unit)}</div></div>
+     <div class="pstat" id="pstat">Starte Kamera …</div></div>
+   <div class="row small dim" style="margin-top:6px"><span class="sp" id="pang">Winkel: –</span><span id="pfps"></span></div>
+   <div class="grid3" style="margin-top:8px"><button data-a="counterFlip">🔄 Kamera</button><button data-a="pcfg" data-k="beep" id="pbeep">${S.proofCfg.beep?'🔊':'🔇'} Ton</button><button data-a="pcfg" data-k="voice" id="pvoice">${S.proofCfg.voice?'🗣️ an':'🗣️ aus'}</button></div>
+   <button class="full prim" style="margin-top:8px" data-a="counterEnd">✔ Beenden</button>`);
+  const st = t => { const el = $('#pstat'); if (el) el.textContent = t; };
+  try { if (P.stream) P.stream.getTracks().forEach(t=>t.stop()); P.stream = await getCam(s.facing); }
+  catch(err){ ovSet(`${proofHead(q,'🎥 Kamera-Zähler')}<div class="pinfo badc">⚠ ${permErr(err)}</div>${fallbackBtns(q)}`); return; }
+  const v = $('#pv'); v.srcObject = P.stream; await v.play().catch(()=>{});
+  let lm; try { lm = await loadPose(st); }
+  catch(err){ console.error(err); ovSet(`${proofHead(q,'🎥 Kamera-Zähler')}<div class="pinfo badc">⚠ Das Pose-Modell konnte nicht geladen werden (${esc(err.message||err)}).<br>Einmal online öffnen, damit es gespeichert wird.</div>${fallbackBtns(q)}`); return; }
+  if (P.sess !== s) return; // inzwischen geschlossen
+  wakeOn(); st('Startposition einnehmen');
+  const c = $('#pc'), x = c.getContext('2d'); let lastT = -1, frames = 0, fpsT = performance.now();
+  const loop = () => {
+    if (P.sess !== s || !P.stream) return;
+    P.raf = requestAnimationFrame(loop);
+    if (!v.videoWidth || v.currentTime === lastT) return; lastT = v.currentTime;
+    if (c.width !== v.videoWidth){ c.width = v.videoWidth; c.height = v.videoHeight; }
+    const now = performance.now(); let res;
+    try { res = lm.detectForVideo(v, now); } catch(err){ console.warn(err); return; }
+    const L = res && res.landmarks && res.landmarks[0];
+    x.clearRect(0, 0, c.width, c.height);
+    if (L) drawSkeleton(x, L, c.width, c.height, s.rc);
+    const ev = s.rc.update(L, now);
+    st(s.rc.msg); const pa = $('#pang'); if (pa) pa.textContent = s.rc.a!=null ? `${EXER[s.ex].joint}-Winkel: ${Math.round(s.rc.a)}° (runter < ${EXER[s.ex].lo}°, hoch > ${EXER[s.ex].hi}°)` : 'Winkel: –';
+    frames++; if (now - fpsT > 1000){ const f = $('#pfps'); if (f) f.textContent = `${Math.round(frames*1000/(now-fpsT))} FPS · ${P.lmDelegate}`; frames = 0; fpsT = now; }
+    if (ev === 'rep') onRep(s);
+  };
+  loop();
+}
+function drawSkeleton(x, L, w, h, rc){
+  x.lineWidth = Math.max(3, w/160); x.strokeStyle = '#3ad7ff'; x.shadowColor = '#3ad7ff'; x.shadowBlur = 12;
+  for (const [a, b] of SKEL){ const p = L[a], q = L[b]; if (!p || !q || (p.visibility??1) < .4 || (q.visibility??1) < .4) continue;
+    x.beginPath(); x.moveTo(p.x*w, p.y*h); x.lineTo(q.x*w, q.y*h); x.stroke(); }
+  x.shadowBlur = 0;
+  const side = rc.pickSide(L); for (const i of [11,12,13,14,15,16,23,24,25,26,27,28]){ const p = L[i]; if (!p || (p.visibility??1) < .4) continue;
+    const hot = side.t.includes(i); x.fillStyle = hot ? (rc.state==='down'?'#ffd55a':'#4dffa6') : '#dff6ff';
+    x.beginPath(); x.arc(p.x*w, p.y*h, hot ? w/90 : w/150, 0, 7); x.fill(); }
+}
+function onRep(s){
+  s.gained++; const q = S.quests.find(x=>x.id===s.q.id) || s.q;
+  const el = $('#repn'); if (el){ el.textContent = s.gained; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  vibrate(25); if (S.proofCfg.beep) beep(880 + Math.min(600, s.gained*8), 80);
+  const done = proofCredit(q, 1, 'Kamera-Zähler');
+  if (S.proofCfg.voice) say(done ? 'Quest erfüllt!' : s.gained);
+  const tot = $('#reptot'); if (tot) tot.textContent = `${fmt(q.progress)} / ${fmt(q.target)} ${q.unit}`;
+  if (done){ beep(1320, 300); const st = $('#pstat'); if (st) st.textContent = '✔ QUEST ERFÜLLT – verifiziert'; s.finished = true; setTimeout(() => { if (P.sess===s) counterFinish(s); }, 1600); }
+}
+async function counterFinish(s){
+  const q = S.quests.find(x=>x.id===s.q.id) || s.q, v = $('#pv');
+  if (s.gained > 0 && v && v.videoWidth){ // Schnappschuss als Beweis in die Galerie
+    try { const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; const x = c.getContext('2d');
+      if (s.facing==='user'){ x.translate(c.width, 0); x.scale(-1, 1); } x.drawImage(v, 0, 0); x.setTransform(1,0,0,1,0,0);
+      const pc = $('#pc'); if (pc){ if (s.facing==='user'){ x.translate(c.width,0); x.scale(-1,1); } x.drawImage(pc, 0, 0); x.setTransform(1,0,0,1,0,0); }
+      await saveProofImage(q, stampCanvas(c, c.width, c.height, q, `🎥 ${s.gained}× ${EXER[s.ex].n} gezählt`), 'counter', `${s.gained} Wdh.`);
+    } catch(e){ console.warn(e); } }
+  ovClose();
+  if (s.gained) toast(`🎥 Kamera-Zähler: <b>${s.gained}</b> ${esc(EXER[s.ex].n)} gezählt und gutgeschrieben.`, '[SYSTEM]');
+  else toast('Keine Wiederholung erkannt – nichts gutgeschrieben.', '[SYSTEM]');
+}
+Object.assign(PA, {
+ counterStart(){ counterStart(); },
+ counterFlip(){ const s = P.sess; if (!s) return; s.facing = s.facing==='user'?'environment':'user'; if (P.raf) cancelAnimationFrame(P.raf); counterStart(); },
+ counterEnd(){ const s = P.sess; if (s && s.kind==='counter' && !s.finished) counterFinish(s); },
+ pcfg(d){ S.proofCfg[d.k] = !S.proofCfg[d.k]; save();
+   const b = $('#pbeep'), vo = $('#pvoice'); if (b) b.textContent = (S.proofCfg.beep?'🔊':'🔇') + ' Ton'; if (vo) vo.textContent = S.proofCfg.voice?'🗣️ an':'🗣️ aus';
+   document.querySelectorAll(`#proof .chip[data-k="${d.k}"]`).forEach(c => c.classList.toggle('on', !!S.proofCfg[d.k]));
+   if (d.k==='beep' && S.proofCfg.beep) beep(); if (d.k==='voice' && S.proofCfg.voice) say('Sprachansage an'); },
+});
+
+/* ---------- 3) GPS + Schritte ---------- */
+const MAX_KMH = 25, MAX_ACC = 35; // Abschnitte > 25 km/h = Fahrzeug; Punkte mit Genauigkeit > 35 m werden ignoriert
+function haversine(a, b){ const R = 6371000, r = Math.PI/180, dLa = (b.lat-a.lat)*r, dLo = (b.lon-a.lon)*r;
+  const h = Math.sin(dLa/2)**2 + Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+// Reine Filter-Logik (testbar): verarbeitet einen GPS-Punkt
+function gpsFeed(s, p){ // p: {lat,lon,acc,t,spd}
+  s.pts++; s.acc = p.acc;
+  if (s.paused) return 'paused';
+  if (p.acc > MAX_ACC){ s.badAcc++; s.status = `Schwaches GPS-Signal (±${Math.round(p.acc)} m) – Punkt ignoriert`; return 'acc'; }
+  if (!s.last){ s.last = p; s.path.push([p.lat, p.lon]); s.status = 'Tracking aktiv'; return 'start'; }
+  const d = haversine(s.last, p), dt = (p.t - s.last.t)/1000; if (dt <= 0) return 'dup';
+  const kmh = d/dt*3.6;
+  if (kmh > MAX_KMH || (p.spd!=null && p.spd*3.6 > MAX_KMH)){
+    s.rejected += d; s.vehicle++; s.last = p; s.status = `⚠ ${Math.round(Math.max(kmh, (p.spd||0)*3.6))} km/h – Fahrzeug oder GPS-Sprung erkannt, Abschnitt verworfen`; return 'vehicle'; }
+  if (d < Math.max(3, Math.min(15, p.acc*.5))) return 'jitter'; // Stillstand / GPS-Rauschen
+  s.dist += d; s.last = p; s.path.push([p.lat, p.lon]); s.speed = kmh; s.status = 'Tracking aktiv'; return 'ok';
+}
+function onMotion(e){ const s = P.sess; if (!s || s.kind!=='gps' || s.paused) return; const a = e.accelerationIncludingGravity; if (!a || a.x==null) return;
+  const m = Math.hypot(a.x, a.y, a.z), t = performance.now(); s.motionOK = true;
+  s.lp = s.lp==null ? m : s.lp*.75 + m*.25; s.avg = s.avg==null ? m : s.avg*.97 + s.lp*.03;
+  const th = s.avg + 1.1;
+  if (!s.above && s.lp > th && t - (s.lastStep||0) > 280){ s.above = true; s.steps++; s.lastStep = t; }
+  else if (s.above && s.lp < s.avg) s.above = false; }
+function gpsOpen(q){
+  P.sess = {kind:'gps', q, dist:0, rejected:0, vehicle:0, badAcc:0, pts:0, path:[], last:null, steps:0, paused:false, moving:0, t0:0, tick:0, status:'', acc:null, speed:0};
+  ovOpen(`${proofHead(q, '🛰️ GPS-Lauf · Strecke, Tempo & Schritte')}
+   <div class="pinfo">Das System benötigt deinen <b>Standort (GPS)</b>, um die Strecke zu messen, und – falls vorhanden – den <b>Bewegungssensor</b> für Schritte. Die Daten bleiben <b>nur auf deinem Gerät</b>.</div>
+   <div class="pinfo badc">⚠ Wichtig: Tracking funktioniert <b>nur, solange der Bildschirm an und die App geöffnet ist</b>. Das System hält den Bildschirm wach. App nicht wechseln, Handy nicht sperren.</div>
+   <div class="pinfo small">Anti-Cheat: Abschnitte über ${MAX_KMH} km/h (Auto, Bus, Rad bergab) und ungenaue GPS-Punkte werden verworfen.</div>
+   <button class="full prim" data-a="gpsStart">🛰️ Lauf starten</button><button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
+}
+async function gpsStart(){
+  const s = P.sess; if (!s) return; const q = s.q;
+  if (!('geolocation' in navigator)){ ovSet(`${proofHead(q,'🛰️ GPS-Lauf')}<div class="pinfo badc">⚠ Dieses Gerät/dieser Browser bietet kein GPS an.</div>${fallbackBtns(q)}`); return; }
+  // iOS: Bewegungssensor braucht eine Erlaubnis aus einem Tipp heraus
+  try { if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function'){ s.motionPerm = await DeviceMotionEvent.requestPermission(); } } catch(e){ s.motionPerm = 'denied'; }
+  if (window.DeviceMotionEvent) window.addEventListener('devicemotion', onMotion); // auch bei 'denied' lauschen – manche Browser liefern trotzdem Daten
+  s.status = 'Suche GPS-Signal …';
+  ovSet(`${proofHead(q,'🛰️ GPS-Lauf')}
+   <div class="gpsbig"><div><b id="gD">0,00</b><span>km</span></div></div>
+   <div class="grid3 c gpsst"><div><b id="gT">00:00</b><div class="dim small">Zeit</div></div><div><b id="gP">–:––</b><div class="dim small">Pace /km</div></div><div><b id="gS">–</b><div class="dim small">Schritte</div></div></div>
+   <canvas id="gC" class="gpsmap" width="600" height="300"></canvas>
+   <div class="pstat2" id="gSt">Suche GPS-Signal …</div><div class="dim small c" id="gInfo"></div>
+   <div class="grid2" style="margin-top:8px"><button data-a="gpsPause" id="gPa">⏸ Pause</button><button class="prim" data-a="gpsEnd">✔ Beenden</button></div>
+   <button class="full ghost" style="margin-top:8px" data-a="gpsCancel">✖ Abbrechen (nichts gutschreiben)</button>`);
+  s.wake = await wakeOn();
+  s.t0 = Date.now(); s.tick = Date.now();
+  P.watch = navigator.geolocation.watchPosition(pos => {
+    if (P.sess !== s) return; const c = pos.coords;
+    const r = gpsFeed(s, {lat:c.latitude, lon:c.longitude, acc:(c.accuracy!=null && !isNaN(c.accuracy)) ? c.accuracy : 999, t:pos.timestamp||Date.now(), spd:(c.speed!=null && !isNaN(c.speed)) ? c.speed : null});
+    if (r === 'vehicle'){ vibrate([100,50,100]); }
+    gpsDraw();
+  }, err => { if (P.sess !== s) return; s.status = '⚠ ' + permErr(err); s.err = err.code;
+    if (err.code === 1){ ovSet(`${proofHead(q,'🛰️ GPS-Lauf')}<div class="pinfo badc">⚠ ${permErr(err)}</div>${fallbackBtns(q)}`); stopAllProof(); P.sess = s; }
+    else gpsDraw(); }, {enableHighAccuracy:true, maximumAge:0, timeout:20000});
+  P.iv = setInterval(() => { if (P.sess !== s) return; const n = Date.now(); if (!s.paused) s.moving += n - s.tick; s.tick = n; gpsDraw(); }, 1000);
+}
+function fmtPace(sec){ if (!isFinite(sec) || sec <= 0 || sec > 3600) return '–:––'; const m = Math.floor(sec/60), r = Math.round(sec%60); return `${m}:${pad(r===60?59:r)}`; }
+function fmtClock(ms){ const t = Math.floor(ms/1000), h = Math.floor(t/3600), m = Math.floor(t%3600/60), sec = t%60; return (h?h+':'+pad(m):pad(m)) + ':' + pad(sec); }
+function gpsDraw(){
+  const s = P.sess; if (!s || s.kind!=='gps') return; const set = (id, t) => { const e = $(id); if (e) e.textContent = t; };
+  set('#gD', (s.dist/1000).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}));
+  set('#gT', fmtClock(s.moving)); set('#gP', s.dist > 30 ? fmtPace(s.moving/1000/(s.dist/1000)) : '–:––');
+  set('#gS', s.motionOK ? fmt(s.steps) : (s.motionPerm==='denied' ? 'verweigert' : '–'));
+  set('#gSt', s.paused ? '⏸ Pausiert' : (s.status || 'Suche GPS-Signal …'));
+  set('#gInfo', `GPS ±${s.acc!=null?Math.round(s.acc):'–'} m · ${s.speed?s.speed.toFixed(1).replace('.',',')+' km/h · ':''}Punkte ${s.pts}${s.vehicle?` · ⚠ verworfen: ${(s.rejected/1000).toFixed(2).replace('.',',')} km`:''}${s.bgGap?' · ⚠ App war im Hintergrund':''}${s.wake===false?' · Bildschirm-Sperre bitte selbst deaktivieren':''}`);
+  const c = $('#gC'); if (!c) return; const x = c.getContext('2d'), w = c.width, h = c.height; x.clearRect(0, 0, w, h);
+  x.strokeStyle = 'rgba(58,215,255,.15)'; x.lineWidth = 1; for (let i = 1; i < 6; i++){ x.beginPath(); x.moveTo(i*w/6, 0); x.lineTo(i*w/6, h); x.stroke(); x.beginPath(); x.moveTo(0, i*h/6); x.lineTo(w, i*h/6); x.stroke(); }
+  const P0 = s.path; if (P0.length < 1) return;
+  const lat0 = P0[0][0], kx = Math.cos(lat0*Math.PI/180); const xs = P0.map(p => p[1]*kx), ys = P0.map(p => -p[0]);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const sc = Math.min((w-40)/Math.max(maxX-minX, 1e-6), (h-40)/Math.max(maxY-minY, 1e-6)), ox = (w - (maxX-minX)*sc)/2, oy = (h - (maxY-minY)*sc)/2;
+  const X = i => ox + (xs[i]-minX)*sc, Y = i => oy + (ys[i]-minY)*sc;
+  x.strokeStyle = '#3ad7ff'; x.lineWidth = 4; x.shadowColor = '#3ad7ff'; x.shadowBlur = 10; x.lineJoin = 'round'; x.beginPath();
+  P0.forEach((p, i) => i ? x.lineTo(X(i), Y(i)) : x.moveTo(X(i), Y(i))); x.stroke(); x.shadowBlur = 0;
+  x.fillStyle = '#4dffa6'; x.beginPath(); x.arc(X(0), Y(0), 7, 0, 7); x.fill();
+  x.fillStyle = '#ffd55a'; x.beginPath(); x.arc(X(P0.length-1), Y(P0.length-1), 7, 0, 7); x.fill();
+}
+async function gpsFinish(s){
+  const q = S.quests.find(x=>x.id===s.q.id) || s.q, km = s.dist/1000, uk = unitKind(q.unit);
+  let amount = uk==='km' ? Math.floor(km*100)/100 : uk==='m' ? Math.round(s.dist) : uk==='steps' ? s.steps : uk==='min' ? Math.floor(s.moving/60000) : uk==='h' ? Math.floor(s.moving/36e5*100)/100 : (s.dist >= 1000 ? 1 : 0);
+  // Plausibilität: Bewegungssensor aktiv, aber kaum Schritte für die Strecke → kein Verifiziert-Abzeichen
+  const susp = s.motionOK && s.dist > 400 && s.steps < s.dist/3;
+  const c = $('#gC'); let saved = false;
+  if (s.dist > 0 && c){ try { gpsDraw(); const cc = document.createElement('canvas'); cc.width = 720; cc.height = 540; const x = cc.getContext('2d'); x.fillStyle = '#050a18'; x.fillRect(0,0,720,540); x.drawImage(c, 0, 20, 720, 360);
+      x.fillStyle = '#dff6ff'; x.font = '800 40px system-ui,sans-serif'; x.fillText(`${km.toFixed(2).replace('.',',')} km · ${fmtClock(s.moving)} · ${fmtPace(s.moving/1000/Math.max(km,.001))} /km`, 24, 410);
+      await saveProofImage(q, stampCanvas(cc, 720, 540, q, `🛰️ GPS-Lauf${s.motionOK?` · ${s.steps} Schritte`:''}`), 'gps', `${km.toFixed(2)} km`); saved = true; } catch(e){ console.warn(e); } }
+  ovClose();
+  if (amount > 0){ if (susp) q.manual = true; proofCredit(q, amount, 'GPS'); save(); render();
+    toast(`🛰️ Lauf beendet: <b>${km.toFixed(2).replace('.',',')} km</b> in ${fmtClock(s.moving)}${s.motionOK?` · ${fmt(s.steps)} Schritte`:''} → +${fmtQ(amount)} ${esc(q.unit)}${susp?'<br>⚠ Schritte passen nicht zur Strecke – kein ✔ Verifiziert-Bonus.':''}`, '[SYSTEM]', 6000); }
+  else toast(`Lauf beendet: ${km.toFixed(2).replace('.',',')} km – zu wenig für eine Gutschrift.`, '[SYSTEM]', 4500);
+}
+Object.assign(PA, {
+ gpsStart(){ gpsStart(); },
+ gpsPause(){ const s = P.sess; if (!s || s.kind!=='gps') return; s.paused = !s.paused; s.last = null; const b = $('#gPa'); if (b) b.textContent = s.paused ? '▶ Weiter' : '⏸ Pause'; gpsDraw(); },
+ gpsEnd(){ const s = P.sess; if (s && s.kind==='gps') gpsFinish(s); },
+ gpsCancel(){ ask('Lauf abbrechen? Die Strecke wird nicht gutgeschrieben.', () => { ovClose(); }, 'Abbrechen'); },
+});
+
+/* ---------- 4) Timer (nur im Vordergrund) ---------- */
+function timerOpen(q){
+  const isMin = unitKind(q.unit)==='min', rest = Math.max(1, Math.ceil(q.target - q.progress));
+  P.sess = {kind:'timer', q, isMin, minutes: isMin ? rest : 10, elapsed:0, running:false, invalid:false};
+  const strict = S.proofCfg.timerMode==='invalid';
+  ovOpen(`${proofHead(q, '⏱️ Timer · nur im Vordergrund')}
+   <div class="pinfo">Der Timer läuft <b>nur, solange die App geöffnet und sichtbar ist</b>. Das System hält den Bildschirm wach.<br>
+   Wenn du die App verlässt: <b>${strict?'❌ Timer wird ungültig':'⏸ Timer pausiert'}</b> <span class="dim">(änderbar unter Mehr → Nachweis-System)</span>.</div>
+   ${isMin?`<p class="c">Dauer: <b>${rest} Min.</b> (verbleibend für diese Quest)</p>`:`<label>Dauer (Minuten)</label><input id="tMin" type="number" inputmode="numeric" min="1" max="240" value="10">`}
+   <button class="full prim" style="margin-top:10px" data-a="timerGo">⏱️ Timer starten</button><button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
+}
+function timerView(){
+  const s = P.sess, R = 88, C = 2*Math.PI*R;
+  ovSet(`${proofHead(s.q, `⏱️ ${s.minutes} Min. · ${S.proofCfg.timerMode==='invalid'?'Verlassen = ungültig':'Verlassen = Pause'}`)}
+   <div class="tring"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="${R}" class="tbg"/><circle id="tArc" cx="100" cy="100" r="${R}" class="tfg" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
+   <div class="tclock"><b id="tClk">${fmtClock(s.minutes*60000)}</b><div class="dim small" id="tSt">läuft</div></div></div>
+   <div class="grid2" style="margin-top:8px"><button data-a="timerPause" id="tPa">⏸ Pause</button><button class="prim" data-a="timerEnd">✔ Beenden</button></div>
+   <button class="full ghost" style="margin-top:8px" data-a="proofClose">✖ Abbrechen</button>`);
+}
+function timerStart(){
+  const s = P.sess; if (!s) return;
+  if (!s.isMin){ const m = Math.round(Number(val('tMin'))||0); if (m < 1){ toast('Bitte eine Dauer eingeben.'); return; } s.minutes = Math.min(240, m); }
+  s.total = s.minutes*60000; s.elapsed = 0; s.running = true; s.invalid = false; s.last = performance.now(); s.started = Date.now();
+  timerView(); wakeOn(); beep(660, 120);
+  P.iv = setInterval(timerTick, 250);
+}
+function timerTick(){
+  const s = P.sess; if (!s || s.kind!=='timer') return; const now = performance.now();
+  if (s.running && !document.hidden){ let dt = now - s.last;
+    if (dt > 3000){ // Seite war eingefroren (z. B. Bildschirm aus) → zählt nicht
+      if (S.proofCfg.timerMode==='invalid'){ timerInvalidate('Die App war eingefroren/im Hintergrund.'); return; } dt = 250; }
+    s.elapsed += dt; }
+  s.last = now;
+  const left = Math.max(0, s.total - s.elapsed), R = 88, C = 2*Math.PI*R;
+  const clk = $('#tClk'); if (clk) clk.textContent = fmtClock(left + 999);
+  const arc = $('#tArc'); if (arc) arc.setAttribute('stroke-dashoffset', String(C * (s.elapsed/s.total)));
+  const st = $('#tSt'); if (st) st.textContent = s.running ? 'läuft' : (s.pauseWhy || 'pausiert');
+  if (left <= 0) timerDone(s);
+}
+function timerHidden(){ const s = P.sess; if (!s || !s.running) return;
+  if (S.proofCfg.timerMode==='invalid') timerInvalidate('Du hast die App verlassen.');
+  else { s.running = false; s.pauseWhy = '⏸ Pausiert – App wurde verlassen'; const b = $('#tPa'); if (b) b.textContent = '▶ Weiter'; } }
+function timerInvalidate(why){ const s = P.sess; if (!s) return; s.running = false; s.invalid = true; clearInterval(P.iv); P.iv = 0; wakeOff();
+  log(`Timer ungültig: ${s.q.name}`);
+  ovSet(`${proofHead(s.q,'⏱️ Timer')}<div class="c" style="font-size:60px">❌</div><div class="pinfo badc c"><b>[SYSTEM] Nachweis ungültig.</b><br>${esc(why)}<br>Der Timer muss vollständig im Vordergrund laufen.</div>
+   <div class="grid2"><button class="prim" data-a="timerRestart">↺ Neu starten</button><button data-a="proofClose">Schließen</button></div>`); }
+function timerDone(s){ clearInterval(P.iv); P.iv = 0; s.running = false; wakeOff();
+  beep(880, 150); setTimeout(() => beep(1175, 150), 180); setTimeout(() => beep(1568, 300), 360); vibrate([80,60,80,60,200]);
+  const q = S.quests.find(x=>x.id===s.q.id) || s.q; ovClose();
+  const amt = s.isMin ? s.minutes : (q.target - q.progress); proofCredit(q, amt, 'Timer'); save(); render();
+  toast(`⏱️ Timer abgeschlossen: ${s.minutes} Min. ✔`, '[SYSTEM]'); }
+Object.assign(PA, {
+ timerGo(){ timerStart(); },
+ timerRestart(){ const q = P.sess && P.sess.q; stopAllProof(); if (q) timerOpen(q); },
+ timerPause(){ const s = P.sess; if (!s || s.kind!=='timer' || s.invalid) return; s.running = !s.running; s.pauseWhy = '⏸ Pausiert'; s.last = performance.now(); const b = $('#tPa'); if (b) b.textContent = s.running ? '⏸ Pause' : '▶ Weiter'; timerTick(); },
+ timerEnd(){ const s = P.sess; if (!s || s.kind!=='timer') return; const mins = Math.floor(s.elapsed/60000);
+   if (s.isMin && mins >= 1){ const q = S.quests.find(x=>x.id===s.q.id) || s.q; ovClose(); proofCredit(q, mins, 'Timer'); save(); render(); toast(`⏱️ ${mins} Min. gutgeschrieben.`, '[SYSTEM]'); }
+   else { ovClose(); toast('Timer beendet – nicht vollständig, nichts gutgeschrieben.', '[SYSTEM]'); } },
+});
+
+/* ---------- Beweis-Galerie ---------- */
+async function galleryOpen(){
+  P.urls.forEach(u => URL.revokeObjectURL(u)); P.urls = [];
+  modal(`<h2>Beweis-Galerie</h2><p class="dim c">Lade …</p>`);
+  let items = []; try { items = await PDB.all(); } catch(e){ modal(`<h2>Beweis-Galerie</h2><p class="badc c">Speicher nicht verfügbar: ${esc(e.message||e)}</p><button class="full" data-a="closeModal">Schließen</button>`); return; }
+  const bytes = items.reduce((a, b) => a + (b.size||0), 0);
+  const byDay = {}; items.forEach(it => (byDay[it.day] = byDay[it.day] || []).push(it));
+  const kindI = {photo:'📸', counter:'🎥', gps:'🛰️'};
+  const html = Object.keys(byDay).sort().reverse().map(d => `<h3>${parseDay(d).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})} · ${byDay[d].length}</h3>
+    <div class="gal">${byDay[d].map(it => { const u = URL.createObjectURL(it.thumb); P.urls.push(u);
+      return `<div class="gi" data-a="galView" data-id="${it.id}"><img src="${u}" alt=""><span>${kindI[it.kind]||'📸'} ${new Date(it.t).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</span><em>${esc(it.qname)}</em></div>`; }).join('')}</div>`).join('');
+  modal(`<h2>Beweis-Galerie</h2><p class="dim small c">${items.length} Beweis(e) · ${(bytes/1048576).toFixed(1).replace('.',',')} MB · nur auf diesem Gerät gespeichert</p>
+   ${html || '<p class="dim c">Noch keine Beweise. Erledige eine Quest mit Foto, Kamera-Zähler oder GPS.</p>'}
+   ${items.length?`<h3>Aufräumen</h3><div class="grid3"><button data-a="galClean" data-k="7">> 7 Tage</button><button data-a="galClean" data-k="30">> 30 Tage</button><button class="bad" data-a="galClean" data-k="0">Alle</button></div>`:''}
+   <button class="full" style="margin-top:10px" data-a="closeModal">Schließen</button>`);
+}
+Object.assign(PA, {
+ gallery(){ galleryOpen(); },
+ async galView(d){ const meta = (await PDB.all()).find(x=>x.id===d.id); const img = await PDB.full(d.id); if (!img) return;
+   const u = URL.createObjectURL(img); P.urls.push(u);
+   modal(`<h2>Beweis</h2><img src="${u}" style="width:100%;border-radius:8px;border:1px solid var(--acc)"><p class="small c">${esc(meta?.qname||'')} · ${meta?new Date(meta.t).toLocaleString('de-DE'):''}${meta?.info?' · '+esc(meta.info):''}</p>
+     <div class="grid2"><button data-a="gallery">← Galerie</button><button class="bad" data-a="galDel" data-id="${d.id}">🗑️ Löschen</button></div>`); },
+ galDel(d){ ask('Diesen Beweis löschen? (Der Quest-Fortschritt bleibt.)', async () => { await PDB.del([d.id]); galleryOpen(); }, 'Löschen'); },
+ galClean(d){ const days = Number(d.k), lim = Date.now() - days*864e5;
+   ask(days ? `Alle Beweise löschen, die älter als ${days} Tage sind?` : 'Wirklich ALLE Beweise löschen?', async () => {
+     const ids = (await PDB.all()).filter(x => !days || x.t < lim).map(x => x.id); await PDB.del(ids); toast(`${ids.length} Beweis(e) gelöscht.`); galleryOpen(); }, 'Löschen'); },
+ toggleHonor(d){ const q = S.quests.find(x=>x.id===d.id); if (q){ q.honor = !q.honor; toast(q.honor ? `Ehrenmodus für „${esc(q.name)}“: manuelle Eingabe erlaubt (ohne Verifiziert-Bonus).` : `„${esc(q.name)}“ erfordert wieder einen Nachweis.`, '[SYSTEM]'); } },
+ timerMode(d){ S.proofCfg.timerMode = d.k; },
+ cfgToggle(d){ S.proofCfg[d.k] = !S.proofCfg[d.k]; },
+ poseCache(){ if (navigator.serviceWorker && navigator.serviceWorker.controller){ navigator.serviceWorker.controller.postMessage({type:'CACHE_POSE'}); toast('Lade Kamera-Zähler-Dateien für den Offline-Betrieb …'); } },
+});
+Object.assign(A, PA);
+
+/* ---------- Ansichten: Einstellungen & Status ---------- */
+function proofSettingsCard(){
+  const qs = S.quests.filter(proofNeeded);
+  return `<section class="win"><h2>Nachweis-System</h2>
+   <p class="dim small c">Quests mit Nachweis zählen nur mit Beweis. Verifizierte Quests geben <b class="okc">+10 % XP</b>.</p>
+   <button class="full" data-a="gallery">🖼️ Beweis-Galerie</button>
+   <h3>Timer beim Verlassen der App</h3><div class="c"><span class="chip ${S.proofCfg.timerMode!=='invalid'?'on':''}" data-a="timerMode" data-k="pause">⏸ Pausieren</span><span class="chip ${S.proofCfg.timerMode==='invalid'?'on':''}" data-a="timerMode" data-k="invalid">❌ Ungültig machen</span></div>
+   <h3>Kamera-Zähler</h3><div class="c"><span class="chip ${S.proofCfg.beep?'on':''}" data-a="cfgToggle" data-k="beep">🔊 Ton pro Wdh.</span><span class="chip ${S.proofCfg.voice?'on':''}" data-a="cfgToggle" data-k="voice">🗣️ Sprachansage</span></div>
+   <div class="dim small c" id="poseState">Offline-Status wird geprüft …</div>
+   <h3>Ehrenmodus</h3><p class="dim small">Erlaubt für einzelne Quests wieder die manuelle Eingabe (+/−) – dann ohne „✔ Verifiziert“ und ohne Bonus.</p>
+   ${qs.map(q=>`<div class="item"><div class="ii">${PROOF[q.proof].i}</div><div class="sp"><b>${esc(q.name)}</b><div class="dim small">${PROOF[q.proof].n}${q.proof==='counter'?' · '+EXER[q.ex]?.n:''}</div></div><span class="chip ${q.honor?'on':''}" data-a="toggleHonor" data-id="${q.id}">${q.honor?'🤝 Ehrenmodus':'🔒 Nachweis'}</span></div>`).join('') || '<p class="dim">Keine Quests mit Nachweis.</p>'}
+  </section>`;
+}
+async function poseOfflineState(){
+  const el = $('#poseState'); if (!el) return;
+  if (!('caches' in window)){ el.textContent = 'Offline-Speicher nicht verfügbar.'; return; }
+  try { const ok = (await Promise.all(['vision_bundle.mjs','vision_wasm_internal.js','vision_wasm_internal.wasm','pose_landmarker_lite.task'].map(f => caches.match(POSE_BASE + f)))).every(Boolean);
+    el.innerHTML = ok ? '✔ Pose-Modell offline gespeichert – Kamera-Zähler funktioniert ohne Internet.' : '⚠ Pose-Modell noch nicht offline gespeichert. <span class="chip" data-a="poseCache">⬇️ Jetzt laden (~21 MB)</span>'; }
+  catch(e){ el.textContent = ''; }
+}
+
 /* =================== Start =================== */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
@@ -1276,7 +1838,7 @@ setInterval(tick, 1000);
 setInterval(()=>{ checkDay(); if (UI.tab==='systems' && UI.detail==='guild' && !$('#modal').classList.contains('on')) render(); }, 30000);
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkDay(); });
 initPWA();
-window.App = {get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate};
+window.App = {get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate, P, RepCounter, gpsFeed, PDB, EXER, migrateProof, SAVE_KEY};
 </script>
 </body>
 </html>

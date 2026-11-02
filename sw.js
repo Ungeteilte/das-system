@@ -1,23 +1,35 @@
 /* Das System – Service Worker. GENERIERT von src/build.py aus src/sw.template.js – nicht direkt bearbeiten. */
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const CACHE = 'das-system-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './version.json', './icon.svg', './icon-192.png', './icon-512.png'];
 const NET_TIMEOUT = 3000; // ms – danach sofort Cache (wackliges Netz)
+// Kamera-Zähler (Pose-Erkennung): ~21 MB, selbst gehostet. Eigener Cache, der Updates überlebt (nur neu laden, wenn POSE_CACHE sich ändert).
+const POSE_CACHE = 'das-system-pose-mp1.2.0-lite';
+const POSE_ASSETS = ['./vendor/pose/vision_bundle.mjs', './vendor/pose/vision_wasm_internal.js', './vendor/pose/vision_wasm_internal.wasm', './vendor/pose/pose_landmarker_lite.task'];
+function cachePose(){
+  return caches.open(POSE_CACHE).then(c => Promise.all(POSE_ASSETS.map(u => c.match(u).then(hit => hit ||
+    fetch(new Request(u, {cache: 'reload'})).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))));
+}
 
 self.addEventListener('install', e => {
   // cache:'reload' umgeht den HTTP-Cache (GitHub Pages cached 10 Min.), damit die neue Version wirklich frisch geladen wird
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(ASSETS.map(u =>
-    fetch(new Request(u, {cache: 'reload'})).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })
-  ))));
+  e.waitUntil(Promise.all([
+    caches.open(CACHE).then(c => Promise.all(ASSETS.map(u =>
+      fetch(new Request(u, {cache: 'reload'})).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))),
+    // Pose-Modell mit vorladen; schlägt das fehl (schlechtes Netz), blockiert es das Update nicht – die App lädt es später nach (CACHE_POSE)
+    cachePose().catch(err => console.warn('Pose-Dateien nicht vorgeladen:', err))
+  ]));
   // KEIN automatisches skipWaiting: die App fragt den Spieler ("Jetzt aktualisieren")
 });
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING' || (e.data && e.data.type === 'SKIP_WAITING')) self.skipWaiting();
   if (e.data && e.data.type === 'GET_VERSION' && e.source) e.source.postMessage({type: 'VERSION', version: VERSION});
+  if (e.data && e.data.type === 'CACHE_POSE') e.waitUntil(cachePose().then(() => e.source && e.source.postMessage({type: 'POSE_CACHED', ok: true}))
+    .catch(err => e.source && e.source.postMessage({type: 'POSE_CACHED', ok: false, err: String(err)})));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
-    .then(ks => Promise.all(ks.filter(k => k.startsWith('das-system-') && k !== CACHE).map(k => caches.delete(k))))
+    .then(ks => Promise.all(ks.filter(k => k.startsWith('das-system-') && k !== CACHE && k !== POSE_CACHE).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 

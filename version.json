@@ -1,13 +1,31 @@
 {
- "version": "1.1.0",
+ "version": "1.2.0",
  "date": "2026-11-02",
  "changelog": [
-  "Installierbar als App auf dem Homescreen (Android & iPhone)",
-  "Automatische Update-Erkennung mit [SYSTEM]-Meldung",
-  "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert",
-  "Versionsanzeige und Update-Prüfung unter „Mehr“"
+  "NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)",
+  "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt",
+  "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline",
+  "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen",
+  "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App",
+  "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests",
+  "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)",
+  "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"
  ],
  "releases": [
+  {
+   "version": "1.2.0",
+   "date": "2026-11-02",
+   "changes": [
+    "NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)",
+    "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt",
+    "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline",
+    "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen",
+    "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App",
+    "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests",
+    "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)",
+    "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"
+   ]
+  },
   {
    "version": "1.1.0",
    "date": "2026-11-02",
