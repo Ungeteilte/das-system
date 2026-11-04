@@ -498,7 +498,7 @@ function rollover(){
   S.penalty = null;
   if (missed && !shielded){
     const p = pick(PENALTIES);
-    S.penalty = {...p, progress:0, done:false, from:S.day}; S.penaltySeen = false;
+    S.penalty = penProofFields({...p, progress:0, done:false, from:S.day}); S.penaltySeen = false;
     log(`Strafquest aktiviert: ${p.name}`);
   }
   S.quests.forEach(q=>{q.progress=0;q.done=false;q.verified=false;q.manual=false;q.vprog=0;});
@@ -533,7 +533,7 @@ const SHOP = [
  // Spezial
  {id:'key',cat:'special',n:'Gate-Schlüssel',i:'🗝️',p:{gold:100},type:'key',t:'+1 Schlüssel für ein Gate'},
  {id:'shield',cat:'special',n:'Streak-Schutz',i:'🔰',p:{cry:2},type:'protect',t:'Schützt automatisch Streak & verhindert die Strafquest bei einem verpassten Tag'},
- {id:'skip',cat:'special',n:'Strafquest-Erlass',i:'📜',p:{gold:300},type:'skip',t:'Erlässt eine aktive Strafquest (ohne Belohnung)'},
+ {id:'skip',cat:'special',n:'Strafquest-Erlass',i:'📜',p:{gold:300},type:'skip',t:'Halbiert eine aktive Strafquest – der Nachweis bleibt Pflicht'},
  // Kosmetik
  {id:'th_blood',cat:'cosmetic',n:'Thema „Blutmond“',i:'🌕',p:{cry:3},type:'cosmetic',theme:{acc:'#ff3b5c',acc2:'#ff9a3b'},t:'Rote Akzentfarbe'},
  {id:'th_gold',cat:'cosmetic',n:'Thema „Goldener Monarch“',i:'✨',p:{cry:3},type:'cosmetic',theme:{acc:'#ffd55a',acc2:'#fff3b0'},t:'Goldene Akzentfarbe'},
@@ -712,7 +712,7 @@ function questCard(q){
      ${UI.edit?`<button data-a="editQuest" data-id="${q.id}">✏️</button>`:`<span class="qp ${q.done?'okc':''}" ${lock?'':`data-a="setProg" data-id="${q.id}"`}>${fmtQ(q.progress)} / ${fmtQ(q.target)} ${esc(q.unit)}</span>`}</div>
    <div class="bar" style="margin:8px 0"><i style="width:${pct}%"></i></div>
    ${q.done?`<div class="row"><span class="okc">✔ ERLEDIGT</span>${q.verified?'<span class="verif">✔ Verifiziert</span>':''}<span class="sp"></span><span class="dim small">+${q.verified?verifiedXP(q):q.xp} XP${q.res?` · +${q.res} ${resIcon(q.sys)}`:''}</span></div>`:
-   `${need?`<button class="full proofbtn" data-a="proofStart" data-id="${q.id}">${proofLbl}</button>`:''}
+   `<button class="full ghost exbtn" data-a="showEx" data-id="${q.id}">📖 Beispiel ansehen</button>${need?`<button class="full proofbtn" data-a="proofStart" data-id="${q.id}">${proofLbl}</button>`:''}
    ${lock?`<div class="dim small lockln">🔒 Manuelle Eingabe gesperrt – Nachweis erforderlich</div>`:
    `<div class="row" ${need?'style="margin-top:6px"':''}><button class="sq" data-a="prog" data-id="${q.id}" data-d="${big?-10:-1}">−</button><button class="sp" data-a="prog" data-id="${q.id}" data-d="1">+1</button>${big?`<button class="sp" data-a="prog" data-id="${q.id}" data-d="10">+10</button>`:''}<button class="sp ${need?'':'prim'}" data-a="prog" data-id="${q.id}" data-d="all">✓</button></div>`}
    <div class="dim small" style="margin-top:4px">Belohnung: ${q.xp} XP${q.res?` · ${q.res} ${resIcon(q.sys)}`:''}${need&&!q.honor?` · <span class="okc">verifiziert ${verifiedXP(q)} XP</span>`:''}${need&&q.honor?' · 🤝 Ehrenmodus (ohne Bonus)':''}</div>`}
@@ -724,9 +724,9 @@ function vQuests(){
   if (S.penalty && !S.penalty.done){
     const p = S.penalty;
     h += `<section class="win penalty"><h2>Strafquest</h2><p class="c dim">Die Daily Quest wurde nicht abgeschlossen. Bis Mitternacht erfüllen – sonst verlierst du XP. Gates sind gesperrt.</p>
-    <div class="quest"><div class="row"><span class="qn sp">${esc(p.name)}</span><span class="qp">${p.progress} / ${p.target} ${esc(p.unit)}</span></div><div class="bar en" style="margin:8px 0"><i style="width:${p.progress/p.target*100}%"></i></div>
-    <div class="row"><button class="sq" data-a="penProg" data-d="-1">−</button><button class="sp" data-a="penProg" data-d="1">+1</button><button class="sp" data-a="penProg" data-d="10">+10</button><button class="sp prim" data-a="penProg" data-d="all">✓</button></div></div>
-    ${(S.inv.skip||0)?'<button class="full" data-a="useItem" data-id="skip">📜 Strafquest-Erlass einsetzen</button>':''}</section>`;
+    <div class="quest"><div class="row"><span class="qn sp">${esc(p.name)}</span><span class="qp">${fmtQ(p.progress)} / ${fmtQ(p.target)} ${esc(p.unit)}</span></div><div class="bar en" style="margin:8px 0"><i style="width:${p.progress/p.target*100}%"></i></div>
+    ${penProofUI(p)}</div>
+    ${(S.inv.skip||0)?'<button class="full" data-a="useItem" data-id="skip">📜 Strafquest-Erlass einsetzen (halbiert)</button>':''}</section>`;
   }
   const now = new Date(), mid = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
   h += `<p class="c dim small">⏳ Reset in <b id="cd">${fmtDur(mid-now)}</b> · Tages-XP: ${fmt(S.todayXP)}</p>
@@ -746,7 +746,7 @@ function vQuests(){
   const side = S.side.filter(q=>!(q.repeat==='once' && q.done));
   h += `<section class="win"><h2>Nebenquests</h2>
    ${side.map(q=>`<div class="quest ${q.done?'done':''}"><div class="row"><div class="sp"><span class="qn">${esc(q.name)}</span><div class="dim small">${q.xp} XP · ${q.repeat==='daily'?'täglich':'einmalig'}</div></div>
-     ${UI.edit?`<button data-a="editSide" data-id="${q.id}">✏️</button>`:(q.done?'<span class="okc">✔</span>':`<button class="prim" data-a="sideDone" data-id="${q.id}">Erledigt</button>`)}</div></div>`).join('')||'<p class="dim c">Keine Nebenquests.</p>'}
+     ${UI.edit?`<button data-a="editSide" data-id="${q.id}">✏️</button>`:`<button class="sq" data-a="showEx" data-id="${q.id}" title="Beispiel">📖</button>`+(q.done?'<span class="okc">✔</span>':`<button class="prim" data-a="sideDone" data-id="${q.id}">Erledigt</button>`)}</div></div>`).join('')||'<p class="dim c">Keine Nebenquests.</p>'}
    <button class="full" data-a="newSide">＋ Nebenquest hinzufügen</button></section>`;
   return h;
 }
@@ -1067,8 +1067,7 @@ const A = {
   modal(`<h2>${esc(q.name)}</h2><label>Fortschritt (${esc(q.unit)})</label><input id="fProg" type="number" inputmode="decimal" min="0" value="${q.progress}"><button class="full prim" style="margin-top:12px" data-a="setProgSave" data-id="${q.id}">Übernehmen</button>`);
   setTimeout(()=>{const i=$('#fProg'); i&&i.select();},50); },
  setProgSave(d){ const q=S.quests.find(q=>q.id===d.id); if(proofLocked(q)) return; if(proofNeeded(q)) q.manual=true; q.progress=numv('fProg'); closeModal(); if(q.progress>=q.target) completeQuest(q); },
- penProg(d){ const p=S.penalty; if(!p||p.done) return; p.progress = d.d==='all'?p.target:Math.max(0,p.progress+Number(d.d));
-  if (p.progress>=p.target){ p.done=true; p.progress=p.target; log('Strafquest überstanden'); queueFx(()=>fxGeneric('⚔️','STRAFQUEST ÜBERSTANDEN','Die Strafe wurde aufgehoben. Gates sind wieder geöffnet.')); } },
+ penProg(){ toast('🔒 Strafquests müssen nachgewiesen werden.','[SYSTEM]'); }, // v1.4.0: keine manuelle Eingabe mehr
  sideDone(d){ const q=S.side.find(q=>q.id===d.id); if(!q||q.done) return; q.done=true; const xp=gainXP(q.xp), g=Math.round(q.xp/2); S.gold+=g; S.cnt.side++;
   if (S.sys.unlocked.includes('hero')) addRes('hero',5);
   log(`Nebenquest erledigt: ${q.name}`); toast(`Nebenquest erledigt: <b>${esc(q.name)}</b> · +${xp} XP · +${g} 🪙`); checkUnlocks(); },
@@ -1103,7 +1102,7 @@ const A = {
   const need = s => { if(!S.sys.unlocked.includes(s)){ toast('Dafür ist das passende System noch gesperrt.'); return false; } return true; };
   switch(id){
    case 'xp_p': S.buffs.xpUntil=Math.max(Date.now(),S.buffs.xpUntil)+2*3600e3; msg='XP-Trank: +50 % XP für 2 Std.'; break;
-   case 'skip': if(!S.penalty||S.penalty.done){ toast('Keine aktive Strafquest.'); return; } S.penalty.done=true; S.penalty.progress=S.penalty.target; msg='Strafquest erlassen.'; break;
+   case 'skip': { const p=S.penalty; if(!p||p.done){ toast('Keine aktive Strafquest.'); return; } if(p.halved){ toast('Diese Strafquest wurde bereits halbiert.'); return; } p.halved=true; p.target=Math.max(1,Math.ceil(p.target/2)); if(p.progress>=p.target){ S.inv.skip--; penFinish(); return; } msg=`Strafquest halbiert: noch ${p.target} ${p.unit} – Nachweis bleibt Pflicht.`; break; }
    case 's_ess': { const ids=GATES.map(g=>g.shadow.id).filter(s=>S.shadows[s]&&S.shadows[s]<MAX_SHADOW_LVL); if(!ids.length){ toast('Kein Schatten kann gestärkt werden.'); return; } const s=pick(ids); S.shadows[s]++; msg=`${GATES.find(g=>g.shadow.id===s).shadow.n} → Stufe ${S.shadows[s]}`; break; }
    case 'n_pill': if(!need('ninja')) return; S.sys.res.ninja=(S.sys.res.ninja||0)+60; msg='+60 Chakra'; break;
    case 'g_box': if(!need('gamer')) return; msg='Erhalten: '+dropMats(4); break;
@@ -1163,7 +1162,7 @@ const A = {
 // importText(): siehe part7n.js (Backup-Format 2 mit Beweisfotos, alte Dateien weiter lesbar)
 
 /* =================== App-Version, Updates & Installation (PWA) =================== */
-const RELEASES = [{"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
+const RELEASES = [{"version": "1.4.0", "date": "2026-11-04", "changes": ["📖 NEU: „Beispiel ansehen“ bei jeder Quest – so wird die Übung richtig ausgeführt, was als Wiederholung zählt und welcher Nachweis erwartet wird", "🧍 Kleine Ablauf-Skizzen für Liegestütze, Sit-ups, Kniebeugen, Plank, Laufen, Burpees, Hampelmänner und Ausfallschritte – auch offline", "⚠ Strafquests müssen jetzt immer nachgewiesen werden (Foto, Kamera-Zähler, GPS oder Timer) – kein Ehrenmodus, keine manuelle Eingabe", "📜 Strafquest-Erlass halbiert die Strafquest jetzt nur noch – der Nachweis bleibt Pflicht", "💾 Spielstand bleibt vollständig erhalten"]}, {"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
 const APP_VERSION = RELEASES[0].version;
 const VER_KEY = 'das-system-app-version'; // getrennt vom Spielstand (das-system-save-v1)
 const INSTALL_DISMISS_KEY = 'das-system-install-hint-off';
@@ -1319,21 +1318,25 @@ function proofDefaults(q){ return {proof: q.proof || defaultProof(q), ex: q.ex |
 function migrateProof(st){ // Spielstände < v1.2.0: Nachweis-Felder je Quest ergänzen
   (st.quests||[]).forEach(q => { const d = proofDefaults(q); for (const k in d) if (q[k]===undefined) q[k] = d[k]; });
   if (!st.proofCfg) st.proofCfg = {timerMode:'pause', beep:true, voice:false};
-  st.v = Math.max(st.v||1, 2);
+  if (st.penalty) penProofFields(st.penalty, st.day);
+  st.v = Math.max(st.v||1, 3);
 }
 function autoProof(){ // Neue Quest: Nachweis-Art aus Name/Einheit vorschlagen, solange nicht manuell gewählt
   const p = $('#fProof'), e = $('#fEx'), n = val('fName'), u = val('fUnit');
   if (p && !p.dataset.touched) p.value = defaultProof({name:n, unit:u});
   const g = guessEx(n); if (e && !e.dataset.touched && g) e.value = g; }
 const proofNeeded = q => !!q && q.proof && q.proof!=='none';
-const proofLocked = q => proofNeeded(q) && !q.honor;
+const isPen = q => !!q && !!q.pen;
+const proofLocked = q => proofNeeded(q) && (!q.honor || isPen(q));
+function findQ(id){ return (S.penalty && S.penalty.id===id) ? S.penalty : S.quests.find(x=>x.id===id); }
+const findAnyQ = id => findQ(id) || S.side.find(x=>x.id===id);
 const verifiedXP = q => Math.round(q.xp*(1+VERIFY_BONUS));
 // Fortschritt aus einem Nachweis gutschreiben (in Quest-Einheit)
 function proofCredit(q, amount, why){
   if (!q || q.done || !(amount>0)) return false;
   q.progress = Math.round((q.progress + amount)*100)/100; q.vprog = Math.round(((q.vprog||0) + amount)*100)/100;
   log(`Nachweis (${PROOF[q.proof]?.n||why}): ${q.name} +${fmtQ(amount)} ${q.unit}`);
-  if (q.progress >= q.target){ completeQuest(q); return true; }
+  if (q.progress >= q.target){ if (isPen(q)) penFinish(); else completeQuest(q); return true; }
   save(); return false;
 }
 function unitKind(u){ u = (u||'').toLowerCase().trim();
@@ -1391,7 +1394,7 @@ function permErr(e){ const n = e && e.name;
   if (e && e.code===3) return 'Zeitüberschreitung beim GPS-Signal.';
   return 'Nicht verfügbar: ' + esc((e && (e.message||e.name)) || 'unbekannter Fehler'); }
 function fallbackBtns(q, except){ return `<div class="grid2" style="margin-top:10px">${except!=='photo'?`<button data-a="proofAlt" data-id="${q.id}" data-k="photo">📸 Stattdessen Beweisfoto</button>`:'<span></span>'}<button data-a="proofClose">Schließen</button></div>
-  ${q.honor?'':'<p class="dim small c">Ohne Kamera/GPS? In <b>Mehr → Nachweis-System</b> kannst du für diese Quest den Ehrenmodus (manuelle Eingabe, ohne Bonus) aktivieren.</p>'}`; }
+  ${isPen(q)?'<p class="dim small c badc">[SYSTEM] Strafquests müssen nachgewiesen werden. Ehrenmodus ist hier gesperrt.</p>':q.honor?'':'<p class="dim small c">Ohne Kamera/GPS? In <b>Mehr → Nachweis-System</b> kannst du für diese Quest den Ehrenmodus (manuelle Eingabe, ohne Bonus) aktivieren.</p>'}`; }
 async function getCam(facing){
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error('Kamera-API fehlt (nur über https verfügbar)'), {name:'NoApi'});
   return navigator.mediaDevices.getUserMedia({audio:false, video:{facingMode:{ideal:facing}, width:{ideal:1280}, height:{ideal:720}}});
@@ -1446,9 +1449,9 @@ function photoPreview(c){
   $('#pimg').src = c.toDataURL('image/jpeg', .8);
 }
 const PA = {
- proofStart(d){ const q = S.quests.find(x=>x.id===d.id); if (!q || q.done) return;
+ proofStart(d){ const q = findQ(d.id); if (!q || q.done) return;
    ({photo:photoOpen, counter:counterOpen, gps:gpsOpen, timer:timerOpen})[q.proof]?.(q); },
- proofAlt(d){ const q = S.quests.find(x=>x.id===d.id); stopAllProof(); if (q && !q.done) photoOpen(q); },
+ proofAlt(d){ const q = findQ(d.id); stopAllProof(); if (q && !q.done) photoOpen(q); },
  proofClose(){ ovClose(); },
  photoStart(){ P.sess.fromFile = false; photoStart(); },
  photoFlip(){ const s = P.sess; s.facing = s.facing==='environment'?'user':'environment'; photoStart(); },
@@ -1462,7 +1465,7 @@ const PA = {
    i.click(); },
  async photoSubmit(){ const s = P.sess; if (!s || !s.canvas) return; const q = s.q;
    try { await saveProofImage(q, s.canvas, 'photo'); } catch(e){ toast('Foto konnte nicht gespeichert werden ('+esc(e.message||e)+') – der Nachweis zählt trotzdem.','[SYSTEM]'); }
-   const live = S.quests.find(x=>x.id===q.id); ovClose();
+   const live = findQ(q.id); ovClose();
    if (live && !live.done){ proofCredit(live, live.target - live.progress, 'Foto'); save(); render(); } },
 };
 
@@ -1558,7 +1561,7 @@ function drawSkeleton(x, L, w, h, rc){
     x.beginPath(); x.arc(p.x*w, p.y*h, hot ? w/90 : w/150, 0, 7); x.fill(); }
 }
 function onRep(s){
-  s.gained++; const q = S.quests.find(x=>x.id===s.q.id) || s.q;
+  s.gained++; const q = findQ(s.q.id) || s.q;
   const el = $('#repn'); if (el){ el.textContent = s.gained; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
   vibrate(25); if (S.proofCfg.beep) beep(880 + Math.min(600, s.gained*8), 80);
   const done = proofCredit(q, 1, 'Kamera-Zähler');
@@ -1567,7 +1570,7 @@ function onRep(s){
   if (done){ beep(1320, 300); const st = $('#pstat'); if (st) st.textContent = '✔ QUEST ERFÜLLT – verifiziert'; s.finished = true; setTimeout(() => { if (P.sess===s) counterFinish(s); }, 1600); }
 }
 async function counterFinish(s){
-  const q = S.quests.find(x=>x.id===s.q.id) || s.q, v = $('#pv');
+  const q = findQ(s.q.id) || s.q, v = $('#pv');
   if (s.gained > 0 && v && v.videoWidth){ // Schnappschuss als Beweis in die Galerie
     try { const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; const x = c.getContext('2d');
       if (s.facing==='user'){ x.translate(c.width, 0); x.scale(-1, 1); } x.drawImage(v, 0, 0); x.setTransform(1,0,0,1,0,0);
@@ -1671,7 +1674,7 @@ function gpsDraw(){
   x.fillStyle = '#ffd55a'; x.beginPath(); x.arc(X(P0.length-1), Y(P0.length-1), 7, 0, 7); x.fill();
 }
 async function gpsFinish(s){
-  const q = S.quests.find(x=>x.id===s.q.id) || s.q, km = s.dist/1000, uk = unitKind(q.unit);
+  const q = findQ(s.q.id) || s.q, km = s.dist/1000, uk = unitKind(q.unit);
   let amount = uk==='km' ? Math.floor(km*100)/100 : uk==='m' ? Math.round(s.dist) : uk==='steps' ? s.steps : uk==='min' ? Math.floor(s.moving/60000) : uk==='h' ? Math.floor(s.moving/36e5*100)/100 : (s.dist >= 1000 ? 1 : 0);
   // Plausibilität: Bewegungssensor aktiv, aber kaum Schritte für die Strecke → kein Verifiziert-Abzeichen
   const susp = s.motionOK && s.dist > 400 && s.steps < s.dist/3;
@@ -1739,7 +1742,7 @@ function timerInvalidate(why){ const s = P.sess; if (!s) return; s.running = fal
    <div class="grid2"><button class="prim" data-a="timerRestart">↺ Neu starten</button><button data-a="proofClose">Schließen</button></div>`); }
 function timerDone(s){ clearInterval(P.iv); P.iv = 0; s.running = false; wakeOff();
   beep(880, 150); setTimeout(() => beep(1175, 150), 180); setTimeout(() => beep(1568, 300), 360); vibrate([80,60,80,60,200]);
-  const q = S.quests.find(x=>x.id===s.q.id) || s.q; ovClose();
+  const q = findQ(s.q.id) || s.q; ovClose();
   const amt = s.isMin ? s.minutes : (q.target - q.progress); proofCredit(q, amt, 'Timer'); save(); render();
   toast(`⏱️ Timer abgeschlossen: ${s.minutes} Min. ✔`, '[SYSTEM]'); }
 Object.assign(PA, {
@@ -1747,7 +1750,7 @@ Object.assign(PA, {
  timerRestart(){ const q = P.sess && P.sess.q; stopAllProof(); if (q) timerOpen(q); },
  timerPause(){ const s = P.sess; if (!s || s.kind!=='timer' || s.invalid) return; s.running = !s.running; s.pauseWhy = '⏸ Pausiert'; s.last = performance.now(); const b = $('#tPa'); if (b) b.textContent = s.running ? '⏸ Pause' : '▶ Weiter'; timerTick(); },
  timerEnd(){ const s = P.sess; if (!s || s.kind!=='timer') return; const mins = Math.floor(s.elapsed/60000);
-   if (s.isMin && mins >= 1){ const q = S.quests.find(x=>x.id===s.q.id) || s.q; ovClose(); proofCredit(q, mins, 'Timer'); save(); render(); toast(`⏱️ ${mins} Min. gutgeschrieben.`, '[SYSTEM]'); }
+   if (s.isMin && mins >= 1){ const q = findQ(s.q.id) || s.q; ovClose(); proofCredit(q, mins, 'Timer'); save(); render(); toast(`⏱️ ${mins} Min. gutgeschrieben.`, '[SYSTEM]'); }
    else { ovClose(); toast('Timer beendet – nicht vollständig, nichts gutgeschrieben.', '[SYSTEM]'); } },
 });
 
@@ -1777,7 +1780,7 @@ Object.assign(PA, {
  galClean(d){ const days = Number(d.k), lim = Date.now() - days*864e5;
    ask(days ? `Alle Beweise löschen, die älter als ${days} Tage sind?` : 'Wirklich ALLE Beweise löschen?', async () => {
      const ids = (await PDB.all()).filter(x => !days || x.t < lim).map(x => x.id); await PDB.del(ids); toast(`${ids.length} Beweis(e) gelöscht.`); galleryOpen(); }, 'Löschen'); },
- toggleHonor(d){ const q = S.quests.find(x=>x.id===d.id); if (q){ q.honor = !q.honor; toast(q.honor ? `Ehrenmodus für „${esc(q.name)}“: manuelle Eingabe erlaubt (ohne Verifiziert-Bonus).` : `„${esc(q.name)}“ erfordert wieder einen Nachweis.`, '[SYSTEM]'); } },
+ toggleHonor(d){ const q = findQ(d.id); if (isPen(q)){ toast('Strafquests müssen nachgewiesen werden.','[SYSTEM]'); return; } if (q){ q.honor = !q.honor; toast(q.honor ? `Ehrenmodus für „${esc(q.name)}“: manuelle Eingabe erlaubt (ohne Verifiziert-Bonus).` : `„${esc(q.name)}“ erfordert wieder einen Nachweis.`, '[SYSTEM]'); } },
  timerMode(d){ S.proofCfg.timerMode = d.k; },
  cfgToggle(d){ S.proofCfg[d.k] = !S.proofCfg[d.k]; },
  poseCache(){ if (navigator.serviceWorker && navigator.serviceWorker.controller){ navigator.serviceWorker.controller.postMessage({type:'CACHE_POSE'}); toast('Lade Kamera-Zähler-Dateien für den Offline-Betrieb …'); } },
@@ -1900,7 +1903,7 @@ function nRestoreRun(){
   if (!NATIVE) return false; const cur = P.sess; if (cur && cur.kind === 'gps' && cur.native) return false;
   const r = nCall('runPoll', 0); if (!r || !r.exists) return false;
   let meta = r.meta; try { if (typeof meta === 'string') meta = JSON.parse(meta); } catch(e){ meta = {}; } meta = meta || {};
-  const q = S.quests.find(x => x.id === meta.qid);
+  const q = findQ(meta.qid);
   if (!q || (r.t0 && S.nRunDone === r.t0)){ if (r.active) try { NB.runStop(); } catch(e){} try { NB.runClear(); } catch(e){}
     if (!q && r.total > 0) toast('Ein Lauf im Hintergrund gehörte zu einer gelöschten Quest und wurde verworfen.', '[SYSTEM]', 4500); return false; }
   if (P.sess) stopAllProof();
@@ -2064,6 +2067,111 @@ function nativeStartup(){
   return false;
 }
 
+/* =================== Quest-Beispiele & Strafquest-Nachweispflicht (v1.4.0) =================== */
+// Strafquest: Nachweis-Art je Übung (mind. Beweisfoto). Ehrenmodus gibt es hier nie.
+const PEN_PROOF = [
+  [/burpee/i, 'photo', null], [/hampel|jumping/i, 'photo', null], [/plank|unterarmst/i, 'timer', null],
+  [/lauf|jogg|km/i, 'gps', null], [/ausfall|lunge/i, 'counter', 'squat'],
+];
+function penProofFields(p, day){
+  if (!p) return p;
+  if (!p.id) p.id = 'pen-' + (p.from || day || dayStr(new Date()));
+  p.pen = true; p.honor = false; p.sys = p.sys || 'solo'; p.xp = p.xp || 0;
+  if (!p.proof || p.proof==='none'){
+    const m = PEN_PROOF.find(([r]) => r.test(p.name + ' ' + p.unit)); const d = defaultProof(p);
+    p.proof = m ? m[1] : (d==='none' ? 'photo' : d); if (m && m[2]) p.ex = m[2];
+  }
+  if (!p.ex) p.ex = guessEx(p.name) || 'squat';
+  for (const [k, v] of [['vprog',0],['manual',false],['verified',false]]) if (p[k]===undefined) p[k] = v;
+  return p;
+}
+function penFinish(){ const p = S.penalty; if (!p || p.done) return;
+  p.done = true; p.progress = p.target; p.verified = true; log('Strafquest überstanden (nachgewiesen)'); save();
+  queueFx(() => fxGeneric('⚔️','STRAFQUEST ÜBERSTANDEN','Nachweis akzeptiert. Die Strafe wurde aufgehoben. Gates sind wieder geöffnet.')); }
+function penProofUI(p){
+  penProofFields(p);
+  const lbl = {photo:'📸 Beweisfoto aufnehmen', counter:`🎥 Kamera-Zähler · ${EXER[p.ex]?.n||''}`, gps:'🛰️ GPS-Lauf starten', timer:'⏱️ Timer starten'}[p.proof];
+  return `<button class="full ghost exbtn" data-a="showEx" data-id="${p.id}">📖 Beispiel ansehen</button>
+   <button class="full proofbtn" data-a="proofStart" data-id="${p.id}">${lbl}</button>
+   <div class="small lockln penlock badc">🔒 [SYSTEM] Strafquests müssen nachgewiesen werden. Ehrenmodus und manuelle Eingabe sind gesperrt.</div>`;
+}
+
+/* ---------- Beispiele: Ausführung + erwarteter Nachweis ---------- */
+// Strichmännchen-Diagramme (inline SVG, offline). Jede Figur: [Kopf x,y, Linien...]
+const fig = (head, lines, ground) => `<g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none"><circle cx="${head[0]}" cy="${head[1]}" r="7"/>${lines.map(l=>`<polyline points="${l}"/>`).join('')}</g>${ground?'<line x1="4" y1="92" x2="116" y2="92" stroke="currentColor" stroke-opacity=".35" stroke-width="2"/>':''}`;
+const svg2 = (a, b, la, lb) => `<div class="exsvg">${[[a,la],[b,lb]].map(([f,l],i)=>`<figure><svg viewBox="0 0 120 100" width="120" height="100" role="img" aria-label="${l}">${f}</svg><figcaption>${i+1}. ${l}</figcaption></figure>`).join('<span class="exarr">➜</span>')}</div>`;
+const EXSVG = {
+  push: () => svg2(fig([22,52],['28,56 100,76','34,58 34,90','100,76 108,90']), fig([22,74],['28,78 100,82','34,80 26,90 34,90','100,82 108,90'],1).replace('</g>','</g>'), 'Oben: Arme gestreckt', 'Unten: Brust knapp über Boden'),
+  squat: () => svg2(fig([60,14],['60,21 60,55','60,30 44,44','60,30 76,44','60,55 52,90','60,55 68,90'],1), fig([56,34],['56,41 52,62','56,48 84,50','52,62 78,66 74,90','52,62 66,70 60,90'],1), 'Aufrecht stehen', 'Hüfte bis Kniehöhe'),
+  situp: () => svg2(fig([18,80],['25,82 60,84','60,84 78,62 96,88'],1), fig([56,40],['58,47 62,84','58,56 76,60','62,84 78,62 96,88'],1), 'Rücken am Boden', 'Oberkörper hoch zu den Knien'),
+  plank: () => svg2(fig([20,56],['27,60 100,74','30,62 30,84 46,84','100,74 108,88'],1), `<g fill="currentColor" font-size="34" text-anchor="middle"><text x="60" y="60">⏱️</text></g>`, 'Unterarme, Körper gerade', 'Position halten'),
+  run: () => svg2(fig([60,14],['60,21 56,55','58,30 44,46','58,30 74,40','56,55 40,78 34,90','56,55 74,72 80,90'],1), `<g fill="currentColor" font-size="34" text-anchor="middle"><text x="60" y="60">📱🗺️</text></g>`, 'Locker laufen', 'Strecke auf dem Display'),
+  jack: () => svg2(fig([60,14],['60,21 60,55','60,30 52,56','60,30 68,56','60,55 56,90','60,55 64,90'],1), fig([60,14],['60,21 60,55','60,30 36,6','60,30 84,6','60,55 40,90','60,55 80,90'],1), 'Beine zu, Arme unten', 'Sprung: Beine auf, Arme über Kopf'),
+  lunge: () => svg2(fig([60,14],['60,21 60,55','60,30 52,56','60,30 68,56','60,55 56,90','60,55 64,90'],1), fig([58,26],['58,33 58,62','58,62 80,66 80,90','58,62 44,80 30,90'],1), 'Aufrecht stehen', 'Großer Schritt, hinteres Knie fast am Boden'),
+  burpee: () => svg2(fig([22,52],['28,56 100,76','34,58 34,90','100,76 108,90'],1), fig([60,10],['60,17 60,50','60,26 46,4','60,26 74,4','60,50 54,82','60,50 66,82']), 'Liegestütz-Position', 'Aufspringen, Arme hoch'),
+};
+const EXAMPLES = [
+  {re:/liegest|push/i, svg:'push', how:['Hände etwas breiter als schulterbreit, Arme gestreckt, Körper bildet eine gerade Linie von Kopf bis Ferse.','Ellenbogen beugen, bis die Brust knapp über dem Boden ist (ca. 90° im Ellenbogen).','Kontrolliert wieder hochdrücken, bis die Arme gestreckt sind.'], count:'1 Wiederholung = ganz runter + ganz hoch. Durchhängende Hüfte oder halbe Bewegungen zählen nicht.', tip:'Zu schwer? Erst auf den Knien – aber ehrlich zählen.'},
+  {re:/sit-?up|crunch/i, svg:'situp', how:['Auf den Rücken legen, Knie angewinkelt, Füße flach am Boden.','Hände an die Schläfen oder vor der Brust verschränkt (nicht am Nacken ziehen).','Oberkörper aufrichten, bis die Ellenbogen die Knie berühren, dann kontrolliert ablegen.'], count:'1 Wiederholung = Rücken unten → hoch zu den Knien → wieder unten.', tip:'Gleichmäßig atmen: hoch = ausatmen.'},
+  {re:/kniebeug|squat/i, svg:'squat', how:['Füße schulterbreit, Zehen leicht nach außen, Brust aufrecht.','Hüfte nach hinten-unten schieben, bis die Oberschenkel mindestens waagerecht sind.','Über die Fersen wieder in den Stand drücken, Knie zeigen in Richtung Zehen.'], count:'1 Wiederholung = runter bis Kniehöhe + wieder ganz aufrecht.', tip:'Fersen bleiben am Boden.'},
+  {re:/plank|unterarmst/i, svg:'plank', how:['Unterarme unter den Schultern auf den Boden, Beine gestreckt, auf den Zehenspitzen.','Bauch und Po anspannen – Körper bildet eine gerade Linie.','Position halten, ohne dass die Hüfte durchhängt oder nach oben geht.'], count:'Es zählt nur die Zeit in sauberer Position. Ablegen = Timer pausieren.', tip:'Blick zum Boden, Nacken lang.'},
+  {re:/burpee/i, svg:'burpee', how:['Aus dem Stand in die Hocke, Hände auf den Boden.','Beine nach hinten in die Liegestütz-Position springen (optional 1 Liegestütz).','Beine zurück zu den Händen springen und mit gestreckten Armen nach oben abspringen.'], count:'1 Wiederholung = Hocke → Liegestütz-Position → Hocke → Strecksprung.', tip:'In 5er-Blöcken mit kurzen Pausen.'},
+  {re:/hampel|jumping/i, svg:'jack', how:['Aufrecht stehen, Beine geschlossen, Arme seitlich am Körper.','Springen: Beine grätschen, Arme seitlich über den Kopf.','Zurückspringen in die Ausgangsposition.'], count:'1 Wiederholung = einmal auf + einmal zu.', tip:'Leicht auf den Fußballen landen.'},
+  {re:/ausfall|lunge/i, svg:'lunge', how:['Aufrecht stehen, Hände an der Hüfte.','Großen Schritt nach vorne, beide Knie beugen, bis das hintere Knie fast den Boden berührt.','Vorderes Knie über dem Fußgelenk, dann zurück in den Stand. Seiten abwechseln.'], count:'1 Wiederholung = ein Schritt (links und rechts zählen einzeln).', tip:'Oberkörper bleibt aufrecht.'},
+  {re:/lauf|jogg|rennen|sprint/i, svg:'run', how:['Kurz aufwärmen (2–3 Min. zügig gehen).','Im Tempo laufen, bei dem du noch in kurzen Sätzen sprechen kannst (Anfänger: ca. 6:30–8:00 min/km).','Gehpausen sind erlaubt – gezählt wird die gemessene Strecke.'], count:'Es zählt die per GPS gemessene Strecke. Fahrten über 25 km/h (Rad, Auto) werden verworfen.', tip:'Handy fest am Körper (Armband/Tasche), App geöffnet lassen oder Native-App nutzen.'},
+  {re:/geh|spazier|wander|schritt/i, svg:'run', how:['Zügig gehen, Arme locker mitschwingen.','Draußen mit GPS oder mit dem Schrittzähler des Handys.'], count:'Es zählt die gemessene Strecke bzw. die Schritte.', tip:'Treppen statt Aufzug zählen mit.'},
+  {re:/meditat|atem/i, how:['Ruhigen Ort suchen, aufrecht sitzen, Augen schließen.','Auf den Atem konzentrieren: 4 Sek. ein, 6 Sek. aus.','Gedanken bemerken und sanft zum Atem zurückkehren.'], count:'Es zählt die Zeit, in der der Timer im Vordergrund läuft.', tip:'Handy auf lautlos, Bildschirm bleibt an.'},
+  {re:/lern|studi|lesen|buch/i, how:['Ein klares Ziel setzen (z. B. 1 Kapitel, 20 Vokabeln).','Ablenkungen weg, Timer starten, konzentriert arbeiten.','Am Ende kurz zusammenfassen, was du gelernt hast.'], count:'Es zählt die konzentrierte Zeit (bzw. Seiten/Einheiten laut Quest).', tip:'25 Min. Fokus + 5 Min. Pause (Pomodoro).'},
+  {re:/wasser|trink/i, how:['Über den Tag verteilt trinken, z. B. ein Glas zu jeder Mahlzeit.','Eine Flasche mit bekannter Füllmenge nutzen.'], count:'Es zählt die getrunkene Menge laut Quest-Einheit.', tip:'Morgens direkt ein großes Glas.'},
+  {re:/schlaf|bett/i, how:['Zur geplanten Zeit ins Bett, Bildschirme 30 Min. vorher weglegen.','Raum dunkel und kühl halten.'], count:'Es zählt die Schlafenszeit laut Quest.', tip:'Gleiche Zeit auch am Wochenende.'},
+  {re:/seil/i, svg:'jack', how:['Seil auf die richtige Länge (Griffe bis unter die Achseln).','Locker auf den Fußballen springen, Handgelenke drehen das Seil.','Ellenbogen nah am Körper, kleine Sprünge.'], count:'Es zählt die Zeit bzw. Sprünge laut Quest – Hängenbleiben ist okay, einfach weiter.', tip:'Ohne Seil: Sprünge auf der Stelle simulieren.'},
+  {re:/treppe/i, how:['Treppe zügig hochgehen, jede Stufe zählt.','Oben kurz durchatmen, ruhig wieder runter.'], count:'Es zählt die Anzahl Stockwerke/Stufen laut Quest.', tip:'Handlauf nur zur Sicherheit, nicht zum Hochziehen.'},
+  {re:/dehn|mobil|stretch|yoga/i, how:['Kurz aufwärmen (z. B. Armkreisen, auf der Stelle gehen).','Jede Dehnung 30–45 Sek. halten, ruhig atmen, nicht wippen.','Beine, Hüfte, Rücken und Schultern abdecken.'], count:'Es zählt die Zeit in Dehnpositionen.', tip:'Dehnen darf ziehen, aber nicht schmerzen.'},
+  {re:/kalt|dusch/i, how:['Normal duschen, am Ende auf kalt stellen.','Erst Beine und Arme, dann Oberkörper und Rücken.','Ruhig weiteratmen und mindestens 30–60 Sek. durchhalten.'], count:'Es zählt nur das Wasser wirklich auf kalt.', tip:'Langsam ausatmen hilft gegen den Kälteschock.'},
+  {re:/koch|essen|protein|ernähr|mahlzeit/i, how:['Mahlzeit planen: Eiweißquelle, Gemüse, Beilage.','Selbst zubereiten statt Fertiggericht/Lieferdienst.'], count:'Es zählt eine vollständige Mahlzeit laut Quest.', tip:'Proteinquellen: Eier, Quark, Hähnchen, Linsen, Tofu.'},
+  {re:/gute tat|helfen|kompliment|freundlich/i, how:['Bewusst jemandem etwas Gutes tun (z. B. Tür aufhalten, beim Tragen helfen, Nachricht an einen Freund).','Ehrlich und ohne Gegenleistung.'], count:'Es zählt jede echte Handlung für eine andere Person.', tip:'Kleine Dinge zählen auch.'},
+  {re:/aufräum|putz|ordnung/i, how:['Ein Bereich nach dem anderen: Boden frei, Oberflächen, Müll raus.','Alles hat seinen Platz – zurücklegen statt umschichten.'], count:'Es zählt, wenn der Bereich sichtbar ordentlich ist.', tip:'Vorher/Nachher-Foto als Beweis.'},
+  {re:/stream|content|community|video|post/i, how:['Ziel festlegen (z. B. 1 Stream, 3 Ideen, 10 Antworten).','Konzentriert umsetzen und am Ende kurz festhalten, was erledigt ist.'], count:'Es zählt die erledigte Einheit laut Quest.', tip:'Plane feste Zeiten im Kalender.'},
+  {re:/klimm|pull-?up|dip/i, how:['Sauber hängen bzw. stützen, Arme gestreckt.','Kontrolliert hochziehen/hochdrücken bis zur Endposition.','Langsam zurück in die gestreckte Ausgangsposition.'], count:'1 Wiederholung = volle Bewegung von gestreckt bis Endposition.', tip:'Kein Schwung aus den Beinen.'},
+];
+const PROOF_EX = {
+  photo: q => `📸 <b>Foto:</b> Direkt nach der Quest ein Live-Foto aufnehmen, auf dem man die Erledigung sieht – z. B. du verschwitzt nach dem Training, die Trainingsmatte, die erledigte Aufgabe oder der Bildschirm einer Fitness-App. Datum und Uhrzeit werden automatisch ins Bild gestempelt.`,
+  counter: q => `🎥 <b>Kamera-Zähler:</b> ${esc(EXER[q.ex]?.hint || 'Handy seitlich auf den Boden stellen, ganzer Körper sichtbar.')} Gute Beleuchtung, nur du im Bild. Gezählt wird nur die volle Bewegung.`,
+  gps: q => `🛰️ <b>GPS + Schritte:</b> Vor dem Start „GPS-Lauf starten“ tippen, draußen bewegen, am Ende „Lauf beenden“. Alternativ: Foto nach dem Lauf mit der Strecke auf dem Display einer Lauf-App.`,
+  timer: q => `⏱️ <b>Timer:</b> Timer starten und die App im Vordergrund lassen (Bildschirm bleibt an). Verlässt du die App, wird pausiert bzw. ungültig.`,
+  none: q => `✋ <b>Kein Nachweis nötig</b> – trag deinen Fortschritt ehrlich mit +/− ein.`,
+};
+function questExample(q){
+  const t = (q.name||'') + ' ' + (q.unit||''), e = EXAMPLES.find(x => x.re.test(t));
+  const svg = e && e.svg ? e.svg : (q.proof==='counter' && EXSVG[q.ex] ? q.ex : null);
+  if (e) return {...e, svg};
+  const uk = unitKind(q.unit), tgt = `${fmtQ(q.target)} ${q.unit||''}`.trim();
+  return {svg, how: uk==='min'||uk==='h' ? [`Nimm dir am Stück Zeit für „${q.name}“.`, `Ziel: ${tgt} konzentriert – Timer an, Ablenkungen aus.`]
+    : uk==='km'||uk==='m' ? [`Bewege dich für „${q.name}“ draußen.`, `Ziel: ${tgt} gemessene Strecke.`]
+    : [`Erledige „${q.name}“ vollständig und sauber.`, `Ziel: ${tgt}. Teile dir die Menge über den Tag auf, wenn nötig.`],
+    count: `Es zählt nur, was wirklich vollständig erledigt ist (${tgt}).`, tip: 'Lieber langsam und sauber als schnell und halb.'};
+}
+function exampleHTML(q){
+  const e = questExample(q), pf = PROOF_EX[q.proof||'none'] || PROOF_EX.photo;
+  return `<h2>📖 Beispiel</h2><div class="dim small c" style="letter-spacing:.2em">[SYSTEM] AUSFÜHRUNG</div><h3 class="c" style="margin:4px 0 8px">${esc(q.name)}</h3>
+   ${e.svg && EXSVG[e.svg] ? EXSVG[e.svg]() : ''}
+   <ol class="exsteps">${e.how.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+   <div class="pinfo">✔ <b>Was zählt:</b> ${esc(e.count)}</div>
+   <div class="pinfo">${pf(q)}</div>
+   ${e.tip?`<p class="dim small">💡 ${esc(e.tip)}</p>`:''}
+   ${isPen(q)?'<p class="small badc c"><b>[SYSTEM] Strafquests müssen nachgewiesen werden.</b> Ehrenmodus ist gesperrt.</p>':''}
+   <div class="grid2">${!q.done && proofNeeded(q)?`<button class="prim" data-a="exProof" data-id="${q.id}">▶ Nachweis</button>`:'<span></span>'}<button data-a="closeModal">Schließen</button></div>`;
+}
+Object.assign(A, {
+  showEx(d){ const q = findAnyQ(d.id); if (q) modal(exampleHTML(q)); },
+  exProof(d){ closeModal(); A.proofStart(d); },
+});
+(function(){ const st = document.createElement('style'); st.textContent = `
+.exsvg{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--acc);margin:6px 0}.exsvg figure{margin:0;text-align:center}
+.exsvg figcaption{font-size:11px;color:var(--txt);opacity:.8;max-width:130px}.exarr{font-size:20px;opacity:.7}
+.exsteps{margin:6px 0 10px;padding-left:22px;line-height:1.45}.exsteps li{margin-bottom:4px}
+.exbtn{margin-bottom:6px;font-size:13px;min-height:34px}.penlock{margin-top:6px;text-align:center}`; document.head.appendChild(st); })();
+
 /* =================== Start =================== */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
@@ -2079,7 +2187,8 @@ function showPenaltyIntro(){
   if (S.penalty && !S.penalty.done && !S.penaltySeen){
     S.penaltySeen = true; save();
     modal(`<div class="penalty" style="margin:-14px;padding:14px;border-radius:10px"><h2>⚠ Strafquest</h2><p class="c">[SYSTEM] Die Daily Quest von gestern wurde nicht abgeschlossen.<br>Du wirst in die Strafzone versetzt.</p>
-    <div class="quest c"><b style="font-size:22px">${esc(S.penalty.name)}</b><div class="dim small">Zeitlimit: bis Mitternacht · Gates gesperrt bis zur Erfüllung</div></div>
+    <div class="quest c"><b style="font-size:22px">${esc(S.penalty.name)}</b><div class="dim small">Zeitlimit: bis Mitternacht · Gates gesperrt bis zur Erfüllung</div><div class="small" style="margin-top:6px">${PROOF[S.penalty.proof]?.i||'📸'} Nachweis: ${PROOF[S.penalty.proof]?.n||'Beweisfoto'}</div></div>
+    <p class="c small badc">[SYSTEM] Strafquests müssen nachgewiesen werden.</p>
     <button class="full bad" data-a="closeModal">Verstanden</button></div>`);
   } else if (!S.welcomed){
     S.welcomed = true; save();
