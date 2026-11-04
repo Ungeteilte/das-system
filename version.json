@@ -1,14 +1,35 @@
 {
- "version": "1.4.0",
+ "version": "1.5.0",
  "date": "2026-11-04",
  "changelog": [
-  "📖 NEU: „Beispiel ansehen“ bei jeder Quest – so wird die Übung richtig ausgeführt, was als Wiederholung zählt und welcher Nachweis erwartet wird",
-  "🧍 Kleine Ablauf-Skizzen für Liegestütze, Sit-ups, Kniebeugen, Plank, Laufen, Burpees, Hampelmänner und Ausfallschritte – auch offline",
-  "⚠ Strafquests müssen jetzt immer nachgewiesen werden (Foto, Kamera-Zähler, GPS oder Timer) – kein Ehrenmodus, keine manuelle Eingabe",
-  "📜 Strafquest-Erlass halbiert die Strafquest jetzt nur noch – der Nachweis bleibt Pflicht",
-  "💾 Spielstand bleibt vollständig erhalten"
+  "📸 Beweisfoto nur noch live aus der App-Kamera – Galerie und Datei-Upload sind abgeschaltet",
+  "🎲 NEU: Zufallsaufgabe bei jedem Foto (Finger zeigen, Handzeichen oder Code auf Papier) – muss im Bild sein und gilt nur 5 Minuten",
+  "🔏 Wasserzeichen im Foto: Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID – alles auch in der Beweis-Galerie",
+  "🎥 Hampelmänner werden jetzt per Kamera-Zähler gezählt (auch als Strafquest)",
+  "📖 Beispiele erklären den neuen Foto-Nachweis",
+  "💾 Spielstand bleibt vollständig erhalten",
+  "🚿 NEU: Kombi-Nachweis „Vorher · Timer · Nachher“ – z. B. Kalt duschen: Vorher-Foto trocken bei laufendem Wasser, Pflicht-Timer (nicht überspringbar, App offen lassen), direkt danach Nachher-Foto nass",
+  "⚡ Überraschungs-Kontrollfoto während des Duschtimers – Vibration + Ton, 20 Sekunden Zeit, sonst Timer neu starten",
+  "🌡 Optional „Thermometer im Bild“: +5 % Bonus-XP, Hinweis im Wasserzeichen",
+  "🧹 Aufräumen, Kochen & Co.: Vorher-Foto → Wartezeit → Nachher-Foto"
  ],
  "releases": [
+  {
+   "version": "1.5.0",
+   "date": "2026-11-04",
+   "changes": [
+    "📸 Beweisfoto nur noch live aus der App-Kamera – Galerie und Datei-Upload sind abgeschaltet",
+    "🎲 NEU: Zufallsaufgabe bei jedem Foto (Finger zeigen, Handzeichen oder Code auf Papier) – muss im Bild sein und gilt nur 5 Minuten",
+    "🔏 Wasserzeichen im Foto: Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID – alles auch in der Beweis-Galerie",
+    "🎥 Hampelmänner werden jetzt per Kamera-Zähler gezählt (auch als Strafquest)",
+    "📖 Beispiele erklären den neuen Foto-Nachweis",
+    "💾 Spielstand bleibt vollständig erhalten",
+    "🚿 NEU: Kombi-Nachweis „Vorher · Timer · Nachher“ – z. B. Kalt duschen: Vorher-Foto trocken bei laufendem Wasser, Pflicht-Timer (nicht überspringbar, App offen lassen), direkt danach Nachher-Foto nass",
+    "⚡ Überraschungs-Kontrollfoto während des Duschtimers – Vibration + Ton, 20 Sekunden Zeit, sonst Timer neu starten",
+    "🌡 Optional „Thermometer im Bild“: +5 % Bonus-XP, Hinweis im Wasserzeichen",
+    "🧹 Aufräumen, Kochen & Co.: Vorher-Foto → Wartezeit → Nachher-Foto"
+   ]
+  },
   {
    "version": "1.4.0",
    "date": "2026-11-04",

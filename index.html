@@ -167,7 +167,7 @@ hr{border:none;border-top:1px dashed color-mix(in srgb,var(--acc) 35%,transparen
 <div id="modal"><div class="win" id="modalBox"></div></div>
 <div id="fx"></div>
 <div id="proof"></div>
-<input type="file" id="photoFile" accept="image/*" capture="environment" style="display:none">
+
 <script>
 'use strict';
 /* =====================================================================
@@ -706,7 +706,7 @@ function bonusSummary(B){
 function questCard(q){
   const pct = Math.min(100, q.progress/q.target*100), big = q.target>=50, st = q.stat?STATS[q.stat]:null;
   const need = proofNeeded(q), lock = proofLocked(q), pf = PROOF[q.proof]||PROOF.none;
-  const proofLbl = {photo:'📸 Beweisfoto aufnehmen', counter:`🎥 Kamera-Zähler · ${EXER[q.ex]?.n||''}`, gps:'🛰️ GPS-Lauf starten', timer:'⏱️ Timer starten'}[q.proof];
+  const proofLbl = {photo: pairNeeded(q) ? (q.pStart&&q.pStart.day===S.day ? '📸 3/3 Nachher-Foto aufnehmen' : '🔁 Vorher-Foto · Timer · Nachher') : '📸 Beweisfoto aufnehmen', counter:`🎥 Kamera-Zähler · ${EXER[q.ex]?.n||''}`, gps:'🛰️ GPS-Lauf starten', timer:'⏱️ Timer starten'}[q.proof];
   return `<div class="quest ${q.done?'done':''} ${q.done&&q.verified?'verified':''}">
    <div class="row"><div class="sp"><span class="qn">${esc(q.name)}</span>${st?`<span class="tag">${st.i} ${st.n}</span>`:''}${need?`<span class="tag ptag" title="Nachweis: ${pf.n}">${pf.i} ${pf.s}${q.honor?' · 🤝':''}</span>`:''}</div>
      ${UI.edit?`<button data-a="editQuest" data-id="${q.id}">✏️</button>`:`<span class="qp ${q.done?'okc':''}" ${lock?'':`data-a="setProg" data-id="${q.id}"`}>${fmtQ(q.progress)} / ${fmtQ(q.target)} ${esc(q.unit)}</span>`}</div>
@@ -1162,7 +1162,7 @@ const A = {
 // importText(): siehe part7n.js (Backup-Format 2 mit Beweisfotos, alte Dateien weiter lesbar)
 
 /* =================== App-Version, Updates & Installation (PWA) =================== */
-const RELEASES = [{"version": "1.4.0", "date": "2026-11-04", "changes": ["📖 NEU: „Beispiel ansehen“ bei jeder Quest – so wird die Übung richtig ausgeführt, was als Wiederholung zählt und welcher Nachweis erwartet wird", "🧍 Kleine Ablauf-Skizzen für Liegestütze, Sit-ups, Kniebeugen, Plank, Laufen, Burpees, Hampelmänner und Ausfallschritte – auch offline", "⚠ Strafquests müssen jetzt immer nachgewiesen werden (Foto, Kamera-Zähler, GPS oder Timer) – kein Ehrenmodus, keine manuelle Eingabe", "📜 Strafquest-Erlass halbiert die Strafquest jetzt nur noch – der Nachweis bleibt Pflicht", "💾 Spielstand bleibt vollständig erhalten"]}, {"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
+const RELEASES = [{"version": "1.5.0", "date": "2026-11-04", "changes": ["📸 Beweisfoto nur noch live aus der App-Kamera – Galerie und Datei-Upload sind abgeschaltet", "🎲 NEU: Zufallsaufgabe bei jedem Foto (Finger zeigen, Handzeichen oder Code auf Papier) – muss im Bild sein und gilt nur 5 Minuten", "🔏 Wasserzeichen im Foto: Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID – alles auch in der Beweis-Galerie", "🎥 Hampelmänner werden jetzt per Kamera-Zähler gezählt (auch als Strafquest)", "📖 Beispiele erklären den neuen Foto-Nachweis", "💾 Spielstand bleibt vollständig erhalten", "🚿 NEU: Kombi-Nachweis „Vorher · Timer · Nachher“ – z. B. Kalt duschen: Vorher-Foto trocken bei laufendem Wasser, Pflicht-Timer (nicht überspringbar, App offen lassen), direkt danach Nachher-Foto nass", "⚡ Überraschungs-Kontrollfoto während des Duschtimers – Vibration + Ton, 20 Sekunden Zeit, sonst Timer neu starten", "🌡 Optional „Thermometer im Bild“: +5 % Bonus-XP, Hinweis im Wasserzeichen", "🧹 Aufräumen, Kochen & Co.: Vorher-Foto → Wartezeit → Nachher-Foto"]}, {"version": "1.4.0", "date": "2026-11-04", "changes": ["📖 NEU: „Beispiel ansehen“ bei jeder Quest – so wird die Übung richtig ausgeführt, was als Wiederholung zählt und welcher Nachweis erwartet wird", "🧍 Kleine Ablauf-Skizzen für Liegestütze, Sit-ups, Kniebeugen, Plank, Laufen, Burpees, Hampelmänner und Ausfallschritte – auch offline", "⚠ Strafquests müssen jetzt immer nachgewiesen werden (Foto, Kamera-Zähler, GPS oder Timer) – kein Ehrenmodus, keine manuelle Eingabe", "📜 Strafquest-Erlass halbiert die Strafquest jetzt nur noch – der Nachweis bleibt Pflicht", "💾 Spielstand bleibt vollständig erhalten"]}, {"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
 const APP_VERSION = RELEASES[0].version;
 const VER_KEY = 'das-system-app-version'; // getrennt vom Spielstand (das-system-save-v1)
 const INSTALL_DISMISS_KEY = 'das-system-install-hint-off';
@@ -1301,6 +1301,8 @@ const EXER = {
          hint:'Handy seitlich auf den Boden stellen – ganzer Körper im Bild (Profil).'},
   squat:{n:'Kniebeugen',  joint:'Knie',       tri:[[23,25,27],[24,26,28]], lo:110, hi:155,
          hint:'Handy 2–3 m entfernt aufstellen – Hüfte, Knie und Füße im Bild.'},
+  jack: {n:'Hampelmänner', joint:'Schulter', tri:[[23,11,15],[24,12,16]], lo:60, hi:130,
+         hint:'Handy 2–3 m entfernt hochkant aufstellen – ganzer Körper inkl. Hände über dem Kopf im Bild (von vorne).'},
   situp:{n:'Sit-ups',     joint:'Hüfte',      tri:[[11,23,25],[12,24,26]], lo:80,  hi:115,
          hint:'Handy seitlich auf den Boden stellen – Oberkörper und Knie im Bild.'},
 };
@@ -1308,6 +1310,7 @@ function guessEx(name){ const n = (name||'').toLowerCase();
   if (/liegest|push|pushup|liegestütz/.test(n)) return 'push';
   if (/kniebeug|squat/.test(n)) return 'squat';
   if (/sit-?up|crunch/.test(n)) return 'situp';
+  if (/hampel|jumping.?jack/.test(n)) return 'jack';
   return null; }
 function defaultProof(q){ const n = (q.name||'').toLowerCase(), u = (q.unit||'').toLowerCase().trim();
   if (guessEx(n)) return 'counter';
@@ -1318,8 +1321,11 @@ function proofDefaults(q){ return {proof: q.proof || defaultProof(q), ex: q.ex |
 function migrateProof(st){ // Spielstände < v1.2.0: Nachweis-Felder je Quest ergänzen
   (st.quests||[]).forEach(q => { const d = proofDefaults(q); for (const k in d) if (q[k]===undefined) q[k] = d[k]; });
   if (!st.proofCfg) st.proofCfg = {timerMode:'pause', beep:true, voice:false};
+  if ((st.v||1) < 4){ // v1.5.0: Hampelmänner → Kamera-Zähler
+    (st.quests||[]).forEach(q => { if (q.proof==='photo' && guessEx(q.name)==='jack'){ q.proof = 'counter'; q.ex = 'jack'; } });
+    if (st.penalty && st.penalty.proof==='photo' && /hampel/i.test(st.penalty.name)){ st.penalty.proof = 'counter'; st.penalty.ex = 'jack'; } }
   if (st.penalty) penProofFields(st.penalty, st.day);
-  st.v = Math.max(st.v||1, 3);
+  st.v = Math.max(st.v||1, 4);
 }
 function autoProof(){ // Neue Quest: Nachweis-Art aus Name/Einheit vorschlagen, solange nicht manuell gewählt
   const p = $('#fProof'), e = $('#fEx'), n = val('fName'), u = val('fUnit');
@@ -1401,28 +1407,90 @@ async function getCam(facing){
 }
 
 /* ---------- 1) Beweisfoto ---------- */
+const CH_VALID = 5*60e3; // Challenge gilt 5 Minuten
+function mkChallenge(){ const r = n => Math.floor(Math.random()*n), t0 = Date.now(); let kind = ['finger','gesture','code'][r(3)], text, short;
+  if (kind==='finger'){ const n = 1 + r(5); text = `Zeig ${n} Finger in die Kamera`; short = `${n} Finger`; }
+  else if (kind==='gesture'){ const g = [['👍','Daumen hoch'],['✌️','Peace-Zeichen'],['✊','Faust'],['🤙','Shaka (Daumen + kleiner Finger)'],['👌','OK-Zeichen']][r(5)]; text = `${g[0]} Mach: ${g[1]}`; short = g[1]; }
+  else { const A = 'ABCDEFGHJKLMNPRSTUVWXYZ23456789'; let c = ''; for (let i=0;i<4;i++) c += A[r(A.length)]; text = `Schreib „${c}“ auf Papier und halte es ins Bild`; short = `Code ${c}`; }
+  return {kind, text, short, t0, exp: t0 + CH_VALID, pid: (t0.toString(36).slice(-4) + Math.random().toString(36).slice(2,5)).toUpperCase()}; }
+const chLeft = ch => Math.max(0, ch.exp - Date.now());
+// Kombi-Nachweis „Vorher · Timer · Nachher“ für Quests, die man nicht zählen kann (Kalt duschen, Eisbad, Aufräumen, Kochen …)
+const PAIR_RE = /kalt|dusch|eisbad|aufräum|putz|koch|garten|wasch|bügel|renovier|backen|ordnung/i;
+const pairNeeded = q => !!q && q.proof==='photo' && PAIR_RE.test(q.name||'');
+function comboCfg(q){ const n = q.name||'', u = unitKind(q.unit), strict = /kalt|dusch|eisbad/i.test(n);
+  const min = u==='min' ? Math.max(1, q.target) : u==='h' ? q.target*60 : strict ? 2 : /koch|backen/i.test(n) ? 20 : 15;
+  return {min, strict, win: strict ? 5 : 60}; }
+const pairMin = q => comboCfg(q).min*60e3;
+const comboLbl = q => { const c = comboCfg(q); return `Vorher-Foto → ${c.min} Min. ${c.strict?'Timer (App offen)':'Wartezeit'} → Nachher-Foto (innerhalb ${c.win} Min.)`; };
+function comboReset(live, why){ live.pStart = null; save(); log(`Kombi-Nachweis ungültig: ${live.name}`);
+  ovOpen(`${proofHead(live,'🔁 Vorher · Timer · Nachher')}<div class="c" style="font-size:56px">❌</div><div class="pinfo badc c"><b>[SYSTEM] Nachweis ungültig.</b><br>${esc(why)}<br>Starte neu mit dem Vorher-Foto.</div><button class="full" data-a="proofClose">Schließen</button>`); }
+const CHK_WIN = 20e3;
+function sysNotify(txt){ try { if (window.Notification && Notification.permission==='granted'){
+  if (navigator.serviceWorker && navigator.serviceWorker.ready) navigator.serviceWorker.ready.then(r=>r.showNotification('[SYSTEM] Kontrollfoto!',{body:txt,tag:'chk',vibrate:[200,100,200]})).catch(()=>{});
+  else new Notification('[SYSTEM] Kontrollfoto!',{body:txt}); } } catch(e){} }
+function comboCheck(live){ const st = live.pStart; clearInterval(P.iv); P.iv = 0; P.sess = null;
+  beep(1760,200); setTimeout(()=>beep(1760,200),260); setTimeout(()=>beep(1760,300),520); vibrate([200,100,200,100,400]);
+  say('Kontrollfoto! Zwanzig Sekunden.'); sysNotify('Überraschungs-Kontrolle: Foto in 20 Sekunden!'); log(`Kontrollfoto angefordert: ${live.name}`);
+  st.chkReq = Date.now(); save();
+  P.sess = {kind:'photo', q:live, facing:'environment', stage:'check', ch: mkChallenge()};
+  P.chkTo = setTimeout(() => { const ps = live.pStart; if (ps && ps.chkReq && !ps.chkOk){ stopAllProof(); comboReset(live, 'Kontrollfoto nicht innerhalb von 20 Sekunden aufgenommen. Timer muss neu starten.'); } }, CHK_WIN + 500);
+  photoStart(); }
+function comboTimerOpen(live, resume){
+  const c = comboCfg(live), st = live.pStart;
+  if (!resume){ st.tGo = Date.now(); st.end = st.tGo + c.min*60e3; if (c.strict) st.chkAt = st.tGo + Math.round((0.2 + Math.random()*0.6)*c.min*60e3); }
+  P.sess = {kind:'combo', q:live, end: st.end}; wakeOn();
+  ovOpen(`${proofHead(live,'🔁 2/3 · Pflicht-Timer – nicht überspringbar')}<div class="c" style="font-size:54px;font-weight:800" id="cbClk"></div>${st.chkAt?`<div class="pinfo c">⚡ Achtung: Zu einem <b>zufälligen Zeitpunkt</b> kommt ein <b>Kontrollfoto</b> (Vibration + Ton). Du hast dann <b>20 Sekunden</b>.${st.chkOk?' ✔ Kontrolle bestanden.':''}</div>`:''}
+    <div class="pinfo c">${c.strict?'App geöffnet lassen. Verlässt du die App oder brichst ab, ist der Nachweis <b>ungültig</b>.':'Du darfst die App verlassen. Danach das Nachher-Foto machen.'}<br>Danach sofort das <b>Nachher-Foto</b> (neue Aufgabe, innerhalb ${c.win} Min.).</div>
+    <button class="full ghost" data-a="comboAbort">Abbrechen (Nachweis verfällt)</button>`);
+  const tick = () => { const s = P.sess; if (!s || s.kind!=='combo') return; const l = s.end - Date.now(), el = $('#cbClk'); if (el) el.textContent = fmtClock(Math.max(0,l)+999);
+    if (st.chkAt && !st.chkOk && Date.now() >= st.chkAt && l > 0){ comboCheck(live); return; }
+    if (l <= 0){ clearInterval(P.iv); P.iv = 0; st.tDone = Date.now(); save(); beep(880,150); setTimeout(()=>beep(1568,300),180); vibrate([80,60,200]); say('Timer fertig. Jetzt Nachher-Foto.'); stopAllProof(); photoOpen(live); } };
+  P.iv = setInterval(tick, 500); tick(); save();
+}
+document.addEventListener('visibilitychange', () => { const s = P.sess; if (document.hidden && s && s.kind==='combo' && comboCfg(s.q).strict){ stopAllProof(); comboReset(findQ(s.q.id)||s.q, 'Du hast die App während des Timers verlassen.'); } });
+const STG = {start:'Vorher', check:'Kontrolle', end:'Nachher'};
 function photoOpen(q){
-  P.sess = {kind:'photo', q, facing:'environment'};
-  ovOpen(`${proofHead(q, '📸 Beweisfoto · live aufnehmen')}
-   <div class="pinfo">Das System benötigt <b>Zugriff auf die Kamera</b>, um ein <b>Live-Beweisfoto</b> aufzunehmen. Fotos aus der Galerie werden nicht akzeptiert.
-   Datum, Uhrzeit und Quest werden ins Bild gestempelt. Das Foto bleibt <b>nur auf deinem Gerät</b>.</div>
+  const live = findQ(q.id) || q; if (live.pStart && live.pStart.day !== S.day) live.pStart = null;
+  const stage = pairNeeded(live) ? (live.pStart ? 'end' : 'start') : '';
+  if (stage==='end'){ const c = comboCfg(live), ps = live.pStart, now = Date.now();
+    if (c.strict && !ps.tDone){ comboReset(live, 'Der Pflicht-Timer wurde nicht vollständig durchlaufen.'); return; }
+    const ready = c.strict ? ps.tDone : ps.t + c.min*60e3;
+    if (now < ready){ ovOpen(`${proofHead(q,'📸 3/3 Nachher-Foto')}<div class="pinfo">⏳ Vorher-Foto um <b>${new Date(ps.t).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</b>.<br>Das Nachher-Foto ist frühestens in <b>${Math.ceil((ready-now)/60000)} Min.</b> möglich.</div><button class="full" data-a="proofClose">Schließen</button>`); return; }
+    if (now > ready + c.win*60e3){ comboReset(live, `Das Nachher-Foto muss innerhalb von ${c.win} Min. nach dem Timer aufgenommen werden.`); return; } }
+  P.sess = {kind:'photo', q, facing:'environment', stage, ch: mkChallenge()};
+  ovOpen(`${proofHead(q, '📸 Beweisfoto · nur live' + (stage==='start'?' · 1/3 VORHER':stage==='end'?' · 3/3 NACHHER':''))}
+   <div class="pinfo">Das System benötigt <b>Zugriff auf die Kamera</b>. Es zählt nur ein <b>Live-Foto aus der App</b> – Galerie oder Datei-Upload gibt es nicht.<br>
+   Du bekommst gleich eine <b>zufällige Aufgabe</b> (Finger, Handzeichen oder Code), die auf dem Foto zu sehen sein muss. Sie gilt <b>5 Minuten</b>.
+   Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID werden ins Bild gestempelt. Das Foto bleibt <b>nur auf deinem Gerät</b>.</div>
+   ${stage==='start'?`<div class="pinfo">🔁 <b>Kombi-Nachweis:</b> ${comboLbl(live)}${comboCfg(live).strict?'<br>⚡ Während des Timers kommt <b>ein Überraschungs-Kontrollfoto</b> (20 Sek. Zeit).':''}</div>
+   ${comboCfg(live).strict?`<label class="pinfo" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="thermo"> 🌡 <span><b>Thermometer im Bild</b> – auf jedem Foto ist ein Duschthermometer sichtbar (+5 % Bonus-XP)</span></label>`:''}`:''}
    <button class="full prim" data-a="photoStart">📷 Kamera starten</button><button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
 }
+const thermoOn = s => !!(s.stage==='start' ? s.thermo : s.q.pStart && s.q.pStart.thermo);
+function chTick(){ const s = P.sess, el = $('#chT'); if (!s || s.kind!=='photo' || !el) return; const l = chLeft(s.ch);
+  el.textContent = l ? `gültig noch ${fmtClock(l)}` : 'ABGELAUFEN'; el.classList.toggle('badc', !l);
+  const k = $('#chkT'), ps = s.q.pStart; if (k && ps && ps.chkReq) k.textContent = `⚡ KONTROLLFOTO – noch ${Math.max(0, Math.ceil((ps.chkReq + CHK_WIN - Date.now())/1000))} Sek.`; }
 async function photoStart(){
-  const s = P.sess; if (!s) return;
+  const s = P.sess; if (!s) return; const tb = $('#thermo'); if (tb) s.thermo = tb.checked;
+  if (!chLeft(s.ch)) s.ch = mkChallenge();
   try { if (P.stream) P.stream.getTracks().forEach(t=>t.stop()); P.stream = await getCam(s.facing); }
   catch(e){ ovSet(`${proofHead(s.q,'📸 Beweisfoto')}<div class="pinfo badc">⚠ ${permErr(e)}</div>
-     <p class="small c">Alternative: Die <b>System-Kamera</b> deines Handys öffnen (nur frisch aufgenommene Fotos werden akzeptiert).</p>
-     <button class="full prim" data-a="photoFile">📷 System-Kamera öffnen</button>${fallbackBtns(s.q,'photo')}`); return; }
-  ovSet(`${proofHead(s.q,'📸 Richte die Kamera auf deinen Beweis')}<div class="stage"><video id="pv" playsinline muted autoplay></video></div>
+     <div class="pinfo badc">[SYSTEM] Ohne Live-Kamera ist kein Foto-Nachweis möglich. Fotos aus der Galerie werden nicht akzeptiert.</div>${fallbackBtns(s.q,'photo')}`); return; }
+  ovSet(`${proofHead(s.q,'📸 Erfülle die Aufgabe und nimm das Foto auf' + ({start:' · 1/3 VORHER',check:' · ⚡ KONTROLLE',end:' · 3/3 NACHHER'}[s.stage]||''))}<div class="stage chstage"><video id="pv" playsinline muted autoplay></video>
+     <div class="chov" id="chOv"><div class="chk">[SYSTEM] AUFGABE · ID ${s.ch.pid}</div><div class="cht">${esc(s.ch.text)}</div><div class="chtm" id="chT"></div>${s.stage==='check'?'<div class="chk badc" id="chkT">⚡ KONTROLLFOTO – 20 SEK.</div>':''}${thermoOn(s)?'<div class="chk">🌡 Thermometer ins Bild!</div>':''}</div></div>
    <div class="grid3" style="margin-top:10px"><button data-a="photoFlip">🔄 Wechseln</button><button class="prim" data-a="photoSnap">📸 Aufnehmen</button><button data-a="proofClose">Abbrechen</button></div>`);
   const v = $('#pv'); v.srcObject = P.stream; v.play().catch(()=>{});
+  if (P.iv) clearInterval(P.iv); P.iv = setInterval(chTick, 500); chTick();
 }
-function stampCanvas(src, sw, sh, q, extra){
+function chExpired(){ const s = P.sess; if (P.iv) clearInterval(P.iv); P.iv = 0; if (P.stream){ P.stream.getTracks().forEach(t=>t.stop()); P.stream = null; }
+  log(`Foto-Aufgabe abgelaufen: ${s.q.name}`);
+  ovSet(`${proofHead(s.q,'📸 Beweisfoto')}<div class="c" style="font-size:56px">⌛</div><div class="pinfo badc c"><b>[SYSTEM] Aufgabe abgelaufen.</b><br>Das Foto muss innerhalb von 5 Minuten nach dem Erscheinen der Aufgabe aufgenommen werden. Nichts wurde gutgeschrieben.</div>
+   <div class="grid2"><button class="prim" data-a="photoNewCh">↺ Neue Aufgabe</button><button data-a="proofClose">Schließen</button></div>`); }
+function stampCanvas(src, sw, sh, q, extra, ch){
   const max = 1080, k = Math.min(1, max/Math.max(sw, sh)), w = Math.round(sw*k), h = Math.round(sh*k);
   const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d');
   x.drawImage(src, 0, 0, w, h);
-  const now = new Date(), fs = Math.max(14, Math.round(w/34)), bh = Math.round(fs*4.2);
+  const now = new Date(), fs = Math.max(14, Math.round(w/34)), bh = Math.round(fs*(ch?5.4:4.2));
   const g = x.createLinearGradient(0, h-bh-fs, 0, h); g.addColorStop(0,'rgba(5,10,24,0)'); g.addColorStop(.35,'rgba(5,10,24,.82)'); g.addColorStop(1,'rgba(5,10,24,.95)');
   x.fillStyle = g; x.fillRect(0, h-bh-fs, w, bh+fs);
   x.strokeStyle = '#3ad7ff'; x.lineWidth = Math.max(2, w/300); x.shadowColor = '#3ad7ff'; x.shadowBlur = 10; x.strokeRect(x.lineWidth, x.lineWidth, w-2*x.lineWidth, h-2*x.lineWidth); x.shadowBlur = 0;
@@ -1431,20 +1499,23 @@ function stampCanvas(src, sw, sh, q, extra){
   x.font = `800 ${fs}px system-ui,sans-serif`; x.fillStyle = '#ffffff'; x.fillText(q.name.slice(0,48), pad, h-bh+fs*1.95);
   x.font = `600 ${Math.round(fs*.8)}px ui-monospace,monospace`; x.fillStyle = '#dff6ff';
   x.fillText(now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'}) + '  ' + now.toLocaleTimeString('de-DE') + '  ·  ' + S.name + ' Lv.' + S.level, pad, h-bh+fs*3.15);
+  if (ch){ x.fillStyle = '#ffd34d'; x.fillText(('Aufgabe: ' + ch.short + '  ·  ID ' + ch.pid + (ch.stage ? '  ·  ' + ch.stage : '')).slice(0,70), pad, h-bh+fs*4.35);
+    x.save(); x.globalAlpha = .18; x.font = `900 ${Math.round(w/9)}px system-ui,sans-serif`; x.fillStyle = '#ffffff'; x.textAlign = 'center';
+    x.translate(w/2, h/2); x.rotate(-Math.PI/9); x.fillText('ID ' + ch.pid, 0, 0); x.restore(); }
   return c;
 }
 const toBlob = (c, q=.72) => new Promise(r => c.toBlob(r, 'image/jpeg', q));
-async function saveProofImage(q, canvas, kind, info){
+async function saveProofImage(q, canvas, kind, info, extra){
   const t = Date.now(), tw = 240, th = Math.round(canvas.height*tw/canvas.width);
   const tc = document.createElement('canvas'); tc.width = tw; tc.height = th; tc.getContext('2d').drawImage(canvas, 0, 0, tw, th);
   const [full, thumb] = await Promise.all([toBlob(canvas, .72), toBlob(tc, .7)]);
-  await PDB.add({id:uid()+t.toString(36), t, day:dayStr(new Date(t)), qid:q.id, qname:q.name, kind, info:info||'', thumb, size:(full?.size||0)+(thumb?.size||0)}, full);
+  await PDB.add({id:uid()+t.toString(36), t, day:dayStr(new Date(t)), qid:q.id, qname:q.name, kind, info:info||'', ...(extra||{}), thumb, size:(full?.size||0)+(thumb?.size||0)}, full);
 }
 function photoPreview(c){
   const s = P.sess; s.canvas = c;
   if (P.stream){ P.stream.getTracks().forEach(t=>t.stop()); P.stream = null; }
   ovSet(`${proofHead(s.q,'Vorschau – Beweis einreichen?')}<div class="stage"><img id="pimg" alt="Beweisfoto"></div>
-   <div class="grid2" style="margin-top:10px"><button data-a="${s.fromFile?'photoFile':'photoStart'}">↺ Neu</button><button class="prim" data-a="photoSubmit">✔ Einreichen</button></div>
+   <div class="grid2" style="margin-top:10px"><button data-a="photoStart">↺ Neu</button><button class="prim" data-a="photoSubmit">✔ Einreichen</button></div>
    <button class="full ghost" style="margin-top:8px" data-a="proofClose">Abbrechen</button>`);
   $('#pimg').src = c.toDataURL('image/jpeg', .8);
 }
@@ -1453,20 +1524,32 @@ const PA = {
    ({photo:photoOpen, counter:counterOpen, gps:gpsOpen, timer:timerOpen})[q.proof]?.(q); },
  proofAlt(d){ const q = findQ(d.id); stopAllProof(); if (q && !q.done) photoOpen(q); },
  proofClose(){ ovClose(); },
- photoStart(){ P.sess.fromFile = false; photoStart(); },
+ photoStart(){ photoStart(); },
+ comboAbort(){ const s = P.sess; if (!s) return; const q = findQ(s.q.id)||s.q; stopAllProof(); comboReset(q, 'Timer abgebrochen.'); },
+ photoNewCh(){ const s = P.sess; if (!s) return; s.ch = mkChallenge(); s.canvas = null; photoStart(); },
  photoFlip(){ const s = P.sess; s.facing = s.facing==='environment'?'user':'environment'; photoStart(); },
- photoSnap(){ const v = $('#pv'); if (!v || !v.videoWidth){ toast('Kamera noch nicht bereit …'); return; }
-   vibrate(30); beep(1200, 60, .15); photoPreview(stampCanvas(v, v.videoWidth, v.videoHeight, P.sess.q)); },
- photoFile(){ const i = $('#photoFile'); i.value = ''; i.onchange = () => {
-     const f = i.files[0]; if (!f) return; const age = Date.now() - (f.lastModified||0);
-     if (age > 10*60e3){ toast('⚠ Dieses Foto ist älter als 10 Minuten. Das System akzeptiert nur frisch aufgenommene Beweise.','[SYSTEM]',5000); return; }
-     const img = new Image(); img.onload = () => { P.sess.fromFile = true; photoPreview(stampCanvas(img, img.naturalWidth, img.naturalHeight, P.sess.q)); URL.revokeObjectURL(img.src); };
-     img.src = URL.createObjectURL(f); };
-   i.click(); },
+ photoSnap(){ const s = P.sess, v = $('#pv'); if (!s) return; if (!chLeft(s.ch)){ chExpired(); return; }
+   if (!v || !v.videoWidth){ toast('Kamera noch nicht bereit …'); return; }
+   if (P.iv) clearInterval(P.iv); P.iv = 0; s.snapT = Date.now();
+   vibrate(30); beep(1200, 60, .15); photoPreview(stampCanvas(v, v.videoWidth, v.videoHeight, s.q, (STG[s.stage]||'').toUpperCase(), {...s.ch, stage: (STG[s.stage]||'') + (thermoOn(s)?' · 🌡 Thermometer im Bild':'')})); },
  async photoSubmit(){ const s = P.sess; if (!s || !s.canvas) return; const q = s.q;
-   try { await saveProofImage(q, s.canvas, 'photo'); } catch(e){ toast('Foto konnte nicht gespeichert werden ('+esc(e.message||e)+') – der Nachweis zählt trotzdem.','[SYSTEM]'); }
-   const live = findQ(q.id); ovClose();
-   if (live && !live.done){ proofCredit(live, live.target - live.progress, 'Foto'); save(); render(); } },
+   if (!s.snapT || s.snapT > s.ch.exp || s.snapT < s.ch.t0){ chExpired(); return; }
+   const meta = {ch:s.ch.text, chShort:s.ch.short, chKind:s.ch.kind, pid:s.ch.pid, chT0:s.ch.t0, chExp:s.ch.exp, snapT:s.snapT, stage:s.stage||'', thermo:thermoOn(s)};
+   const info = `Aufgabe: ${s.ch.short} · ID ${s.ch.pid}${STG[s.stage]?' · '+STG[s.stage]:''}${thermoOn(s)?' · 🌡':''}`;
+   try { await saveProofImage(q, s.canvas, 'photo', info, meta); } catch(e){ toast('Foto konnte nicht gespeichert werden ('+esc(e.message||e)+') – der Nachweis zählt trotzdem.','[SYSTEM]'); }
+   const live = findQ(q.id); ovClose(); if (!live || live.done) return;
+   if (s.stage==='check'){ const ps = live.pStart; clearTimeout(P.chkTo);
+     if (!ps || !ps.chkReq || s.snapT > ps.chkReq + CHK_WIN){ comboReset(live, 'Kontrollfoto zu spät (max. 20 Sekunden). Timer muss neu starten.'); return; }
+     ps.chkOk = true; ps.chkPid = s.ch.pid; log(`Kontrollfoto bestanden: ${s.ch.pid}`); save(); comboTimerOpen(live, true); return; }
+   if (s.stage==='start'){ live.pStart = {t:s.snapT, pid:s.ch.pid, day:S.day, thermo:!!s.thermo}; save();
+     if (comboCfg(live).strict){ comboTimerOpen(live); return; }
+     render(); toast(`📸 Vorher-Foto gespeichert. Nachher-Foto frühestens in ${comboCfg(live).min} Min.`, '[SYSTEM]', 4500); return; }
+   if (s.stage==='end'){ const c = comboCfg(live), ps = live.pStart, ready = ps ? (c.strict ? ps.tDone : ps.t + c.min*60e3) : 0;
+     if (!ps || !ready || s.snapT < ready || s.snapT > ready + c.win*60e3){ comboReset(live, 'Zeitfenster für das Nachher-Foto nicht eingehalten.'); return; }
+     if (c.strict && ps.chkAt && !ps.chkOk){ comboReset(live, 'Das Kontrollfoto während des Timers fehlt.'); return; }
+     log(`Kombi-Nachweis: Vorher ${ps.pid} → Nachher ${s.ch.pid}`); live.pStart = null;
+     if (ps.thermo){ proofCredit(live, live.target - live.progress, 'Foto'); gainXP(Math.max(1, Math.round((live.xp||0)*0.05)), '🌡 Thermometer-Bonus'); toast('🌡 Thermometer im Bild: +5 % Bonus-XP','[SYSTEM]'); save(); render(); return; } }
+   proofCredit(live, live.target - live.progress, 'Foto'); save(); render(); },
 };
 
 /* ---------- 2) Kamera-Zähler (Pose-Erkennung, offline) ---------- */
@@ -1774,7 +1857,7 @@ Object.assign(PA, {
  gallery(){ galleryOpen(); },
  async galView(d){ const meta = (await PDB.all()).find(x=>x.id===d.id); const img = await PDB.full(d.id); if (!img) return;
    const u = URL.createObjectURL(img); P.urls.push(u);
-   modal(`<h2>Beweis</h2><img src="${u}" style="width:100%;border-radius:8px;border:1px solid var(--acc)"><p class="small c">${esc(meta?.qname||'')} · ${meta?new Date(meta.t).toLocaleString('de-DE'):''}${meta?.info?' · '+esc(meta.info):''}</p>
+   modal(`<h2>Beweis</h2><img src="${u}" style="width:100%;border-radius:8px;border:1px solid var(--acc)"><p class="small c">${esc(meta?.qname||'')} · ${meta?new Date(meta.t).toLocaleString('de-DE'):''}${meta?.info?' · '+esc(meta.info):''}</p>${meta?.ch?`<div class="pinfo small">🎲 Aufgabe: <b>${esc(meta.ch)}</b><br>Erstellt ${new Date(meta.chT0).toLocaleTimeString('de-DE')} · Foto ${new Date(meta.snapT).toLocaleTimeString('de-DE')} · gültig bis ${new Date(meta.chExp).toLocaleTimeString('de-DE')}<br>Beweis-ID: <b>${esc(meta.pid)}</b></div>`:''}
      <div class="grid2"><button data-a="gallery">← Galerie</button><button class="bad" data-a="galDel" data-id="${d.id}">🗑️ Löschen</button></div>`); },
  galDel(d){ ask('Diesen Beweis löschen? (Der Quest-Fortschritt bleibt.)', async () => { await PDB.del([d.id]); galleryOpen(); }, 'Löschen'); },
  galClean(d){ const days = Number(d.k), lim = Date.now() - days*864e5;
@@ -2070,7 +2153,7 @@ function nativeStartup(){
 /* =================== Quest-Beispiele & Strafquest-Nachweispflicht (v1.4.0) =================== */
 // Strafquest: Nachweis-Art je Übung (mind. Beweisfoto). Ehrenmodus gibt es hier nie.
 const PEN_PROOF = [
-  [/burpee/i, 'photo', null], [/hampel|jumping/i, 'photo', null], [/plank|unterarmst/i, 'timer', null],
+  [/burpee/i, 'photo', null], [/hampel|jumping/i, 'counter', 'jack'], [/plank|unterarmst/i, 'timer', null],
   [/lauf|jogg|km/i, 'gps', null], [/ausfall|lunge/i, 'counter', 'squat'],
 ];
 function penProofFields(p, day){
@@ -2127,7 +2210,7 @@ const EXAMPLES = [
   {re:/seil/i, svg:'jack', how:['Seil auf die richtige Länge (Griffe bis unter die Achseln).','Locker auf den Fußballen springen, Handgelenke drehen das Seil.','Ellenbogen nah am Körper, kleine Sprünge.'], count:'Es zählt die Zeit bzw. Sprünge laut Quest – Hängenbleiben ist okay, einfach weiter.', tip:'Ohne Seil: Sprünge auf der Stelle simulieren.'},
   {re:/treppe/i, how:['Treppe zügig hochgehen, jede Stufe zählt.','Oben kurz durchatmen, ruhig wieder runter.'], count:'Es zählt die Anzahl Stockwerke/Stufen laut Quest.', tip:'Handlauf nur zur Sicherheit, nicht zum Hochziehen.'},
   {re:/dehn|mobil|stretch|yoga/i, how:['Kurz aufwärmen (z. B. Armkreisen, auf der Stelle gehen).','Jede Dehnung 30–45 Sek. halten, ruhig atmen, nicht wippen.','Beine, Hüfte, Rücken und Schultern abdecken.'], count:'Es zählt die Zeit in Dehnpositionen.', tip:'Dehnen darf ziehen, aber nicht schmerzen.'},
-  {re:/kalt|dusch/i, how:['Normal duschen, am Ende auf kalt stellen.','Erst Beine und Arme, dann Oberkörper und Rücken.','Ruhig weiteratmen und mindestens 30–60 Sek. durchhalten.'], count:'Es zählt nur das Wasser wirklich auf kalt.', tip:'Langsam ausatmen hilft gegen den Kälteschock.'},
+  {re:/kalt|dusch|eisbad/i, how:['Normal duschen, am Ende auf kalt stellen.','Erst Beine und Arme, dann Oberkörper und Rücken.','Ruhig weiteratmen und mindestens 30–60 Sek. durchhalten.'], count:'Es zählt nur das Wasser wirklich auf kalt.', tip:'Langsam ausatmen hilft gegen den Kälteschock.'},
   {re:/koch|essen|protein|ernähr|mahlzeit/i, how:['Mahlzeit planen: Eiweißquelle, Gemüse, Beilage.','Selbst zubereiten statt Fertiggericht/Lieferdienst.'], count:'Es zählt eine vollständige Mahlzeit laut Quest.', tip:'Proteinquellen: Eier, Quark, Hähnchen, Linsen, Tofu.'},
   {re:/gute tat|helfen|kompliment|freundlich/i, how:['Bewusst jemandem etwas Gutes tun (z. B. Tür aufhalten, beim Tragen helfen, Nachricht an einen Freund).','Ehrlich und ohne Gegenleistung.'], count:'Es zählt jede echte Handlung für eine andere Person.', tip:'Kleine Dinge zählen auch.'},
   {re:/aufräum|putz|ordnung/i, how:['Ein Bereich nach dem anderen: Boden frei, Oberflächen, Müll raus.','Alles hat seinen Platz – zurücklegen statt umschichten.'], count:'Es zählt, wenn der Bereich sichtbar ordentlich ist.', tip:'Vorher/Nachher-Foto als Beweis.'},
@@ -2135,9 +2218,9 @@ const EXAMPLES = [
   {re:/klimm|pull-?up|dip/i, how:['Sauber hängen bzw. stützen, Arme gestreckt.','Kontrolliert hochziehen/hochdrücken bis zur Endposition.','Langsam zurück in die gestreckte Ausgangsposition.'], count:'1 Wiederholung = volle Bewegung von gestreckt bis Endposition.', tip:'Kein Schwung aus den Beinen.'},
 ];
 const PROOF_EX = {
-  photo: q => `📸 <b>Foto:</b> Direkt nach der Quest ein Live-Foto aufnehmen, auf dem man die Erledigung sieht – z. B. du verschwitzt nach dem Training, die Trainingsmatte, die erledigte Aufgabe oder der Bildschirm einer Fitness-App. Datum und Uhrzeit werden automatisch ins Bild gestempelt.`,
+  photo: q => `📸 <b>Foto (nur live):</b> Nach der Quest in der App „Beweisfoto aufnehmen“ tippen. Das System zeigt eine <b>Zufallsaufgabe</b> – z. B. „Zeig 3 Finger“, „Daumen hoch“ oder einen Code wie „K7MX“, den du auf Papier schreibst. Mach das Foto so, dass <b>die Erledigung und die Aufgabe</b> zu sehen sind (z. B. du nach dem Training mit 3 Fingern). Die Aufgabe gilt <b>5 Minuten</b>, Galerie-Fotos gehen nicht. Datum, Uhrzeit, Aufgabe und Beweis-ID werden eingestempelt.${pairNeeded(q)?` <br>🔁 <b>Kombi-Nachweis Vorher · Timer · Nachher:</b> ${esc(comboLbl(q))}. ${/kalt|dusch|eisbad/i.test(q.name)?'Beispiel: 1) Vorher-Foto in der Dusche, Wasser läuft, du bist noch trocken. 2) Timer läuft – App offen lassen; irgendwann kommt ein ⚡ Überraschungs-Kontrollfoto (Vibration + Ton), das du innerhalb von 20 Sekunden mit neuer Aufgabe machen musst. 3) Direkt danach Nachher-Foto, nass, mit der neuen Aufgabe. <br>💨 Tipp: <b>Dampf</b> auf dem Foto verrät warmes Wasser. Ein günstiges <b>Duschthermometer</b> im Bild macht den Beweis wasserdicht – Haken „🌡 Thermometer im Bild“ setzen = +5 % Bonus-XP.':'Beispiel: 1) Vorher-Foto vom Ausgangszustand (z. B. unordentliches Zimmer, Zutaten). 2) Wartezeit läuft. 3) Nachher-Foto vom Ergebnis mit neuer Aufgabe.'}`:''}`,
   counter: q => `🎥 <b>Kamera-Zähler:</b> ${esc(EXER[q.ex]?.hint || 'Handy seitlich auf den Boden stellen, ganzer Körper sichtbar.')} Gute Beleuchtung, nur du im Bild. Gezählt wird nur die volle Bewegung.`,
-  gps: q => `🛰️ <b>GPS + Schritte:</b> Vor dem Start „GPS-Lauf starten“ tippen, draußen bewegen, am Ende „Lauf beenden“. Alternativ: Foto nach dem Lauf mit der Strecke auf dem Display einer Lauf-App.`,
+  gps: q => `🛰️ <b>GPS + Schritte:</b> Vor dem Start „GPS-Lauf starten“ tippen, draußen bewegen, am Ende „Lauf beenden“. Notfalls: Live-Foto mit Zufallsaufgabe, auf dem die Strecke einer Lauf-App zu sehen ist.`,
   timer: q => `⏱️ <b>Timer:</b> Timer starten und die App im Vordergrund lassen (Bildschirm bleibt an). Verlässt du die App, wird pausiert bzw. ungültig.`,
   none: q => `✋ <b>Kein Nachweis nötig</b> – trag deinen Fortschritt ehrlich mit +/− ein.`,
 };
@@ -2170,7 +2253,9 @@ Object.assign(A, {
 .exsvg{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--acc);margin:6px 0}.exsvg figure{margin:0;text-align:center}
 .exsvg figcaption{font-size:11px;color:var(--txt);opacity:.8;max-width:130px}.exarr{font-size:20px;opacity:.7}
 .exsteps{margin:6px 0 10px;padding-left:22px;line-height:1.45}.exsteps li{margin-bottom:4px}
-.exbtn{margin-bottom:6px;font-size:13px;min-height:34px}.penlock{margin-top:6px;text-align:center}`; document.head.appendChild(st); })();
+.exbtn{margin-bottom:6px;font-size:13px;min-height:34px}.penlock{margin-top:6px;text-align:center}
+.chstage{position:relative}.chov{position:absolute;left:8px;right:8px;top:8px;background:rgba(5,10,24,.78);border:1px solid #ffd34d;border-radius:8px;padding:8px;text-align:center;color:#fff}
+.chk{font-size:10px;letter-spacing:.2em;color:#ffd34d}.cht{font-size:18px;font-weight:800;margin:4px 0}.chtm{font-size:12px;color:#9fe}`; document.head.appendChild(st); })();
 
 /* =================== Start =================== */
 document.addEventListener('click', e => {
