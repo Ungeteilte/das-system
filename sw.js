@@ -1,5 +1,5 @@
 /* Das System – Service Worker. GENERIERT von src/build.py aus src/sw.template.js – nicht direkt bearbeiten. */
-const VERSION = '1.9.3';
+const VERSION = '1.9.4';
 const CACHE = 'das-system-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './version.json', './icon.svg', './icon-192.png', './icon-512.png', './img/e_goblin.webp', './img/e_rat.webp', './img/e_shaman.webp', './img/e_wolf.webp', './img/e_orc.webp', './img/e_spider.webp', './img/e_skeleton.webp', './img/e_ghost.webp', './img/e_gargoyle.webp', './img/e_lich.webp', './img/e_naga.webp', './img/e_lizard.webp', './img/e_hydra.webp', './img/e_demon.webp', './img/e_hound.webp', './img/e_succubus.webp', './img/e_demonking.webp', './img/e_wyvern.webp', './img/e_fire.webp', './img/e_dragon.webp', './img/b_kumo0.webp', './img/b_sao0.webp', './img/b_solo0.webp', './img/s_brood.webp', './img/s_cocoon.webp', './img/s_fire.webp', './img/s_forge.webp', './img/s_hall.webp', './img/s_hut.webp', './img/s_kitchen.webp', './img/s_lib.webp', './img/s_maze.webp', './img/s_poison.webp', './img/s_shq.webp', './img/s_smith.webp', './img/s_storage.webp', './img/s_tent.webp', './img/s_train.webp', './img/s_traps.webp', './img/s_watch.webp', './img/s_web.webp'];
 const NET_TIMEOUT = 3000; // ms – danach sofort Cache (wackliges Netz)
