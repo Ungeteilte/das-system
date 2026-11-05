@@ -1,15 +1,23 @@
 {
- "version": "1.9.1",
+ "version": "1.9.2",
  "date": "2026-11-05",
  "changelog": [
-  "🎲 Daily Quests werden jeden Tag neu ausgewürfelt: 4 zufällige Quests aus dem Pool deines Systems, mit leicht variierenden Zielen – keine feste Reihenfolge",
-  "🧭 Der Pool hängt vom Start-System ab, das du beim Anlegen des Spielstands wählst (Solo Leveling, SAO oder Spinne)",
-  "🎲 Neu bei der Start-Wahl: Button „Zufällig“ – das System wählt Solo Leveling, SAO oder Spinne und zeigt dir, was es geworden ist, samt deinen ersten Zufalls-Quests",
-  "📜 Die Daily-Quest-Quelle (Mehr → Einstellungen) bestimmt weiterhin, aus welchem System gezogen wird – „Klassisch“ = immer die 4 Originale",
-  "✅ Nachweise (Kamera-Zähler, GPS, Timer, Foto), XP und Strafquests bleiben gleich; eigene Quests bleiben erhalten",
-  "💾 Alte Spielstände bleiben kompatibel – die heutigen Quests bleiben, ab dem nächsten Tag wird gezogen"
+  "ℹ️ Neu: kleine Info-Symbole an allen Werten – antippen zeigt, was der Wert bringt (z. B. Stärke → Schaden, Intelligenz → Mana-Klinge & MP, Wahrnehmung → Krit, Beweglichkeit → Ausweichen)",
+  "📊 Mit deinen aktuellen Zahlen: HP, MP, Krit-Chance, Ausweichen, Angriffs- und Klingen-Schaden",
+  "🛡 Auch an Ausrüstungs-Boni, Basis-Boni (Lager, Fallen, Gratis-Trank, Giftimmun …) und im Kampf (HP, MP, Combo, Energie)",
+  "💾 Spielstand unverändert kompatibel"
  ],
  "releases": [
+  {
+   "version": "1.9.2",
+   "date": "2026-11-05",
+   "changes": [
+    "ℹ️ Neu: kleine Info-Symbole an allen Werten – antippen zeigt, was der Wert bringt (z. B. Stärke → Schaden, Intelligenz → Mana-Klinge & MP, Wahrnehmung → Krit, Beweglichkeit → Ausweichen)",
+    "📊 Mit deinen aktuellen Zahlen: HP, MP, Krit-Chance, Ausweichen, Angriffs- und Klingen-Schaden",
+    "🛡 Auch an Ausrüstungs-Boni, Basis-Boni (Lager, Fallen, Gratis-Trank, Giftimmun …) und im Kampf (HP, MP, Combo, Energie)",
+    "💾 Spielstand unverändert kompatibel"
+   ]
+  },
   {
    "version": "1.9.1",
    "date": "2026-11-05",
