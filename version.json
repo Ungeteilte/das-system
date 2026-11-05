@@ -1,20 +1,31 @@
 {
- "version": "1.6.0",
+ "version": "1.7.0",
  "date": "2026-11-05",
  "changelog": [
-  "👥 Schatten kämpfen mit: bis zu 3 erweckte Schatten in die Kampfgruppe nehmen – Klassen Tank, Magier, Assassine – plus Befehl „Schatten-Angriff“",
-  "🔴 Boss-Phasen: unter 50 % HP Wut-Modus; angekündigte Spezialangriffe („lädt auf …“) mit 🛡 Block und 💨 Ausweichen im richtigen Moment",
-  "🧟 Neue Gegnerarten: gepanzert, giftig, Heiler, Ausweicher",
-  "🌀 Combos (Angriff → Angriff → Mana-Klinge = Finisher) und aktive System-Skills mit Abklingzeit (Ninja, Hero, Kultivierung, Gamer, Evolution)",
-  "🗼 Turm mit echten Wächterkämpfen, Etage für Etage",
-  "🏟 Arena: endlose Wellen, Bestwert und Wochen-Bestwert",
-  "🟥 Rote Gates (Dungeon-Break): selten, kein Entkommen, 8 Min. Zeitlimit, doppelte Beute",
-  "⚡ Training = Kampfkraft: bewiesene Übungen geben Kampfenergie für den Power-Schlag",
-  "🎞 Animierte Gegner statt starrer Emojis – atmen, greifen an, zucken bei Treffern, zerfallen beim Sieg, Bosse pulsieren im Wut-Modus",
-  "🧪 Neue Kampf-Items: Bombe, Krafttrank, Gegengift, Fluchtrolle",
-  "💾 Spielstand bleibt vollständig erhalten"
+  "🧭 NEU: Start-System wählen – Solo Leveling, Sword Art Online oder Kumo desu ga (Spinne). Ändert Quest-Texte, Shop, Materialien, welche Systeme früher kommen und deine Basis",
+  "🏕 Basis-Bau: Jäger-Lager (Solo), Gildenhaus (SAO) oder Nest (Spinne) – fast bei null starten, mit Materialien Räume bauen und ausbauen",
+  "🏗 Gebäude geben Boni: Lagerplatz, Werkbank (Tränke/Bomben herstellen), Schatten-Quartier, Fallennetze, Giftlabor, Küche, Gildenhalle, XP-Boni …",
+  "🎁 Gegner-Materialien: jeder Gegnertyp und Boss droppt eigene Materialien mit Seltenheit (Gewöhnlich bis Legendär) – Übersicht nach jedem Kampf",
+  "✨ Optik-Shop: Kampfrahmen, Avatar-Rahmen, Besiegt-Effekte und Basis-Deko für Gold – rein kosmetisch",
+  "🎞 Realistischere Gegner: Gewichtsverlagerung & Atmen, Angriffsbogen mit Staubwolke, Treffer-Stauchung, Schatten am Boden, 3D-Tiefe, Boss-Aura – je Typ eigene Bewegung",
+  "🖼 Einstellung „Darstellung“ (Mehr): animierte Gegner oder Bild-Darstellung",
+  "💾 Spielstand bleibt vollständig erhalten – bestehende Spieler wählen einmalig ihr Start-System"
  ],
  "releases": [
+  {
+   "version": "1.7.0",
+   "date": "2026-11-05",
+   "changes": [
+    "🧭 NEU: Start-System wählen – Solo Leveling, Sword Art Online oder Kumo desu ga (Spinne). Ändert Quest-Texte, Shop, Materialien, welche Systeme früher kommen und deine Basis",
+    "🏕 Basis-Bau: Jäger-Lager (Solo), Gildenhaus (SAO) oder Nest (Spinne) – fast bei null starten, mit Materialien Räume bauen und ausbauen",
+    "🏗 Gebäude geben Boni: Lagerplatz, Werkbank (Tränke/Bomben herstellen), Schatten-Quartier, Fallennetze, Giftlabor, Küche, Gildenhalle, XP-Boni …",
+    "🎁 Gegner-Materialien: jeder Gegnertyp und Boss droppt eigene Materialien mit Seltenheit (Gewöhnlich bis Legendär) – Übersicht nach jedem Kampf",
+    "✨ Optik-Shop: Kampfrahmen, Avatar-Rahmen, Besiegt-Effekte und Basis-Deko für Gold – rein kosmetisch",
+    "🎞 Realistischere Gegner: Gewichtsverlagerung & Atmen, Angriffsbogen mit Staubwolke, Treffer-Stauchung, Schatten am Boden, 3D-Tiefe, Boss-Aura – je Typ eigene Bewegung",
+    "🖼 Einstellung „Darstellung“ (Mehr): animierte Gegner oder Bild-Darstellung",
+    "💾 Spielstand bleibt vollständig erhalten – bestehende Spieler wählen einmalig ihr Start-System"
+   ]
+  },
   {
    "version": "1.6.0",
    "date": "2026-11-05",

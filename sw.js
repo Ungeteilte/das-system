@@ -1,5 +1,5 @@
 /* Das System – Service Worker. GENERIERT von src/build.py aus src/sw.template.js – nicht direkt bearbeiten. */
-const VERSION = '1.6.0';
+const VERSION = '1.7.0';
 const CACHE = 'das-system-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './version.json', './icon.svg', './icon-192.png', './icon-512.png'];
 const NET_TIMEOUT = 3000; // ms – danach sofort Cache (wackliges Netz)
