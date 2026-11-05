@@ -1,15 +1,25 @@
 {
- "version": "1.9.4",
+ "version": "1.9.5",
  "date": "2026-11-05",
  "changelog": [
-  "🔞 Neues Erwachsenen-System (nur 18+): standardmäßig gesperrt, erst nach ausdrücklicher Altersbestätigung sichtbar – die Bestätigung wird im Spielstand gespeichert und kann jederzeit zurückgenommen werden",
-  "🔥 Für Singles: Selbstfürsorge, Selbstbewusstsein, Flirten & Dating, Sexualität und achtsame Selbstliebe – Charisma sammeln, Ränge aufsteigen, Fähigkeiten lernen",
-  "💞 Optionaler Paar-Modus: Gespräche über Wünsche & Grenzen, Date Nights, gemeinsame Challenges und Intimität – immer einvernehmlich",
-  "🔒 Intime Quests werden nie per Foto nachgewiesen – nur Ehrenwort oder Timer",
-  "🛍 Eigene Shop-Items (Parfum, Date-Outfit, Safer-Sex-Set …) und Daily-Quest-Quelle „🔞 Erwachsenen“, sobald freigeschaltet",
-  "💾 Spielstand kompatibel, alles offline"
+  "🔥 Erwachsenen-System deutlicher: direkte Sprache zu Masturbation, Lust, Orgasmen, Vorspiel und Sex – weiterhin nur 18+ und immer einvernehmlich",
+  "🌱 Neu: Einsteiger-Pfad für sexuell Unerfahrene – ab null Erfahrung in 5 Stufen (Wissen & Wohlfühlen → Körper kennenlernen → Lust & Selbstbefriedigung → Kontakt & erstes Date → Bereit für Intimität), Schritt für Schritt ohne Druck",
+  "🪜 Jede Stufe hat eigene Quests und öffnet sich mit gesammeltem Charisma (+25 % im Einsteiger-Pfad), Ränge kommen doppelt so schnell",
+  "💞 Paar-Modus passt sich an (z. B. gemeinsame Ja/Nein/Vielleicht-Liste, Kuscheln ohne Ziel)",
+  "🔒 Intime Quests weiterhin nie per Foto – nur Ehrenwort oder Timer; 💾 Spielstand kompatibel"
  ],
  "releases": [
+  {
+   "version": "1.9.5",
+   "date": "2026-11-05",
+   "changes": [
+    "🔥 Erwachsenen-System deutlicher: direkte Sprache zu Masturbation, Lust, Orgasmen, Vorspiel und Sex – weiterhin nur 18+ und immer einvernehmlich",
+    "🌱 Neu: Einsteiger-Pfad für sexuell Unerfahrene – ab null Erfahrung in 5 Stufen (Wissen & Wohlfühlen → Körper kennenlernen → Lust & Selbstbefriedigung → Kontakt & erstes Date → Bereit für Intimität), Schritt für Schritt ohne Druck",
+    "🪜 Jede Stufe hat eigene Quests und öffnet sich mit gesammeltem Charisma (+25 % im Einsteiger-Pfad), Ränge kommen doppelt so schnell",
+    "💞 Paar-Modus passt sich an (z. B. gemeinsame Ja/Nein/Vielleicht-Liste, Kuscheln ohne Ziel)",
+    "🔒 Intime Quests weiterhin nie per Foto – nur Ehrenwort oder Timer; 💾 Spielstand kompatibel"
+   ]
+  },
   {
    "version": "1.9.4",
    "date": "2026-11-05",
