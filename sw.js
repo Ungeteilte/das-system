@@ -1,7 +1,7 @@
 /* Das System – Service Worker. GENERIERT von src/build.py aus src/sw.template.js – nicht direkt bearbeiten. */
-const VERSION = '1.7.0';
+const VERSION = '1.8.0';
 const CACHE = 'das-system-' + VERSION;
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './version.json', './icon.svg', './icon-192.png', './icon-512.png'];
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './version.json', './icon.svg', './icon-192.png', './icon-512.png', './img/e_goblin.webp', './img/e_rat.webp', './img/e_shaman.webp', './img/e_wolf.webp', './img/e_orc.webp', './img/e_spider.webp', './img/e_skeleton.webp', './img/e_ghost.webp', './img/e_gargoyle.webp', './img/e_lich.webp', './img/e_naga.webp', './img/e_lizard.webp', './img/e_hydra.webp', './img/e_demon.webp', './img/e_hound.webp', './img/e_succubus.webp', './img/e_demonking.webp', './img/e_wyvern.webp', './img/e_fire.webp', './img/e_dragon.webp', './img/b_solo0.webp', './img/b_solo1.webp', './img/b_sao0.webp', './img/b_sao1.webp', './img/b_kumo0.webp', './img/b_kumo1.webp'];
 const NET_TIMEOUT = 3000; // ms – danach sofort Cache (wackliges Netz)
 // Kamera-Zähler (Pose-Erkennung): ~21 MB, selbst gehostet. Eigener Cache, der Updates überlebt (nur neu laden, wenn POSE_CACHE sich ändert).
 const POSE_CACHE = 'das-system-pose-mp1.2.0-lite';

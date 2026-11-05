@@ -1,17 +1,27 @@
 {
- "version": "1.7.0",
+ "version": "1.8.0",
  "date": "2026-11-05",
  "changelog": [
-  "🧭 NEU: Start-System wählen – Solo Leveling, Sword Art Online oder Kumo desu ga (Spinne). Ändert Quest-Texte, Shop, Materialien, welche Systeme früher kommen und deine Basis",
-  "🏕 Basis-Bau: Jäger-Lager (Solo), Gildenhaus (SAO) oder Nest (Spinne) – fast bei null starten, mit Materialien Räume bauen und ausbauen",
-  "🏗 Gebäude geben Boni: Lagerplatz, Werkbank (Tränke/Bomben herstellen), Schatten-Quartier, Fallennetze, Giftlabor, Küche, Gildenhalle, XP-Boni …",
-  "🎁 Gegner-Materialien: jeder Gegnertyp und Boss droppt eigene Materialien mit Seltenheit (Gewöhnlich bis Legendär) – Übersicht nach jedem Kampf",
-  "✨ Optik-Shop: Kampfrahmen, Avatar-Rahmen, Besiegt-Effekte und Basis-Deko für Gold – rein kosmetisch",
-  "🎞 Realistischere Gegner: Gewichtsverlagerung & Atmen, Angriffsbogen mit Staubwolke, Treffer-Stauchung, Schatten am Boden, 3D-Tiefe, Boss-Aura – je Typ eigene Bewegung",
-  "🖼 Einstellung „Darstellung“ (Mehr): animierte Gegner oder Bild-Darstellung",
-  "💾 Spielstand bleibt vollständig erhalten – bestehende Spieler wählen einmalig ihr Start-System"
+  "📸 Fotorealistische Gegner: alle 20 Monster als echte Render-Bilder (offline gespeichert)",
+  "🎞 Animiert-Modus: Foto-Gegner atmen, wanken, springen an und stauchen bei Treffern – mit Bodenschatten, Staub & Aura",
+  "🏟 Kampfbühne mit Boden, Lichtkegel, Vignette und Tiefe",
+  "🖼 Bild-Modus: gerahmtes Foto-Porträt mit sanftem Kamera-Zoom",
+  "🏕 Basis als echtes Foto: Jäger-Lager, Gildenhaus (SAO) und Spinnennest – wächst sichtbar mit jedem Ausbau",
+  "Spielstand, Optiken und Rahmen bleiben unverändert"
  ],
  "releases": [
+  {
+   "version": "1.8.0",
+   "date": "2026-11-05",
+   "changes": [
+    "📸 Fotorealistische Gegner: alle 20 Monster als echte Render-Bilder (offline gespeichert)",
+    "🎞 Animiert-Modus: Foto-Gegner atmen, wanken, springen an und stauchen bei Treffern – mit Bodenschatten, Staub & Aura",
+    "🏟 Kampfbühne mit Boden, Lichtkegel, Vignette und Tiefe",
+    "🖼 Bild-Modus: gerahmtes Foto-Porträt mit sanftem Kamera-Zoom",
+    "🏕 Basis als echtes Foto: Jäger-Lager, Gildenhaus (SAO) und Spinnennest – wächst sichtbar mit jedem Ausbau",
+    "Spielstand, Optiken und Rahmen bleiben unverändert"
+   ]
+  },
   {
    "version": "1.7.0",
    "date": "2026-11-05",
