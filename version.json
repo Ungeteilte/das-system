@@ -1,14 +1,27 @@
 {
- "version": "1.9.5",
+ "version": "1.9.6",
  "date": "2026-11-05",
  "changelog": [
-  "🔥 Erwachsenen-System deutlicher: direkte Sprache zu Masturbation, Lust, Orgasmen, Vorspiel und Sex – weiterhin nur 18+ und immer einvernehmlich",
-  "🌱 Neu: Einsteiger-Pfad für sexuell Unerfahrene – ab null Erfahrung in 5 Stufen (Wissen & Wohlfühlen → Körper kennenlernen → Lust & Selbstbefriedigung → Kontakt & erstes Date → Bereit für Intimität), Schritt für Schritt ohne Druck",
-  "🪜 Jede Stufe hat eigene Quests und öffnet sich mit gesammeltem Charisma (+25 % im Einsteiger-Pfad), Ränge kommen doppelt so schnell",
-  "💞 Paar-Modus passt sich an (z. B. gemeinsame Ja/Nein/Vielleicht-Liste, Kuscheln ohne Ziel)",
+  "🔞 Start-System-Wahl: Erwachsenen-System wählbar – Zufällig kann es auch treffen; doppelte 18+-Häkchen erscheinen vor jedem Erwachsenen-Inhalt",
+  "🌱 Start mit Erwachsenen setzt Einsteiger (sexuell unerfahren ab null, einvernehmlich, Konsens & Kommunikation zuerst) und schaltet das System frei",
+  "🌱 Einsteiger-Pfad gestärkt: klarer Fokus auf Grenzen, Safewords-Übung, Nachfragen – Schritt für Schritt ohne Druck",
+  "⛓ Optionaler BDSM-Modus im Erwachsenen-System: SSC/RACK, Safewords (Grün/Gelb/Rot), Limits, Aftercare – nur einvernehmlich, kein Non-Consent, nichts Illegales",
+  "🔥 Variante „Direkt“ unverändert klar wie in 1.9.5 – nicht extremer",
   "🔒 Intime Quests weiterhin nie per Foto – nur Ehrenwort oder Timer; 💾 Spielstand kompatibel"
  ],
  "releases": [
+  {
+   "version": "1.9.6",
+   "date": "2026-11-05",
+   "changes": [
+    "🔞 Start-System-Wahl: Erwachsenen-System wählbar – Zufällig kann es auch treffen; doppelte 18+-Häkchen erscheinen vor jedem Erwachsenen-Inhalt",
+    "🌱 Start mit Erwachsenen setzt Einsteiger (sexuell unerfahren ab null, einvernehmlich, Konsens & Kommunikation zuerst) und schaltet das System frei",
+    "🌱 Einsteiger-Pfad gestärkt: klarer Fokus auf Grenzen, Safewords-Übung, Nachfragen – Schritt für Schritt ohne Druck",
+    "⛓ Optionaler BDSM-Modus im Erwachsenen-System: SSC/RACK, Safewords (Grün/Gelb/Rot), Limits, Aftercare – nur einvernehmlich, kein Non-Consent, nichts Illegales",
+    "🔥 Variante „Direkt“ unverändert klar wie in 1.9.5 – nicht extremer",
+    "🔒 Intime Quests weiterhin nie per Foto – nur Ehrenwort oder Timer; 💾 Spielstand kompatibel"
+   ]
+  },
   {
    "version": "1.9.5",
    "date": "2026-11-05",
