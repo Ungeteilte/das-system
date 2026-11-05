@@ -1,15 +1,25 @@
 {
- "version": "1.8.0",
+ "version": "1.9.0",
  "date": "2026-11-05",
  "changelog": [
-  "📸 Fotorealistische Gegner: alle 20 Monster als echte Render-Bilder (offline gespeichert)",
-  "🎞 Animiert-Modus: Foto-Gegner atmen, wanken, springen an und stauchen bei Treffern – mit Bodenschatten, Staub & Aura",
-  "🏟 Kampfbühne mit Boden, Lichtkegel, Vignette und Tiefe",
-  "🖼 Bild-Modus: gerahmtes Foto-Porträt mit sanftem Kamera-Zoom",
-  "🏕 Basis als echtes Foto: Jäger-Lager, Gildenhaus (SAO) und Spinnennest – wächst sichtbar mit jedem Ausbau",
-  "Spielstand, Optiken und Rahmen bleiben unverändert"
+  "🏗 Basis wächst sichtbar: Du startest auf einer leeren Lichtung, einem leeren Grundstück oder in einer nackten Höhle",
+  "🧱 Jedes gebaute Gebäude erscheint einzeln als eigenes Foto-Objekt (z. B. Lagerfeuer, Holzhütte, Spinnennetz) – nicht gebaute Räume sind unsichtbar",
+  "✨ Neu gebaute Räume ploppen mit Animation auf, ausgebaute Stufen zeigen ★ und wirken größer",
+  "📜 Neu: Daily-Quest-Quelle frei wählbar (Mehr → Einstellungen): Solo Leveling, SAO, Spinne, Klassisch oder wie Start-System",
+  "💾 Wahl wird im Spielstand gespeichert, alte Spielstände bleiben kompatibel, alles offline"
  ],
  "releases": [
+  {
+   "version": "1.9.0",
+   "date": "2026-11-05",
+   "changes": [
+    "🏗 Basis wächst sichtbar: Du startest auf einer leeren Lichtung, einem leeren Grundstück oder in einer nackten Höhle",
+    "🧱 Jedes gebaute Gebäude erscheint einzeln als eigenes Foto-Objekt (z. B. Lagerfeuer, Holzhütte, Spinnennetz) – nicht gebaute Räume sind unsichtbar",
+    "✨ Neu gebaute Räume ploppen mit Animation auf, ausgebaute Stufen zeigen ★ und wirken größer",
+    "📜 Neu: Daily-Quest-Quelle frei wählbar (Mehr → Einstellungen): Solo Leveling, SAO, Spinne, Klassisch oder wie Start-System",
+    "💾 Wahl wird im Spielstand gespeichert, alte Spielstände bleiben kompatibel, alles offline"
+   ]
+  },
   {
    "version": "1.8.0",
    "date": "2026-11-05",
