@@ -1,14 +1,27 @@
 {
- "version": "1.9.0",
+ "version": "1.9.1",
  "date": "2026-11-05",
  "changelog": [
-  "🏗 Basis wächst sichtbar: Du startest auf einer leeren Lichtung, einem leeren Grundstück oder in einer nackten Höhle",
-  "🧱 Jedes gebaute Gebäude erscheint einzeln als eigenes Foto-Objekt (z. B. Lagerfeuer, Holzhütte, Spinnennetz) – nicht gebaute Räume sind unsichtbar",
-  "✨ Neu gebaute Räume ploppen mit Animation auf, ausgebaute Stufen zeigen ★ und wirken größer",
-  "📜 Neu: Daily-Quest-Quelle frei wählbar (Mehr → Einstellungen): Solo Leveling, SAO, Spinne, Klassisch oder wie Start-System",
-  "💾 Wahl wird im Spielstand gespeichert, alte Spielstände bleiben kompatibel, alles offline"
+  "🎲 Daily Quests werden jeden Tag neu ausgewürfelt: 4 zufällige Quests aus dem Pool deines Systems, mit leicht variierenden Zielen – keine feste Reihenfolge",
+  "🧭 Der Pool hängt vom Start-System ab, das du beim Anlegen des Spielstands wählst (Solo Leveling, SAO oder Spinne)",
+  "🎲 Neu bei der Start-Wahl: Button „Zufällig“ – das System wählt Solo Leveling, SAO oder Spinne und zeigt dir, was es geworden ist, samt deinen ersten Zufalls-Quests",
+  "📜 Die Daily-Quest-Quelle (Mehr → Einstellungen) bestimmt weiterhin, aus welchem System gezogen wird – „Klassisch“ = immer die 4 Originale",
+  "✅ Nachweise (Kamera-Zähler, GPS, Timer, Foto), XP und Strafquests bleiben gleich; eigene Quests bleiben erhalten",
+  "💾 Alte Spielstände bleiben kompatibel – die heutigen Quests bleiben, ab dem nächsten Tag wird gezogen"
  ],
  "releases": [
+  {
+   "version": "1.9.1",
+   "date": "2026-11-05",
+   "changes": [
+    "🎲 Daily Quests werden jeden Tag neu ausgewürfelt: 4 zufällige Quests aus dem Pool deines Systems, mit leicht variierenden Zielen – keine feste Reihenfolge",
+    "🧭 Der Pool hängt vom Start-System ab, das du beim Anlegen des Spielstands wählst (Solo Leveling, SAO oder Spinne)",
+    "🎲 Neu bei der Start-Wahl: Button „Zufällig“ – das System wählt Solo Leveling, SAO oder Spinne und zeigt dir, was es geworden ist, samt deinen ersten Zufalls-Quests",
+    "📜 Die Daily-Quest-Quelle (Mehr → Einstellungen) bestimmt weiterhin, aus welchem System gezogen wird – „Klassisch“ = immer die 4 Originale",
+    "✅ Nachweise (Kamera-Zähler, GPS, Timer, Foto), XP und Strafquests bleiben gleich; eigene Quests bleiben erhalten",
+    "💾 Alte Spielstände bleiben kompatibel – die heutigen Quests bleiben, ab dem nächsten Tag wird gezogen"
+   ]
+  },
   {
    "version": "1.9.0",
    "date": "2026-11-05",
