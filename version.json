@@ -1,19 +1,37 @@
 {
- "version": "1.5.0",
- "date": "2026-11-04",
+ "version": "1.6.0",
+ "date": "2026-11-05",
  "changelog": [
-  "📸 Beweisfoto nur noch live aus der App-Kamera – Galerie und Datei-Upload sind abgeschaltet",
-  "🎲 NEU: Zufallsaufgabe bei jedem Foto (Finger zeigen, Handzeichen oder Code auf Papier) – muss im Bild sein und gilt nur 5 Minuten",
-  "🔏 Wasserzeichen im Foto: Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID – alles auch in der Beweis-Galerie",
-  "🎥 Hampelmänner werden jetzt per Kamera-Zähler gezählt (auch als Strafquest)",
-  "📖 Beispiele erklären den neuen Foto-Nachweis",
-  "💾 Spielstand bleibt vollständig erhalten",
-  "🚿 NEU: Kombi-Nachweis „Vorher · Timer · Nachher“ – z. B. Kalt duschen: Vorher-Foto trocken bei laufendem Wasser, Pflicht-Timer (nicht überspringbar, App offen lassen), direkt danach Nachher-Foto nass",
-  "⚡ Überraschungs-Kontrollfoto während des Duschtimers – Vibration + Ton, 20 Sekunden Zeit, sonst Timer neu starten",
-  "🌡 Optional „Thermometer im Bild“: +5 % Bonus-XP, Hinweis im Wasserzeichen",
-  "🧹 Aufräumen, Kochen & Co.: Vorher-Foto → Wartezeit → Nachher-Foto"
+  "👥 Schatten kämpfen mit: bis zu 3 erweckte Schatten in die Kampfgruppe nehmen – Klassen Tank, Magier, Assassine – plus Befehl „Schatten-Angriff“",
+  "🔴 Boss-Phasen: unter 50 % HP Wut-Modus; angekündigte Spezialangriffe („lädt auf …“) mit 🛡 Block und 💨 Ausweichen im richtigen Moment",
+  "🧟 Neue Gegnerarten: gepanzert, giftig, Heiler, Ausweicher",
+  "🌀 Combos (Angriff → Angriff → Mana-Klinge = Finisher) und aktive System-Skills mit Abklingzeit (Ninja, Hero, Kultivierung, Gamer, Evolution)",
+  "🗼 Turm mit echten Wächterkämpfen, Etage für Etage",
+  "🏟 Arena: endlose Wellen, Bestwert und Wochen-Bestwert",
+  "🟥 Rote Gates (Dungeon-Break): selten, kein Entkommen, 8 Min. Zeitlimit, doppelte Beute",
+  "⚡ Training = Kampfkraft: bewiesene Übungen geben Kampfenergie für den Power-Schlag",
+  "🎞 Animierte Gegner statt starrer Emojis – atmen, greifen an, zucken bei Treffern, zerfallen beim Sieg, Bosse pulsieren im Wut-Modus",
+  "🧪 Neue Kampf-Items: Bombe, Krafttrank, Gegengift, Fluchtrolle",
+  "💾 Spielstand bleibt vollständig erhalten"
  ],
  "releases": [
+  {
+   "version": "1.6.0",
+   "date": "2026-11-05",
+   "changes": [
+    "👥 Schatten kämpfen mit: bis zu 3 erweckte Schatten in die Kampfgruppe nehmen – Klassen Tank, Magier, Assassine – plus Befehl „Schatten-Angriff“",
+    "🔴 Boss-Phasen: unter 50 % HP Wut-Modus; angekündigte Spezialangriffe („lädt auf …“) mit 🛡 Block und 💨 Ausweichen im richtigen Moment",
+    "🧟 Neue Gegnerarten: gepanzert, giftig, Heiler, Ausweicher",
+    "🌀 Combos (Angriff → Angriff → Mana-Klinge = Finisher) und aktive System-Skills mit Abklingzeit (Ninja, Hero, Kultivierung, Gamer, Evolution)",
+    "🗼 Turm mit echten Wächterkämpfen, Etage für Etage",
+    "🏟 Arena: endlose Wellen, Bestwert und Wochen-Bestwert",
+    "🟥 Rote Gates (Dungeon-Break): selten, kein Entkommen, 8 Min. Zeitlimit, doppelte Beute",
+    "⚡ Training = Kampfkraft: bewiesene Übungen geben Kampfenergie für den Power-Schlag",
+    "🎞 Animierte Gegner statt starrer Emojis – atmen, greifen an, zucken bei Treffern, zerfallen beim Sieg, Bosse pulsieren im Wut-Modus",
+    "🧪 Neue Kampf-Items: Bombe, Krafttrank, Gegengift, Fluchtrolle",
+    "💾 Spielstand bleibt vollständig erhalten"
+   ]
+  },
   {
    "version": "1.5.0",
    "date": "2026-11-04",

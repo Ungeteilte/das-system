@@ -1162,7 +1162,7 @@ const A = {
 // importText(): siehe part7n.js (Backup-Format 2 mit Beweisfotos, alte Dateien weiter lesbar)
 
 /* =================== App-Version, Updates & Installation (PWA) =================== */
-const RELEASES = [{"version": "1.5.0", "date": "2026-11-04", "changes": ["📸 Beweisfoto nur noch live aus der App-Kamera – Galerie und Datei-Upload sind abgeschaltet", "🎲 NEU: Zufallsaufgabe bei jedem Foto (Finger zeigen, Handzeichen oder Code auf Papier) – muss im Bild sein und gilt nur 5 Minuten", "🔏 Wasserzeichen im Foto: Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID – alles auch in der Beweis-Galerie", "🎥 Hampelmänner werden jetzt per Kamera-Zähler gezählt (auch als Strafquest)", "📖 Beispiele erklären den neuen Foto-Nachweis", "💾 Spielstand bleibt vollständig erhalten", "🚿 NEU: Kombi-Nachweis „Vorher · Timer · Nachher“ – z. B. Kalt duschen: Vorher-Foto trocken bei laufendem Wasser, Pflicht-Timer (nicht überspringbar, App offen lassen), direkt danach Nachher-Foto nass", "⚡ Überraschungs-Kontrollfoto während des Duschtimers – Vibration + Ton, 20 Sekunden Zeit, sonst Timer neu starten", "🌡 Optional „Thermometer im Bild“: +5 % Bonus-XP, Hinweis im Wasserzeichen", "🧹 Aufräumen, Kochen & Co.: Vorher-Foto → Wartezeit → Nachher-Foto"]}, {"version": "1.4.0", "date": "2026-11-04", "changes": ["📖 NEU: „Beispiel ansehen“ bei jeder Quest – so wird die Übung richtig ausgeführt, was als Wiederholung zählt und welcher Nachweis erwartet wird", "🧍 Kleine Ablauf-Skizzen für Liegestütze, Sit-ups, Kniebeugen, Plank, Laufen, Burpees, Hampelmänner und Ausfallschritte – auch offline", "⚠ Strafquests müssen jetzt immer nachgewiesen werden (Foto, Kamera-Zähler, GPS oder Timer) – kein Ehrenmodus, keine manuelle Eingabe", "📜 Strafquest-Erlass halbiert die Strafquest jetzt nur noch – der Nachweis bleibt Pflicht", "💾 Spielstand bleibt vollständig erhalten"]}, {"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
+const RELEASES = [{"version": "1.6.0", "date": "2026-11-05", "changes": ["👥 Schatten kämpfen mit: bis zu 3 erweckte Schatten in die Kampfgruppe nehmen – Klassen Tank, Magier, Assassine – plus Befehl „Schatten-Angriff“", "🔴 Boss-Phasen: unter 50 % HP Wut-Modus; angekündigte Spezialangriffe („lädt auf …“) mit 🛡 Block und 💨 Ausweichen im richtigen Moment", "🧟 Neue Gegnerarten: gepanzert, giftig, Heiler, Ausweicher", "🌀 Combos (Angriff → Angriff → Mana-Klinge = Finisher) und aktive System-Skills mit Abklingzeit (Ninja, Hero, Kultivierung, Gamer, Evolution)", "🗼 Turm mit echten Wächterkämpfen, Etage für Etage", "🏟 Arena: endlose Wellen, Bestwert und Wochen-Bestwert", "🟥 Rote Gates (Dungeon-Break): selten, kein Entkommen, 8 Min. Zeitlimit, doppelte Beute", "⚡ Training = Kampfkraft: bewiesene Übungen geben Kampfenergie für den Power-Schlag", "🎞 Animierte Gegner statt starrer Emojis – atmen, greifen an, zucken bei Treffern, zerfallen beim Sieg, Bosse pulsieren im Wut-Modus", "🧪 Neue Kampf-Items: Bombe, Krafttrank, Gegengift, Fluchtrolle", "💾 Spielstand bleibt vollständig erhalten"]}, {"version": "1.5.0", "date": "2026-11-04", "changes": ["📸 Beweisfoto nur noch live aus der App-Kamera – Galerie und Datei-Upload sind abgeschaltet", "🎲 NEU: Zufallsaufgabe bei jedem Foto (Finger zeigen, Handzeichen oder Code auf Papier) – muss im Bild sein und gilt nur 5 Minuten", "🔏 Wasserzeichen im Foto: Datum, Uhrzeit, Quest, Aufgabe und Beweis-ID – alles auch in der Beweis-Galerie", "🎥 Hampelmänner werden jetzt per Kamera-Zähler gezählt (auch als Strafquest)", "📖 Beispiele erklären den neuen Foto-Nachweis", "💾 Spielstand bleibt vollständig erhalten", "🚿 NEU: Kombi-Nachweis „Vorher · Timer · Nachher“ – z. B. Kalt duschen: Vorher-Foto trocken bei laufendem Wasser, Pflicht-Timer (nicht überspringbar, App offen lassen), direkt danach Nachher-Foto nass", "⚡ Überraschungs-Kontrollfoto während des Duschtimers – Vibration + Ton, 20 Sekunden Zeit, sonst Timer neu starten", "🌡 Optional „Thermometer im Bild“: +5 % Bonus-XP, Hinweis im Wasserzeichen", "🧹 Aufräumen, Kochen & Co.: Vorher-Foto → Wartezeit → Nachher-Foto"]}, {"version": "1.4.0", "date": "2026-11-04", "changes": ["📖 NEU: „Beispiel ansehen“ bei jeder Quest – so wird die Übung richtig ausgeführt, was als Wiederholung zählt und welcher Nachweis erwartet wird", "🧍 Kleine Ablauf-Skizzen für Liegestütze, Sit-ups, Kniebeugen, Plank, Laufen, Burpees, Hampelmänner und Ausfallschritte – auch offline", "⚠ Strafquests müssen jetzt immer nachgewiesen werden (Foto, Kamera-Zähler, GPS oder Timer) – kein Ehrenmodus, keine manuelle Eingabe", "📜 Strafquest-Erlass halbiert die Strafquest jetzt nur noch – der Nachweis bleibt Pflicht", "💾 Spielstand bleibt vollständig erhalten"]}, {"version": "1.3.0", "date": "2026-11-02", "changes": ["📱 NEU: Native Android-App (v2) – GPS-Läufe laufen jetzt auch bei gesperrtem Handy und im Hintergrund weiter", "🔔 Lauf als Benachrichtigung „[SYSTEM] Lauf aktiv“ mit Strecke, Zeit und Schritten – mit „Pause“ und „Lauf beenden“", "👣 Echte Schritte über den Schrittzähler des Handys (statt Schätzung), gleiche Anti-Cheat-Regeln (> 25 km/h wird verworfen)", "💾 „Spielstand für neue App sichern“: Backup jetzt inklusive Beweisfotos", "🔄 Neue App übernimmt den Spielstand automatisch aus der alten App – oder per Backup-Datei", "🔋 Hilfe für Samsung & Co.: Akku-Optimierung mit einem Tipp ausschalten", "iPhone & Browser: alles wie bisher"]}, {"version": "1.2.0", "date": "2026-11-02", "changes": ["NEU: Nachweis-System – Quests zählen erst mit Beweis (pro Quest einstellbar: keine, Foto, Kamera-Zähler, GPS+Schritte, Timer)", "📸 Beweisfoto: live mit der Kamera aufgenommen, mit Datum, Uhrzeit und Quest gestempelt", "🎥 Kamera-Zähler: zählt Liegestütze, Kniebeugen und Sit-ups per Pose-Erkennung – direkt auf dem Handy, auch offline", "🛰️ GPS-Lauf: Strecke, Zeit, Pace und Schritte; Fahrten über 25 km/h werden verworfen", "⏱️ Timer für Meditation & Lernen – läuft nur bei geöffneter App", "✔ Verifiziert-Abzeichen und +10 % XP für bewiesene Quests", "🖼️ Beweis-Galerie unter „Mehr“ (nach Tagen sortiert, mit Aufräumen)", "🤝 Ehrenmodus: manuelle Eingabe pro Quest wieder erlauben (ohne Bonus)"]}, {"version": "1.1.0", "date": "2026-11-02", "changes": ["Installierbar als App auf dem Homescreen (Android & iPhone)", "Automatische Update-Erkennung mit [SYSTEM]-Meldung", "Vollständig offline nutzbar – alle Dateien werden lokal gespeichert", "Versionsanzeige und Update-Prüfung unter „Mehr“"]}, {"version": "1.0.0", "date": "2026-11-02", "changes": ["Erste Version: Status, Daily Quests, Strafquest, Gates & Schatten", "8 Systeme, Verschmelzung, Shop, Inventar und echte Belohnungen"]}];            // wird von build.py aus release.json eingesetzt
 const APP_VERSION = RELEASES[0].version;
 const VER_KEY = 'das-system-app-version'; // getrennt vom Spielstand (das-system-save-v1)
 const INSTALL_DISMISS_KEY = 'das-system-install-hint-off';
@@ -1340,6 +1340,7 @@ const verifiedXP = q => Math.round(q.xp*(1+VERIFY_BONUS));
 // Fortschritt aus einem Nachweis gutschreiben (in Quest-Einheit)
 function proofCredit(q, amount, why){
   if (!q || q.done || !(amount>0)) return false;
+  try { trainCharge(q, amount); } catch(e){}
   q.progress = Math.round((q.progress + amount)*100)/100; q.vprog = Math.round(((q.vprog||0) + amount)*100)/100;
   log(`Nachweis (${PROOF[q.proof]?.n||why}): ${q.name} +${fmtQ(amount)} ${q.unit}`);
   if (q.progress >= q.target){ if (isPen(q)) penFinish(); else completeQuest(q); return true; }
@@ -2257,6 +2258,340 @@ Object.assign(A, {
 .chstage{position:relative}.chov{position:absolute;left:8px;right:8px;top:8px;background:rgba(5,10,24,.78);border:1px solid #ffd34d;border-radius:8px;padding:8px;text-align:center;color:#fff}
 .chk{font-size:10px;letter-spacing:.2em;color:#ffd34d}.cht{font-size:18px;font-weight:800;margin:4px 0}.chtm{font-size:12px;color:#9fe}`; document.head.appendChild(st); })();
 
+/* =================== v1.6.0 Kampf-Erweiterung =================== */
+// Zustand (abwärtskompatibel: fehlt in alten Spielständen → wird ergänzt)
+function CB(){ if (!S.combat) S.combat = {}; const c = S.combat;
+  c.party ||= []; c.cls ||= {}; c.charges ||= []; c.arena ||= {best:0, week:'', wbest:0, runs:0}; if (c.rg===undefined) c.rg = null;
+  const now = Date.now(); c.charges = c.charges.filter(t => t > now); return c; }
+const SHCLS = {wolf:'Assassine', ork:'Tank', lich:'Magier', hydra:'Tank', demon:'Magier', dragon:'Assassine'};
+const CLSI = {Tank:'🛡', Magier:'🔮', Assassine:'🗡'};
+const shCls = id => CB().cls[id] || SHCLS[id] || 'Assassine';
+const shPow = id => { const gi = GATES.findIndex(g=>g.shadow.id===id); return Math.round((6 + gi*14) * (1 + (S.shadows[id]||0)*0.3)); };
+const ETRAIT = {'Goblin-Schamane':'heal','Riesenratte':'poison','Höhlenspinne':'poison','Ork-Berserker':'evade','Skelettritter':'armor','Geist':'evade','Gargoyle':'armor',
+  'Naga-Wächter':'poison','Echsenkrieger':'armor','Naga-Priesterin':'heal','Dämonenritter':'armor','Höllenhund':'poison','Sukkubus':'evade','Wyvern':'evade','Feuerelementar':'poison','Drachenwächter':'armor'};
+const TRAITN = {armor:'🛡 Gepanzert – nur Mana-Klinge/Magie wirkt voll', poison:'☠ Giftig – vergiftet bei Treffern', heal:'✚ Heiler – heilt sich', evade:'💨 Ausweicher – weicht Angriffen oft aus'};
+const CHARGE_DAYS = 7, MAX_CHARGES = 5, RG_TIME = 8*60e3;
+// Training → Kampfenergie
+function trainCharge(q, amount){
+  if (!q) return; const k = q.proof, u = unitKind(q.unit); let n = 0;
+  if (k==='counter') n = Math.max(1, Math.floor(amount/10));
+  else if (k==='gps') n = Math.max(1, Math.floor(u==='km'?amount : u==='m'?amount/1000 : u==='steps'?amount/1500 : amount));
+  else if (k==='timer' && /str|vit|agi/.test(q.stat||'')) n = Math.max(1, Math.floor(amount/10));
+  if (!n) return; const c = CB(); n = Math.min(n, MAX_CHARGES - c.charges.length); if (n<=0) return;
+  for (let i=0;i<n;i++) c.charges.push(Date.now() + CHARGE_DAYS*864e5);
+  log(`Kampfenergie +${n} durch ${q.name}`); toast(`⚡ +${n} Kampfenergie! Im nächsten Gate: Power-Schlag.`, '[SYSTEM]', 3500);
+}
+// System-Skills
+const SSK = [
+ {id:'fire', sys:'ninja', n:'Feuerball', i:'🔥', cd:4, mp:10, t:'Magieschaden ×1,8, durchdringt Panzer'},
+ {id:'clone', sys:'ninja', n:'Schattendoppel', i:'👥', cd:6, mp:12, t:'3 Runden: jeder Angriff trifft doppelt'},
+ {id:'ult', sys:'hero', n:'Helden-Ultimate', i:'💥', cd:99, mp:0, t:'Einmal pro Kampf: Angriff ×4'},
+ {id:'qi', sys:'cult', n:'Qi-Fokus', i:'☯️', cd:5, mp:8, t:'+40 % Schaden für 3 Runden, heilt 15 %'},
+ {id:'gcrit', sys:'gamer', n:'Doppelschlag', i:'🎮', cd:4, mp:6, t:'2 garantierte Krits'},
+ {id:'regen', sys:'evo', n:'Regeneration', i:'🧬', cd:5, mp:5, t:'heilt 30 % HP, entfernt Gift'},
+];
+const sysOn = id => (S.sys.unlocked||[]).includes(id);
+const mySkills = () => SSK.filter(s => sysOn(s.sys));
+// Neue Kampf-Items
+[{id:'bomb',cat:'potion',n:'Bombe',i:'💣',p:{gold:80},type:'consumable',t:'Im Gate: 25 % der Gegner-HP Schaden (Boss 10 %)'},
+ {id:'buff',cat:'potion',n:'Krafttrank',i:'💪',p:{gold:90},type:'consumable',t:'Im Gate: +50 % Schaden für 3 Runden'},
+ {id:'anti',cat:'potion',n:'Gegengift',i:'🌿',p:{gold:50},type:'consumable',t:'Im Gate: entfernt Gift, +10 % HP'},
+ {id:'escape',cat:'special',n:'Fluchtrolle',i:'📜',p:{gold:150},type:'consumable',t:'Flucht aus dem Gate, der Schlüssel bleibt erhalten (nicht in Roten Gates)'}]
+ .forEach(it => { if (!SHOPI[it.id]){ SHOP.push(it); SHOPI[it.id] = it; } });
+const BATTLE_ONLY = ['bomb','buff','anti','escape'];
+
+/* ---------- animierte Gegner (SVG, offline) ---------- */
+const EARCH = n => /wolf|ratte|hund|spinne/i.test(n) ? (/spinne/i.test(n)?'spider':'beast') : /geist|sukkubus/i.test(n) ? 'ghost' : /gargoyle|elementar/i.test(n) ? 'golem'
+  : /drache|wyvern|hydra/i.test(n) ? 'dragon' : /schlange|naga|echse/i.test(n) ? 'naga' : /schamane|priester|lich|leichen|magier/i.test(n) ? 'caster' : 'brute';
+const ECOL = {E:'#7bd36a',D:'#c9874a',C:'#b9c6d6',B:'#3fc7a0',A:'#e0405a',S:'#ff8a2a',T:'#8aa0ff',X:'#ffcf4d'};
+function enemySVG(e){
+  const a = e.arch || EARCH(e.n), c = e.col || '#ccc', d = '#0a0f1e', eye = e.rage ? '#ff2040' : '#ffe34d';
+  const armor = e.trait==='armor' ? `<path d="M30 46h40v26l-20 10-20-10z" fill="#9aa7b8" stroke="#dfe7f2" stroke-width="2" opacity=".9"/>` : '';
+  const staff = e.trait==='heal' || a==='caster' ? `<line x1="80" y1="20" x2="80" y2="92" stroke="#c9a66b" stroke-width="4"/><circle cx="80" cy="18" r="7" fill="#7dffb0" class="orb"/>` : '';
+  const body = {
+   beast:`<ellipse cx="50" cy="62" rx="32" ry="17" fill="${c}"/><path d="M70 50l18-14 2 24z" fill="${c}"/><path d="M76 40l4-12 6 10z" fill="${c}"/><circle cx="82" cy="48" r="2.6" fill="${eye}"/><path d="M18 60l-14-8 6 14z" fill="${c}"/><rect x="26" y="72" width="7" height="16" rx="3" fill="${c}"/><rect x="62" y="72" width="7" height="16" rx="3" fill="${c}"/><path d="M84 58l6 2-6 3z" fill="#fff"/>`,
+   spider:`<ellipse cx="50" cy="58" rx="22" ry="16" fill="${c}"/><circle cx="50" cy="40" r="11" fill="${c}"/>${[0,1,2,3].map(i=>`<path d="M${36} ${54+i*4}q-20 -${10-i*4} -28 ${14+i*3}M64 ${54+i*4}q20 -${10-i*4} 28 ${14+i*3}" stroke="${c}" stroke-width="3" fill="none"/>`).join('')}<circle cx="46" cy="38" r="2.4" fill="${eye}"/><circle cx="54" cy="38" r="2.4" fill="${eye}"/>`,
+   ghost:`<path d="M24 86V44a26 26 0 0152 0v42l-9-8-8 8-9-8-9 8-8-8z" fill="${c}" opacity=".85"/><circle cx="41" cy="44" r="5" fill="${d}"/><circle cx="59" cy="44" r="5" fill="${d}"/><circle cx="41" cy="44" r="2" fill="${eye}"/><circle cx="59" cy="44" r="2" fill="${eye}"/>`,
+   golem:`<rect x="26" y="30" width="48" height="46" rx="6" fill="${c}"/><rect x="36" y="14" width="28" height="20" rx="4" fill="${c}"/><rect x="10" y="36" width="14" height="34" rx="5" fill="${c}"/><rect x="76" y="36" width="14" height="34" rx="5" fill="${c}"/><rect x="30" y="76" width="14" height="16" fill="${c}"/><rect x="56" y="76" width="14" height="16" fill="${c}"/><rect x="42" y="21" width="5" height="4" fill="${eye}"/><rect x="53" y="21" width="5" height="4" fill="${eye}"/><path d="M34 44l10 8M60 40l6 12" stroke="${d}" stroke-width="2"/>`,
+   dragon:`<path d="M20 70q30-50 60-30l12-10-4 18q6 14-8 24z" fill="${c}"/><path d="M40 52L10 20l36 18z" fill="${c}" opacity=".8"/><path d="M58 46l20-34 0 30z" fill="${c}" opacity=".8"/><circle cx="82" cy="40" r="3" fill="${eye}"/><path d="M20 70q-12 10-16 20 14-6 26-14" fill="${c}"/><path d="M90 44l8 4-8 2z" fill="#ff9a3a" class="orb"/>`,
+   naga:`<path d="M50 90q-30-4-20-20t20-18q10-6 0-20" stroke="${c}" stroke-width="14" fill="none" stroke-linecap="round"/><circle cx="50" cy="24" r="12" fill="${c}"/><circle cx="45" cy="22" r="2.4" fill="${eye}"/><circle cx="55" cy="22" r="2.4" fill="${eye}"/><path d="M50 34l-3 6h6z" fill="#ff5a7a"/>`,
+   caster:`<path d="M30 90l8-46h24l8 46z" fill="${c}"/><circle cx="50" cy="32" r="12" fill="${c}"/><path d="M34 30l16-22 16 22z" fill="${d}" opacity=".7"/><circle cx="45" cy="33" r="2.4" fill="${eye}"/><circle cx="55" cy="33" r="2.4" fill="${eye}"/>`,
+   brute:`<rect x="30" y="40" width="40" height="34" rx="10" fill="${c}"/><circle cx="50" cy="28" r="14" fill="${c}"/><path d="M38 18l-6-10 10 6zM62 18l6-10-10 6z" fill="${c}"/><rect x="14" y="42" width="14" height="28" rx="6" fill="${c}"/><rect x="72" y="42" width="14" height="28" rx="6" fill="${c}"/><rect x="34" y="74" width="12" height="18" rx="4" fill="${c}"/><rect x="54" y="74" width="12" height="18" rx="4" fill="${c}"/><circle cx="44" cy="27" r="2.6" fill="${eye}"/><circle cx="56" cy="27" r="2.6" fill="${eye}"/><path d="M44 35h12" stroke="${d}" stroke-width="2"/>`}[a];
+  const crown = e.boss ? `<path d="M36 6l6 8 8-10 8 10 6-8v10H36z" fill="#ffd34d"/>` : '';
+  return `<svg viewBox="0 0 100 100" class="esvg" aria-label="${esc(e.n)}">${body}${armor}${staff}${crown}</svg>`;
+}
+function enemyBox(e, b){
+  const cls = ['emon', e.boss?'boss':'', e.rage?'rage':'', b.anim?.hit?'hitfx':'', b.anim?.lunge?'lunge':'', e.hp<=0?'dead':'', b.tele?'tele':''].join(' ');
+  return `<div class="${cls}" id="enemy" data-arch="${e.arch||EARCH(e.n)}">${enemySVG(e)}</div>`;
+}
+
+/* ---------- Kampf-Kern (Gates, Turm, Arena, Rote Gates) ---------- */
+function mkEnemy(n, i, hp, atk, o={}){ return {n, i, hp, max:hp, atk, trait: o.trait ?? ETRAIT[n] ?? null, boss:!!o.boss, col:o.col, arch:o.arch, turn:0}; }
+function startFight(o){
+  const d = derived(), c = CB();
+  const party = c.party.filter(id => S.shadows[id]).slice(0,3).map(id => ({id, n: GATES.find(g=>g.shadow.id===id).shadow.n, i: GATES.find(g=>g.shadow.id===id).shadow.i, cls: shCls(id), pow: shPow(id)}));
+  UI.battle = {mode:o.mode||'gate', g:o.g||null, title:o.title, list:o.list, idx:0, enemy:{...o.list[0]}, php:d.hp, pmax:d.hp, mp:d.mp, mpmax:d.mp,
+    freePot:1+(d.B.potion||0), log:[o.intro], over:null, auto:false, party, cds:{}, combo:[], buffs:{}, poison:0, guard:0, wave:1, loot:o.loot||1,
+    noFlee:!!o.noFlee, deadline:o.time?Date.now()+o.time:0, round:0, used:{}};
+  if (party.length) bLog(`👥 Schatten-Gruppe: ${party.map(p=>p.i+' '+p.n).join(', ')}`);
+  if (c.charges.length) bLog(`⚡ ${c.charges.length} Kampfenergie bereit – Power-Schlag verfügbar!`);
+}
+function startBattle(g, red){
+  const k = red ? 1.3 : 1;
+  const list = [...g.mobs.map(m=>mkEnemy(m[0],m[1],Math.round(m[2]*k),Math.round(m[3]*k),{col:red?'#ff3050':ECOL[g.rank]})), mkEnemy(g.boss[0],g.boss[1],Math.round(g.boss[2]*k),Math.round(g.boss[3]*k),{boss:true,col:red?'#ff1a3a':ECOL[g.rank]})];
+  startFight({mode:red?'red':'gate', g, list, title: red?`🟥 ROTES GATE · ${g.name}`:`${g.rank}-Gate · ${g.name}`, noFlee:!!red, time:red?RG_TIME:0, loot:red?2:1,
+    intro: red?`[SYSTEM] ⚠ Du hast ein ROTES GATE betreten. Der Ausgang ist versiegelt. Besiege alle Gegner in 8 Minuten!`:`[SYSTEM] Du hast das ${g.rank}-Gate „${g.name}“ betreten.`});
+}
+function towerGuard(f){ const boss = f%5===0, pool = ['Turmwächter','Steingolem','Runenritter','Spiegelgeist','Turmdrache'], n = boss?`Etagenherr ${f}`:pool[f%pool.length]+' '+f;
+  const hp = Math.round(60 + f*38 + (boss?f*30:0)), atk = Math.round(6 + f*2.4 + (boss?f:0));
+  return mkEnemy(n, '🛡️', hp, atk, {boss, col:boss?'#ffcf4d':'#8aa0ff', trait: boss?null:['armor',null,'evade','heal',null][f%5], arch: boss?'golem':['golem','brute','ghost','caster','dragon'][f%5]}); }
+function arenaFoe(w){ const pool = GATES.flatMap(g=>g.mobs.map(m=>[...m,g.rank])); const m = pool[(w*7)%pool.length], boss = w%5===0, s = Math.pow(1.18, w-1);
+  return mkEnemy(boss?`Arena-Champion ${w}`:m[0], m[1], Math.round((50 + w*12)*s*(boss?2.2:1)), Math.round((7 + w*1.6)*Math.pow(1.08,w-1)*(boss?1.3:1)), {boss, col:boss?'#ffcf4d':ECOL[m[4]], arch: boss?'brute':undefined}); }
+const weekKey = () => { const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+3-(d.getDay()+6)%7); const w1 = new Date(d.getFullYear(),0,4); return d.getFullYear()+'-W'+(1+Math.round(((d-w1)/864e5-3+(w1.getDay()+6)%7)/7)); };
+function bLog(t){ UI.battle.log.unshift(t); }
+function dmgMul(b){ return (b.buffs.qi>0?1.4:1) * (b.buffs.buff>0?1.5:1); }
+function hitEnemy(b, base, o={}){
+  const e = b.enemy, d = derived(); let dmg = base * rnd(.85,1.15) * dmgMul(b); let crit = o.crit || Math.random()*100 < d.crit;
+  if (crit) dmg *= 1.8;
+  if (!o.magic && !o.pierce && e.trait==='evade' && Math.random() < .3){ bLog(`💨 ${e.n} weicht aus!`); b.anim = {txt:'MISS'}; return 0; }
+  if (!o.magic && !o.pierce && e.trait==='armor'){ dmg *= .25; if (!b.armorHint){ b.armorHint = 1; bLog('🛡 Gepanzert! Physische Angriffe prallen ab – nutze Mana-Klinge oder Magie.'); } }
+  dmg = Math.max(1, Math.round(dmg)); e.hp -= dmg; b.anim = {hit:true, txt:(crit?'KRIT! ':'')+dmg}; return dmg;
+}
+function telegraphOpen(b){ const t = b.tele; if (!t) return null; const dt = Date.now() - t.t0; return {block: dt>=600 && dt<=2600, dodge: dt>=1000 && dt<=2000, dt}; }
+function playerAct(kind){
+  const b = UI.battle; if (!b || b.over) return; const d = derived(), e = b.enemy, c = CB();
+  if (b.deadline && Date.now() > b.deadline){ return fightLose('⌛ Die Zeit ist abgelaufen. Das Rote Gate hat dich verschlungen.'); }
+  b.round++; let defend = null;
+  const comboPush = k => { b.combo.push(k); if (b.combo.length>3) b.combo.shift(); };
+  if (kind==='pot'){
+    if (b.freePot>0){ b.freePot--; heal(.4); } else if (S.inv.hp_s>0){ S.inv.hp_s--; heal(.4); } else if (S.inv.hp_l>0){ S.inv.hp_l--; heal(1); } else return;
+    b.combo = [];
+  } else if (kind==='block' || kind==='dodge'){ defend = kind; b.combo = [];
+    if (!b.tele){ if (kind==='block'){ b.guard = Math.max(b.guard, .5); bLog('🛡 Du gehst in Deckung.'); } else bLog('💨 Du bereitest dich aufs Ausweichen vor.'); }
+  } else if (kind==='skill' && b.mp < 15){
+    if (!(S.inv.mp_s>0)) return; S.inv.mp_s--; b.mp = Math.min(b.mpmax, b.mp + Math.round(b.mpmax*.6)); bLog('🫙 Manatrank getrunken.'); b.combo = [];
+  } else if (kind==='atk' || kind==='skill'){
+    const fin = kind==='skill' && b.combo.length>=2 && b.combo.slice(-2).every(x=>x==='atk');
+    if (kind==='skill') b.mp -= 15;
+    const reps = b.buffs.clone>0 ? 2 : 1; let tot = 0;
+    for (let r=0;r<reps && e.hp>0;r++) tot += hitEnemy(b, kind==='skill' ? d.skill*(fin?2.5:1) : d.atk, {magic:kind==='skill'});
+    if (fin){ b.combo = []; S.cnt.combos = (S.cnt.combos||0)+1; b.anim = {...b.anim, txt:'COMBO! '+tot}; bLog(`🌀 COMBO-FINISHER! Angriff → Angriff → Mana-Klinge: ${tot} Schaden`); }
+    else { comboPush(kind); bLog(`${kind==='skill'?'✨ Mana-Klinge':'⚔️ Angriff'}: ${tot} Schaden${reps>1?' (Doppel)':''}`); }
+  } else if (kind==='shadow'){
+    if (!b.party.length || (b.cds.shadow||0)>0) return; b.cds.shadow = 3; b.combo = [];
+    let tot = 0; for (const p of b.party) tot += hitEnemy(b, p.pow*2, {pierce:p.cls==='Magier'});
+    b.anim = {hit:true, txt:'SCHATTEN! '+tot}; bLog(`🟣 Schatten-Angriff! Deine Armee stürmt vor: ${tot} Schaden`);
+  } else if (kind==='power'){
+    if (!c.charges.length) return; c.charges.shift(); b.combo = [];
+    const dmg = hitEnemy(b, d.atk*3 + d.skill, {pierce:true}); b.anim = {hit:true, txt:'POWER! '+dmg}; bLog(`⚡ POWER-SCHLAG (Trainingsenergie): ${dmg} Schaden`);
+  } else if (kind.startsWith('sk:')){
+    const s = SSK.find(x=>'sk:'+x.id===kind); if (!s || !sysOn(s.sys) || (b.cds[s.id]||0)>0 || b.mp < s.mp || (s.id==='ult' && b.used.ult)) return;
+    b.mp -= s.mp; b.cds[s.id] = s.cd; b.combo = [];
+    if (s.id==='fire') bLog(`🔥 Feuerball: ${hitEnemy(b, d.skill*1.8, {magic:true})} Schaden`);
+    if (s.id==='clone'){ b.buffs.clone = 3; bLog('👥 Schattendoppel! 3 Runden doppelte Angriffe.'); }
+    if (s.id==='ult'){ b.used.ult = 1; const x = hitEnemy(b, d.atk*4, {pierce:true}); b.anim = {hit:true, txt:'ULTIMATE! '+x}; bLog(`💥 HELDEN-ULTIMATE: ${x} Schaden`); }
+    if (s.id==='qi'){ b.buffs.qi = 3; heal(.15); bLog('☯️ Qi-Fokus: +40 % Schaden für 3 Runden.'); }
+    if (s.id==='gcrit'){ let x = 0; for (let i=0;i<2;i++) x += hitEnemy(b, d.atk, {crit:true}); bLog(`🎮 Doppelschlag: ${x} Schaden (2 Krits)`); }
+    if (s.id==='regen'){ heal(.3); b.poison = 0; bLog('🧬 Regeneration: Gift entfernt.'); }
+  } else if (BATTLE_ONLY.includes(kind)){
+    if (!(S.inv[kind]>0)) return;
+    if (kind==='escape'){ if (b.noFlee){ bLog('🟥 Das Rote Gate ist versiegelt – Fluchtrolle wirkungslos!'); return; } S.inv.escape--; S.keys += (b.mode==='gate'?1:0); stopAuto(); UI.battle = null; log('Mit Fluchtrolle entkommen'); toast('📜 Fluchtrolle: Du bist entkommen. Der Schlüssel bleibt erhalten.','[SYSTEM]'); save(); return; }
+    S.inv[kind]--; b.combo = [];
+    if (kind==='bomb'){ const x = Math.max(1, Math.round(e.max*(e.boss?.1:.25))); e.hp -= x; b.anim = {hit:true, txt:'💣 '+x}; bLog(`💣 Bombe: ${x} Schaden`); }
+    if (kind==='buff'){ b.buffs.buff = 3; bLog('💪 Krafttrank: +50 % Schaden für 3 Runden.'); }
+    if (kind==='anti'){ b.poison = 0; heal(.1); bLog('🌿 Gegengift: Vergiftung geheilt.'); }
+  } else return;
+  // Schatten handeln jede Runde
+  if (e.hp > 0 && kind!=='shadow') for (const p of b.party){
+    if (p.cls==='Tank'){ b.guard = Math.max(b.guard, .35); if (b.round%2) hitEnemy(b, p.pow*.5, {}); }
+    else { const x = hitEnemy(b, p.pow*(p.cls==='Magier'?1.1:1), {pierce:p.cls==='Magier', crit:p.cls==='Assassine' && Math.random()<.35}); if (x) bLog(`${p.i} ${p.n} (${p.cls}): ${x}`); }
+    if (e.hp <= 0) break; }
+  if (b.party.some(p=>p.cls==='Tank') && e.hp>0 && b.round===1) bLog('🛡 Dein Tank-Schatten schützt dich (−35 % Schaden).');
+  if (e.hp <= 0){ b.tele = null; b.dead = {...e}; bLog(`💥 ${e.n} besiegt!`); tickCds(b); return nextEnemy(); }
+  // Gegnerzug
+  enemyTurn(b, d, defend); tickCds(b);
+  if (b.php <= 0) fightLose();
+  function heal(p){ const h = Math.round(b.pmax*p); b.php = Math.min(b.pmax, b.php+h); bLog(`🧪 Heilung: +${h} HP`); }
+}
+function tickCds(b){ for (const k in b.cds) if (b.cds[k]>0) b.cds[k]--; for (const k in b.buffs) if (b.buffs[k]>0) b.buffs[k]--; }
+function enemyTurn(b, d, defend){
+  const e = b.enemy; e.turn++;
+  if (b.poison > 0){ const p = Math.max(1, Math.round(b.pmax*.06)); b.php -= p; b.poison--; bLog(`☠ Gift: −${p} HP`); }
+  if (e.boss && !e.rage && e.hp < e.max*.5){ e.rage = true; e.atk = Math.round(e.atk*1.4); bLog(`🔴 ${e.n} gerät in WUT-MODUS! Mehr Schaden, schnellere Spezialangriffe.`); vibrate([100,50,100]); }
+  const red = (x) => Math.max(1, Math.round(x * (1 - b.guard))); 
+  if (b.tele){ // angekündigter Spezialangriff landet
+    const t = b.tele, w = telegraphOpen(b); b.tele = null; let hit = Math.round(t.dmg);
+    if (defend==='dodge' && w.dodge){ bLog(`💨 PERFEKT AUSGEWICHEN! ${t.n} verfehlt dich.`); b.anim = {...b.anim, txt:'AUSGEWICHEN'}; S.cnt.dodges=(S.cnt.dodges||0)+1; hit = 0; }
+    else if (defend==='block' && w.block){ hit = Math.round(hit*.25); bLog(`🛡 GEBLOCKT! ${t.n} trifft nur mit ${hit}.`); S.cnt.blocks=(S.cnt.blocks||0)+1; }
+    else { bLog(`💢 ${defend?'Zu '+(w.dt<600?'früh':'spät')+'! ':''}${t.n} trifft voll: ${hit}`); b.anim = {...b.anim, lunge:true}; vibrate(200); }
+    b.php -= hit; b.guard = 0; return; }
+  if (e.trait==='heal' && e.turn%3===0 && e.hp < e.max){ const h = Math.round(e.max*.15); e.hp = Math.min(e.max, e.hp+h); bLog(`✚ ${e.n} heilt sich um ${h}.`); b.guard = 0; return; }
+  if (e.boss && e.turn % (e.rage?2:3) === 0){ b.tele = {t0: Date.now(), dmg: e.atk*2.6, n: e.rage?'Zorn-Schlag':'Vernichtungsschlag'};
+    bLog(`⚠ ${e.n} LÄDT AUF … ${b.tele.n}! Gleich 🛡 Blocken oder 💨 Ausweichen – auf „JETZT!“ tippen.`); vibrate([60,40,60]); teleTimers(); b.guard = 0; return; }
+  if (Math.random()*100 < d.dodge && defend!=='block'){ bLog(`💨 Du weichst ${e.n} aus!`); b.guard = 0; return; }
+  const hit = red(e.atk*rnd(.85,1.2) - d.def) * (defend==='block'?.5:1); b.php -= Math.round(hit); b.anim = {...b.anim, lunge:true}; bLog(`🩸 ${e.n} trifft dich: ${Math.round(hit)}`);
+  if (e.trait==='poison' && Math.random() < .4 && !b.poison){ b.poison = 3; bLog('☠ Du wurdest vergiftet! (3 Runden)'); }
+  b.guard = 0;
+}
+function teleTimers(){ [650, 1050, 2050, 2650].forEach(ms => setTimeout(() => { if (UI.tab==='gates' || UI.battle?.mode==='tower') render(); }, ms)); }
+function fightLose(msg){ const b = UI.battle; b.over = 'lose'; b.loseMsg = msg || ''; stopAuto(); vibrate(300);
+  if (b.mode==='arena') arenaEnd(b);
+  log(b.mode==='tower'?`Turm: Niederlage auf Etage ${S.m.tower.floor+1}`:b.mode==='arena'?`Arena beendet bei Welle ${b.wave}`:`Niederlage im ${b.g?.rank}-Gate`); }
+function arenaEnd(b){ const a = CB().arena, w = b.wave - 1, wk = weekKey(); if (a.week !== wk){ a.week = wk; a.wbest = 0; }
+  const rec = w > a.best; a.best = Math.max(a.best, w); a.wbest = Math.max(a.wbest, w); a.runs++;
+  const gold = w*15, xp = gainXP(w*10); S.gold += gold; b.reward = `Erreichte Welle: <b>${w}</b>${rec?' · 🏆 NEUER REKORD!':''}<br>+${xp} XP · +${gold} 🪙<br>Bestwert: ${a.best} · Diese Woche: ${a.wbest}`; }
+function nextEnemy(){
+  const b = UI.battle;
+  if (b.mode==='arena'){ b.wave++; b.enemy = arenaFoe(b.wave); b.php = Math.min(b.pmax, b.php + Math.round(b.pmax*.15)); b.mp = Math.min(b.mpmax, b.mp + 10);
+    bLog(`🏟 Welle ${b.wave}: ${b.enemy.n} betritt die Arena! (+15 % HP)`); return; }
+  b.idx++;
+  if (b.idx < b.list.length){ b.enemy = {...b.list[b.idx]}; bLog(b.enemy.boss?`⚠ Der Boss erscheint: ${b.enemy.n}!`:`Ein ${b.enemy.n} taucht auf.`); if (b.enemy.trait) bLog(TRAITN[b.enemy.trait]); return; }
+  stopAuto(); b.over = 'win';
+  if (b.mode==='tower'){ const f = S.m.tower.floor; S.m.tower.floor++; const g = 20*(f+1); S.gold += g; let t = `+${g} 🪙`; if ((f+1)%10===0){ S.cry++; t += ' · +1 💎'; } const xp = gainXP(10+f*2);
+    b.reward = `Etage ${f+1} erobert! +${xp} XP · ${t}`; log(`Turm: Etage ${f+1} erobert`); checkUnlocks(); return; }
+  const g = b.g, L = b.loot;
+  const xp = gainXP(g.xp*L); const gold = Math.round(g.gold*L*(1+(bonuses().res||0)/100)); S.gold += gold;
+  const cry = (1 + (Math.random() < GATES.indexOf(g)*0.15 ? 1 : 0))*L; S.cry += cry;
+  const mats = dropMats((2 + GATES.indexOf(g))*L);
+  S.cnt.dungeons++; S.cnt.bosses++;
+  if (b.mode==='red'){ S.cnt.red = (S.cnt.red||0)+1; CB().rg = null; }
+  b.reward = `${L>1?'🟥 DOPPELTE BEUTE!<br>':''}+${xp} XP · +${gold} 🪙 · +${cry} 💎${mats?'<br>Materialien: '+mats:''}`;
+  b.arise = {tries:3, ok:false};
+  log(`${b.mode==='red'?'Rotes ':''}${g.rank}-Gate „${g.name}“ abgeschlossen`); checkUnlocks();
+}
+function autoStep(){
+  const b = UI.battle; if (!b || b.over){ stopAuto(); render(); return; }
+  const d = derived(), w = telegraphOpen(b);
+  if (b.tele){ if (w.block) playerAct('block'); else if (w.dt > 2600) playerAct('block'); save(); render(); return; }
+  if (b.php < b.pmax*.35 && potionCount()) playerAct('pot');
+  else if (b.enemy.trait==='armor' && b.mp >= 15) playerAct('skill');
+  else if (b.mp >= 15 && d.skill > d.atk) playerAct('skill');
+  else playerAct('atk');
+  save(); render();
+}
+// Rotes Gate: seltenes Ereignis (1× pro Tag ausgewürfelt)
+const RG_CHANCE = .18;
+function rollRedGate(force){ const c = CB(); if (!force && c.rgDay === S.day) return; c.rgDay = S.day;
+  const open = GATES.filter(g => S.level >= g.lvl); if (!open.length) return;
+  if (force || Math.random() < RG_CHANCE){ const g = open[open.length-1]; c.rg = {gid:g.id, day:S.day}; log(`Rotes Gate erschienen: ${g.name}`);
+    toast(`⚠ Ein ROTES GATE ist aufgetaucht! „${g.name}“ – nur heute. Kein Entkommen, doppelte Beute.`,'[SYSTEM]',5000); } else c.rg = null; save(); }
+
+/* ---------- Ansichten ---------- */
+function vGates(){
+  if (UI.battle) return vBattle();
+  rollRedGate(); const c = CB(), pen = S.penalty && !S.penalty.done, rg = c.rg && c.rg.day===S.day ? GATES.find(g=>g.id===c.rg.gid) : null;
+  const wk = weekKey(), wbest = c.arena.week===wk ? c.arena.wbest : 0, army = GATES.filter(g=>S.shadows[g.shadow.id]);
+  return `<section class="win"><h2>Gates</h2>
+   <div class="row"><div class="sp">🗝️ Gate-Schlüssel: <b>${S.keys}</b></div><span class="dim small">+1 je Daily-Quest, +2 Tagesbonus</span></div>
+   <div class="row small"><span class="sp">⚡ Kampfenergie: <b>${c.charges.length}</b>/${MAX_CHARGES}</span><span class="dim">aus bewiesenem Training</span></div>
+   ${pen?'<p class="badc c">⚠ Gates sind gesperrt, bis die Strafquest erfüllt ist.</p>':''}
+   ${rg?`<div class="quest redgate"><div class="row"><div class="rank" style="width:40px;height:40px;font-size:22px;color:#ff3050;border-color:#ff3050">!</div><div class="sp"><b>🟥 ROTES GATE · ${esc(rg.name)}</b><div class="small">[SYSTEM] Dungeon-Break! Kein Entkommen · 8 Min. Zeitlimit · Gegner +30 % · <b>doppelte Beute</b> · ohne Schlüssel</div></div>
+     <button class="prim" data-a="enterRed" ${pen?'disabled':''}>Betreten</button></div></div>`:''}
+   ${GATES.map(g=>{const lock=S.level<g.lvl;return `<div class="quest" style="${lock?'opacity:.5':''}"><div class="row"><div class="rank" style="width:40px;height:40px;font-size:22px">${g.rank}</div><div class="sp"><b>${g.name}</b><div class="dim small">${lock?`🔒 ab Level ${g.lvl}`:`Boss: ${g.boss[1]} ${g.boss[0]} · ${g.xp} XP · ${g.gold} 🪙`}</div></div>
+   <button data-a="enterGate" data-id="${g.id}" ${lock||pen||S.keys<1?'disabled':''}>Betreten</button></div></div>`}).join('')}
+  </section>
+  <section class="win"><h2>🏟 Arena</h2><p class="dim small">Endlose Wellen, alle 5 Wellen ein Champion. Nach jeder Welle +15 % HP. Belohnung nach Welle.</p>
+   <div class="grid2 small"><div>🏆 Bestwert: <b>${c.arena.best}</b> Wellen</div><div>📅 Diese Woche: <b>${wbest}</b></div></div>
+   <div class="grid2" style="margin-top:8px"><button data-a="arena" data-k="key" ${pen||S.keys<1?'disabled':''}>Eintritt 1 🗝️</button><button data-a="arena" data-k="gold" ${pen||S.gold<150?'disabled':''}>Eintritt 150 🪙</button></div></section>
+  <section class="win"><h2>Schattenarmee</h2>${MECH.shadows.render()}
+   ${army.length?`<h3>👥 Kampfgruppe (max. 3)</h3><p class="dim small">Mitgenommene Schatten kämpfen jede Runde mit. Alle Schatten geben weiter ihre Boni.</p>
+   ${army.map(g=>{const id=g.shadow.id, on=c.party.includes(id), cl=shCls(id);return `<div class="item"><div class="ii">${g.shadow.i}</div><div class="sp"><b>${esc(g.shadow.n)}</b> <span class="tag">${CLSI[cl]} ${cl}</span><div class="dim small">Kampfkraft ${shPow(id)} · ${cl==='Tank'?'schützt dich (−35 % Schaden)':cl==='Magier'?'Magie, durchdringt Panzer':'schnell, oft kritisch'}</div></div>
+     <button class="${on?'prim':''}" data-a="party" data-id="${id}" ${!on&&c.party.length>=3?'disabled':''}>${on?'✔ Dabei':'Mitnehmen'}</button></div>`}).join('')}`:''}</section>`;
+}
+function vBattle(){
+  const b = UI.battle, e = b.enemy, c = CB();
+  const title = b.title || '', back = b.mode==='tower' ? 'Zurück zum Turm' : 'Gate verlassen';
+  if (b.over==='win') return `<section class="win"><h2>${b.mode==='tower'?'Etage erobert':'Gate geschlossen'}</h2><div class="c" style="font-size:60px">🏆</div>
+    <p class="c">${b.reward}</p>
+    ${b.arise && b.arise.tries>0 && !b.arise.ok ? `<div class="quest c" style="border-color:#7a3cff;box-shadow:0 0 16px #7a3cff"><div class="enemy" style="filter:brightness(.3) drop-shadow(0 0 12px #7a3cff)">${b.g.boss[1]}</div>
+      <p>Die Leiche des Bosses pulsiert mit Mana …<br><span class="dim small">Chance: ${ariseChance(b.g)} % · Versuche: ${b.arise.tries} · Klasse: ${CLSI[shCls(b.g.shadow.id)]} ${shCls(b.g.shadow.id)}</span></p><button class="full prim" style="font-size:22px;background:linear-gradient(90deg,#5a1fd0,#b07bff)" data-a="arise">Steh auf!</button></div>` : ''}
+    ${b.arise && b.arise.ok ? `<p class="c" style="color:#c9a6ff">${b.g.shadow.i} ${esc(b.g.shadow.n)} (${shCls(b.g.shadow.id)}) hat sich deiner Armee angeschlossen.</p>`:''}
+    ${b.arise && b.arise.tries===0 && !b.arise.ok ? '<p class="c dim">Der Schatten ist verblasst …</p>':''}
+    <button class="full" data-a="leaveGate">${back}</button></section>`;
+  if (b.over==='lose') return `<section class="win penalty"><h2>${b.mode==='arena'?'Arena beendet':'Niederlage'}</h2><div class="c">${enemyBox(e,b)}</div>
+    <p class="c">${b.loseMsg||''} ${b.mode==='arena'?b.reward:b.mode==='tower'?'Der Wächter war zu stark. Trainiere weiter und versuche es erneut.':'Du bist gefallen. Werde stärker und kehre zurück.'}</p><button class="full" data-a="leaveGate">Zurück</button></section>`;
+  const pots = potionCount(), w = telegraphOpen(b), dis = b.auto ? 'disabled' : '';
+  const tl = b.deadline ? Math.max(0, b.deadline - Date.now()) : 0;
+  const sk = mySkills();
+  return `<section class="win ${b.mode==='red'?'redbattle':''}"><h2>${esc(title)}</h2>
+   <div class="row dim small"><span class="sp">${b.mode==='arena'?`🏟 Welle ${b.wave}`:b.mode==='tower'?`🗼 Etage ${S.m.tower.floor+1}`:e.boss?'⚠ BOSS':'Gegner '+(b.idx+1)+' / '+b.list.length}</span>${tl?`<span class="badc">⌛ ${fmtClock(tl)}</span>`:''}</div>
+   <div class="c"><b>${esc(e.n)}</b>${e.rage?' <span class="badc">🔴 WUT</span>':''}${e.trait?`<div class="dim small">${TRAITN[e.trait]}</div>`:''}</div>
+   <div style="position:relative">${b.dead?`<div class="emon dead deadov">${enemySVG(b.dead)}</div>`:''}${enemyBox(e,b)}<div id="dmgfx"></div></div>
+   <div class="bar en"><i style="width:${Math.max(0,e.hp/e.max*100)}%"></i></div><div class="dim small c">${fmt(Math.max(0,e.hp))} / ${fmt(e.max)}</div>
+   ${b.tele?`<div class="tele ${w.dodge?'now2':w.block?'now':''}" id="tele"><b>⚠ ${esc(b.tele.n)} – LÄDT AUF …</b><div class="tbar"><i style="animation-duration:2.6s"></i><span class="tw"></span></div><div>${w.dodge?'💨 JETZT AUSWEICHEN!':w.block?'🛡 JETZT BLOCKEN!':w.dt>2600?'Zu spät …':'Warte …'}</div></div>`:''}
+   <hr><div class="row small"><span class="sp">${esc(S.name)} · HP ${fmt(Math.max(0,b.php))}/${fmt(b.pmax)}${b.poison?' ☠':''}</span><span>MP ${fmt(b.mp)}/${fmt(b.mpmax)}</span></div>
+   <div class="bar hp"><i style="width:${Math.max(0,b.php/b.pmax*100)}%"></i></div><div class="bar mp" style="margin-top:4px"><i style="width:${b.mp/b.mpmax*100}%"></i></div>
+   <div class="row small" style="margin-top:6px;flex-wrap:wrap;gap:6px"><span id="comboC" class="tag">🌀 Combo ${b.combo.filter(x=>x==='atk').length>=2&&b.combo.slice(-2).every(x=>x==='atk')?'2/3 → Mana-Klinge!':Math.min(2,b.combo.slice(-2).filter(x=>x==='atk').length)+'/3'}</span>
+     <span class="tag" id="chargeC">⚡ Energie ${c.charges.length}</span>${b.buffs.qi>0?'<span class="tag">☯️ Qi</span>':''}${b.buffs.buff>0?'<span class="tag">💪</span>':''}${b.buffs.clone>0?'<span class="tag">👥</span>':''}
+     ${b.party.map(p=>`<span class="tag">${p.i} ${p.cls}</span>`).join('')}</div>
+   <div class="grid2" style="margin-top:10px"><button data-a="bAct" data-k="atk" ${dis}>⚔️ Angriff</button><button data-a="bAct" data-k="skill" ${b.auto||(b.mp<15&&!(S.inv.mp_s>0))?'disabled':''}>✨ Mana-Klinge (15)</button>
+    <button data-a="bAct" data-k="block" class="${b.tele&&w.block?'prim':''}" ${dis}>🛡 Block</button><button data-a="bAct" data-k="dodge" class="${b.tele&&w.dodge?'prim':''}" ${dis}>💨 Ausweichen</button>
+    <button data-a="bAct" data-k="pot" ${b.auto||!pots?'disabled':''}>🧪 Trank (${pots})</button><button data-a="bAuto" class="${b.auto?'prim':''}">${b.auto?'⏸ Auto aus':'▶ Auto-Kampf'}</button>
+    ${b.party.length?`<button data-a="bAct" data-k="shadow" ${b.auto||(b.cds.shadow||0)>0?'disabled':''}>🟣 Schatten-Angriff${b.cds.shadow?` (${b.cds.shadow})`:''}</button>`:''}
+    ${c.charges.length?`<button data-a="bAct" data-k="power" class="prim" ${dis}>⚡ Power-Schlag (${c.charges.length})</button>`:''}
+    ${sk.map(s=>`<button data-a="bAct" data-k="sk:${s.id}" title="${esc(s.t)}" ${b.auto||(b.cds[s.id]||0)>0||b.mp<s.mp||(s.id==='ult'&&b.used.ult)?'disabled':''}>${s.i} ${s.n}${b.cds[s.id]?` (${b.cds[s.id]})`:s.mp?` (${s.mp})`:''}</button>`).join('')}
+    ${BATTLE_ONLY.filter(k=>S.inv[k]>0).map(k=>`<button data-a="bAct" data-k="${k}" ${dis}>${SHOPI[k].i} ${SHOPI[k].n} ×${S.inv[k]}</button>`).join('')}</div>
+   ${b.noFlee?'<p class="badc c small">🟥 Der Ausgang ist versiegelt – Flucht unmöglich.</p>':`<button class="full ghost" style="margin-top:8px" data-a="flee">🏃 ${b.mode==='arena'?'Aufgeben':'Fliehen'}</button>`}
+   <div class="log">${b.log.slice(0,12).map(l=>`<div>${l}</div>`).join('')}</div></section>`;
+}
+function afterBattleRender(){
+  const b = UI.battle; if (!b) return; if (b.dead) setTimeout(()=>{ if (UI.battle===b) b.dead = null; }, 900); if (!b.anim) return;
+  const fx = $('#dmgfx'); if (fx && b.anim.txt){ fx.innerHTML = `<div class="dmg">${b.anim.txt}</div>`; }
+  b.anim = null;
+}
+// Turm-Ansicht ersetzt den Ein-Knopf-Aufstieg
+MECH.tower.render = function(){ const f = S.m.tower.floor, cost = (f+1)*3, gd = towerGuard(f+1);
+  return `<div class="row"><div class="big">Etage ${f}</div><div class="sp"></div><span class="tag">${fmt(res('tower'))} 🔺</span></div>
+    <p class="dim">Alle 5 Etagen: +1 % XP · alle 10 Etagen: +1 alle Werte · alle 10 Etagen: 1 💎</p>
+    <div class="item"><div class="ii" style="width:56px">${enemySVG(gd)}</div><div class="sp">Wächter Etage ${f+1}: <b>${esc(gd.n)}</b><div class="dim">HP ${gd.max} · Angriff ${gd.atk}${gd.boss?' · ⚠ Etagenherr mit Spezialangriffen':''}${gd.trait?' · '+TRAITN[gd.trait]:''}</div></div></div>
+    <button class="full prim" data-a="climb" ${res('tower')<cost?'disabled':''}>⚔ Wächter herausfordern (${cost} 🔺)</button>`; };
+Object.assign(A, {
+  enterGate(d){ const g=GATES.find(x=>x.id===d.id); if(S.keys<1||S.level<g.lvl||(S.penalty&&!S.penalty.done)) return; S.keys--; startBattle(g); toast(`Ein ${g.rank}-Gate hat sich geöffnet.`,'[SYSTEM]'); },
+  enterRed(){ const c = CB(); if (!c.rg || c.rg.day!==S.day || (S.penalty&&!S.penalty.done)) return; const g = GATES.find(x=>x.id===c.rg.gid);
+    startBattle(g, true); toast('🟥 Der Ausgang hat sich hinter dir geschlossen. Kein Entkommen!','[SYSTEM]',4000); vibrate([200,80,200]); },
+  arena(d){ if (S.penalty&&!S.penalty.done) return; if (d.k==='key'){ if (S.keys<1) return; S.keys--; } else { if (S.gold<150) return; S.gold-=150; }
+    startFight({mode:'arena', list:[arenaFoe(1)], title:'🏟 Arena', intro:'[SYSTEM] Willkommen in der Arena. Wie lange hältst du durch?'}); UI.tab='gates'; },
+  party(d){ const c = CB(); if (!S.shadows[d.id]) return; if (c.party.includes(d.id)) c.party = c.party.filter(x=>x!==d.id); else if (c.party.length<3){ c.party.push(d.id); c.cls[d.id] = shCls(d.id); } },
+  climb(){ const f = S.m.tower.floor, cost = (f+1)*3; if (res('tower')<cost) return; S.sys.res.tower -= cost;
+    startFight({mode:'tower', list:[towerGuard(f+1)], title:`🗼 Turm · Etage ${f+1}`, intro:`[TURM] Der Wächter der Etage ${f+1} erwartet dich.`}); UI.tab='gates'; },
+  bAct(d){ playerAct(d.k); },
+  flee(){ const b = UI.battle; if (!b) return; if (b.noFlee){ toast('🟥 Das Rote Gate ist versiegelt. Es gibt keine Flucht!','[SYSTEM]'); return; }
+    if (b.mode==='arena'){ fightLose('Du gibst auf.'); return; }
+    ask(b.mode==='tower'?'Aufgeben? Die Turmenergie ist verloren.':'Fliehen? Der Schlüssel ist verloren.', ()=>{ stopAuto(); UI.battle=null; log('Aus einem Kampf geflohen'); save(); render(); }, 'Fliehen'); },
+  arise(){ const b=UI.battle; if(!b||!b.arise||b.arise.ok||b.arise.tries<=0) return; b.arise.tries--;
+    if (Math.random()*100 < ariseChance(b.g)){ b.arise.ok=true; const sh=b.g.shadow; S.shadows[sh.id]=Math.min(MAX_SHADOW_LVL,(S.shadows[sh.id]||0)+1); CB().cls[sh.id] = shCls(sh.id); S.cnt.arise++; log(`Schatten erweckt: ${sh.n} (${shCls(sh.id)})`); queueFx(()=>fxArise(sh)); checkUnlocks(); }
+    else toast(b.arise.tries?`Erweckung fehlgeschlagen. Noch ${b.arise.tries} Versuch(e).`:'Erweckung fehlgeschlagen. Der Schatten ist verblasst.','[SYSTEM]'); },
+});
+setInterval(() => { const b = UI.battle; if (b && b.deadline && !b.over){ if (Date.now() > b.deadline){ fightLose('⌛ Die Zeit ist abgelaufen. Das Rote Gate hat dich verschlungen.'); save(); render(); } else if (UI.tab==='gates'){ const el = document.querySelector('.redbattle .badc'); if (el) el.textContent = '⌛ ' + fmtClock(b.deadline - Date.now()); } } }, 1000);
+(() => { const st = document.createElement('style'); st.textContent = `
+.emon{width:150px;height:150px;margin:6px auto;position:relative;animation:ebob 2.4s ease-in-out infinite;transform-origin:50% 90%}
+.emon .esvg{width:100%;height:100%;filter:drop-shadow(0 0 10px #ff335566);overflow:visible}
+.emon[data-arch=ghost]{animation:efloat 3s ease-in-out infinite}
+.emon.boss{width:180px;height:180px}.emon.boss .esvg{filter:drop-shadow(0 0 16px #ffd34d88)}
+.emon.rage .esvg{animation:erage .7s ease-in-out infinite}
+.emon.hitfx .esvg{animation:ehit .35s}
+.emon.lunge{animation:elunge .4s}
+.deadov{position:absolute!important;left:50%;margin-left:-75px!important;top:0;z-index:1;pointer-events:none}
+.emon.dead{animation:edie .9s forwards}
+.emon.tele .esvg{animation:echarge .5s ease-in-out infinite}
+.emon .orb{animation:eorb 1.2s ease-in-out infinite}
+@keyframes ebob{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-4px) scale(1.02,.98)}}
+@keyframes efloat{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(-10px);opacity:.7}}
+@keyframes ehit{0%{filter:brightness(4) drop-shadow(0 0 12px #fff);transform:translateX(0)}40%{transform:translateX(10px) rotate(4deg)}100%{filter:none;transform:none}}
+@keyframes elunge{0%{transform:none}40%{transform:translateY(26px) scale(1.18)}100%{transform:none}}
+@keyframes edie{to{opacity:0;transform:translateY(20px) scale(.6);filter:blur(6px) grayscale(1)}}
+@keyframes erage{0%,100%{filter:drop-shadow(0 0 8px #ff2040)}50%{filter:drop-shadow(0 0 26px #ff2040) brightness(1.3)}}
+@keyframes echarge{0%,100%{transform:scale(1)}50%{transform:scale(1.07);filter:drop-shadow(0 0 22px #ffd34d)}}
+@keyframes eorb{0%,100%{opacity:.6}50%{opacity:1}}
+.tele{border:2px solid #ffd34d;border-radius:10px;padding:8px;margin:8px 0;text-align:center;background:#ffd34d18;animation:telep .5s infinite alternate}
+.tele.now{border-color:#3ad7ff;background:#3ad7ff22}.tele.now2{border-color:#6dff9a;background:#6dff9a22}
+.tbar{position:relative;height:10px;border-radius:5px;background:#0008;margin:6px 0;overflow:hidden}.tbar i{position:absolute;inset:0;width:0;background:#ffd34d;animation:tfill linear forwards}
+.tbar .tw{position:absolute;left:23%;width:77%;top:0;bottom:0;border-left:2px solid #3ad7ff;background:#3ad7ff22}
+@keyframes tfill{to{width:100%}}@keyframes telep{to{box-shadow:0 0 14px #ffd34d}}
+.redgate{border-color:#ff3050!important;box-shadow:0 0 18px #ff305088;animation:telep 1s infinite alternate}
+.redbattle{border-color:#ff3050;box-shadow:0 0 22px #ff305066}
+`; document.head.appendChild(st); })();
+
 /* =================== Start =================== */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
@@ -2293,7 +2628,7 @@ setInterval(tick, 1000);
 setInterval(()=>{ checkDay(); if (UI.tab==='systems' && UI.detail==='guild' && !$('#modal').classList.contains('on')) render(); }, 30000);
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkDay(); });
 initPWA();
-window.App = {get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate, P, RepCounter, gpsFeed, PDB, EXER, migrateProof, SAVE_KEY, NATIVE, buildBackup, importText, packSave, unpackSave, intentUrl, nav, nRestoreRun, HAD_SAVE};
+window.App = {CB, startBattle, startFight, playerAct, towerGuard, arenaFoe, rollRedGate, enemySVG, trainCharge, SSK, get S(){return S}, A, UI, render, save, rollover, PWA, APP_VERSION, checkUpdate, P, RepCounter, gpsFeed, PDB, EXER, migrateProof, SAVE_KEY, NATIVE, buildBackup, importText, packSave, unpackSave, intentUrl, nav, nRestoreRun, HAD_SAVE};
 </script>
 </body>
 </html>
