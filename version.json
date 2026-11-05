@@ -1,13 +1,23 @@
 {
- "version": "1.9.2",
+ "version": "1.9.3",
  "date": "2026-11-05",
  "changelog": [
-  "ℹ️ Neu: kleine Info-Symbole an allen Werten – antippen zeigt, was der Wert bringt (z. B. Stärke → Schaden, Intelligenz → Mana-Klinge & MP, Wahrnehmung → Krit, Beweglichkeit → Ausweichen)",
-  "📊 Mit deinen aktuellen Zahlen: HP, MP, Krit-Chance, Ausweichen, Angriffs- und Klingen-Schaden",
-  "🛡 Auch an Ausrüstungs-Boni, Basis-Boni (Lager, Fallen, Gratis-Trank, Giftimmun …) und im Kampf (HP, MP, Combo, Energie)",
-  "💾 Spielstand unverändert kompatibel"
+  "🃏 Neues System: Duellanten-System (ab Level 8) – Duell-Punkte verdienen, Booster mit eigenen Karten öffnen (Gewöhnlich bis Geheim-Selten), Deck aus 5 Karten bauen, Rivalen-Duelle mit 4000 LP",
+  "🥚 Neues System: Monsterzähmer-System (ab 5-Tage-Streak) – Lockfutter sammeln, im hohen Gras Kreaturen fangen, Partner wählen und trainieren; 6 Typen (Feuer, Wasser, Pflanze, Elektro, Stein, Geist) mit eigenen Boni",
+  "📜 Beide Systeme auch als Daily-Quest-Quelle wählbar (Mehr → Einstellungen), sobald freigeschaltet – mit eigenen Zufalls-Quests",
+  "✅ Nachweise & Strafquests unverändert, 💾 Spielstand kompatibel"
  ],
  "releases": [
+  {
+   "version": "1.9.3",
+   "date": "2026-11-05",
+   "changes": [
+    "🃏 Neues System: Duellanten-System (ab Level 8) – Duell-Punkte verdienen, Booster mit eigenen Karten öffnen (Gewöhnlich bis Geheim-Selten), Deck aus 5 Karten bauen, Rivalen-Duelle mit 4000 LP",
+    "🥚 Neues System: Monsterzähmer-System (ab 5-Tage-Streak) – Lockfutter sammeln, im hohen Gras Kreaturen fangen, Partner wählen und trainieren; 6 Typen (Feuer, Wasser, Pflanze, Elektro, Stein, Geist) mit eigenen Boni",
+    "📜 Beide Systeme auch als Daily-Quest-Quelle wählbar (Mehr → Einstellungen), sobald freigeschaltet – mit eigenen Zufalls-Quests",
+    "✅ Nachweise & Strafquests unverändert, 💾 Spielstand kompatibel"
+   ]
+  },
   {
    "version": "1.9.2",
    "date": "2026-11-05",
